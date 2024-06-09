@@ -1,0 +1,24 @@
+project:
+  type: book
+
+book:
+  title: "Topological data analysis"
+  subtitle: "A gentle introduction without tears"
+  author: "Tomáš Petit"
+  date: today
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+
+
