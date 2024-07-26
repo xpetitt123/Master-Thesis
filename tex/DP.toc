@@ -1,0 +1,9 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{List of used notation}{xv}{chapter*.2}%
+\contentsline {chapter}{Introduction}{1}{chapter*.3}%
+\contentsline {chapter}{\numberline {1}Why Topology?}{3}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Podkapitola}{3}{section.1.1}%
+\contentsline {chapter}{\numberline {2}Persistence}{5}{chapter.2}%
+\contentsline {chapter}{Summary}{7}{chapter*.5}%
+\contentsline {chapter}{Appendix A}{9}{chapter*.6}%
+\contentsline {chapter}{Bibliography and sources}{11}{chapter*.7}%
