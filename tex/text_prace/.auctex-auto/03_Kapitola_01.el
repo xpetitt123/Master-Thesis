@@ -2,6 +2,7 @@
  "03_Kapitola_01"
  (lambda ()
    (LaTeX-add-labels
-    "fig:SeattleWeather"))
+    "fig:SeattleWeather"
+    "fig:influenzaTree"))
  :latex)
 
