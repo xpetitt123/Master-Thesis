@@ -1,12 +1,22 @@
-\chapter{Persistence}
+\chapter{Topology without tears}
 \graphicspath{ {/home/tomasp/Dokumenty/Master_Thesis/figures/} }
+%Definitions
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
 
-\begin{equation*}\label{E}\tag{rovnice}
- \int\! f(x)\,\mathrm{d}x
-\end{equation*}
-odkaz na rovnici s \uv{tagem} \eqref{E} -- pokud nechcete vzorci přidělit číslo, ale nějaký vlastní symbol, používejte
-\uv{hvězdičkovaná} prostředí, tj. např. \verb+equation*+
-\begin{equation}\label{EE}
- \iint\! f(x)\,\mathrm{d}x
-\end{equation}
-odkaz na druhy vzorec \eqref{EE}
+
+
+Unfortunately, we cannot go deeper into TDA without establishing a basic topology dictionary and theoretical background. This chapter will be a brief summary and introduction to the necessary definitions and theorems we will use. We assume that the reader already has rudimentary understanding of metric and topological spaces but for the sake of establishing notation and terminology, we're going to go through them anyway. (For more details, see Appendix A?)
+
+\section{Metric Spaces}
+
+\begin{definition}
+  A \textit{metric space} is a tuple $(X, \partial_{X})$, where $X$ is a set and $\partial_{X}: X \times X \to \mathbb{R}$ is a function satisfying the following:
+  \begin{enumerate}[label=\arabic*)]
+    \centering
+    \item $\partial_{X}(x,y) = 0 \iff x = y.$
+    \item $\forall x,y \in X, \quad \partial_{X}(x,y) = \partial_{X}(y,x).$
+    \item $\forall x,y,z \in X, \quad \partial_{X}(x,z) \leq \partial_{X}(x,y) + \partial_{X}(y,z).$
+  \end{enumerate}
+\end{definition}
+The last property is known as the \textit{triangle inequality}.

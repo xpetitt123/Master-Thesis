@@ -28,3 +28,25 @@ A good example of that would be phylogenetic and evolutionary trees, like the on
 visited on the 01.08.2024}
 \par
 The situation only gets more complex with each passing day and batch of collected data. One \textit{could} try to develop analytical models for each case, provide the rigorous theory and obtain the conclusions that they seek. But a far more reasonable and general method would be to instead study the shape itself and approximate the datasets by selecting the shape that describes it the ``best''. This is where topology comes into play, as this gives us the tools and theory to do exactly that, with the help of algebraic topology.
+\par
+Algebraic topology will help us to qualitatively distinguish the two situations in \ref{fig:Blobs}, where even on an intuitive level we can see that the difference lies in the number of ``blobs'' in each figure; or more rigorously in the number of connected components.
+
+\begin{figure}[h]
+  \centering
+  \subfloat[\centering 3 blobs]{{\includegraphics[width=5cm]{blobs_3.pdf} }}%
+  \qquad
+  \subfloat[\centering 5 blobs]{{\includegraphics[width=5cm]{blobs_5.pdf} }}%
+  \caption{Counting the number of blobs in each figure.}
+  \label{fig:Blobs}
+\end{figure}
+
+Likewise, using the already established machinery, we will be able to describe and quantify the fact that in \ref{fig:unit_circle} there is a hole in the middle of it.
+
+\begin{figure}[h]
+  \caption{Data sampled from a unit circle characterized by the distinct hole in the middle.}
+  \includegraphics[width=7cm, height=7cm]{unit_circle.pdf}
+  \centering
+  \label{fig:unit_circle}
+\end{figure}
+
+Both of these can be thought of as counting $n-$dimensional holes: connected components being of dimension $0$, while the hole in \ref{fig:unit_circle} is a $1-$dimensional one. We will see how this approach and its extension will be the foundation of what we call TDA -- Topological Data Analysis.

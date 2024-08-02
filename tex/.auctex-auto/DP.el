@@ -18,7 +18,9 @@
     "amsmath"
     "amssymb"
     "amsthm"
-    "graphicx")
+    "graphicx"
+    "subfig"
+    "enumitem")
    (TeX-add-symbols
     '("sectionmark" 1)
     '("chaptermark" 1)

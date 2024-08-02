@@ -3,6 +3,8 @@
  (lambda ()
    (LaTeX-add-labels
     "fig:SeattleWeather"
-    "fig:influenzaTree"))
+    "fig:influenzaTree"
+    "fig:Blobs"
+    "fig:unit_circle"))
  :latex)
 
