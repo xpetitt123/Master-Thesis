@@ -1,4 +1,4 @@
-\chapter{Topology without tears}
+\chapter{Simplicial Complexes and Homology}
 \graphicspath{ {/home/tomasp/Dokumenty/Master_Thesis/figures/} }
 %%Definitions, notations, remarks and examples
 \theoremstyle{definition}
@@ -9,42 +9,37 @@
 \newtheorem{example}{Example}[section]
 \newtheorem*{remark}{Remark}
 
-Unfortunately, we cannot go deeper into TDA without establishing a basic topology dictionary and theoretical background. This chapter will be a brief summary and introduction to the necessary definitions and theorems we will use. We assume that the reader already has rudimentary understanding of metric and topological spaces but for the sake of establishing notation and terminology, we're going to go through them anyway. (For more details, see Appendix A?)
+The goal of this and the following chapters is to establish and set up the pipeline for extracting the algebraic invariants of our data. Usually, we can only work with sampled and discrete data coming from some set of measurements. As such, we can't directly use methods of algebraic topology since we won't usually be working with discrete topological spaces and to properly use these methods, we would need an uncountable amount of data; something that isn't feasible from a computational point of view.
+\par
+This forces us to use different methods to somehow approximate and recover the topology of the ambient space given only a finite set of points. Secondly, we also need to consider the \textit{scale} of the data - some interesting properties may be more apparent only after we ``zoom'' in closely on them, some may not become apparent at all. All in all, we will construct the following pipeline:
 
-\section{Metric Spaces}
+\begin{center}
+\smartdiagram[sequence diagram]{
+  Discrete data, Simplicial complex, Algebraic invariants}
+\end{center}
 
-\begin{definition}
-  A \textit{metric space} is a tuple $(X, \partial_{X})$, where $X$ is a set and $\partial_{X}: X \times X \to \mathbb{R}$ is a function satisfying the following:
-  \begin{enumerate}[label=\arabic*)]
-    \centering
-    \item $\partial_{X}(x,y) = 0 \iff x = y.$
-    \item $\forall x,y \in X, \quad \partial_{X}(x,y) = \partial_{X}(y,x).$
-    \item $\forall x,y,z \in X, \quad \partial_{X}(x,z) \leq \partial_{X}(x,y) + \partial_{X}(y,z).$
-  \end{enumerate}
+and repeat this step for all scales at once, effectively measuring the evolution of the algebraic invariants through the changes in the feature scale.
+
+\section{Simplicial complexes}
+\begin{definition}[Simplex]
+For $k \geq 0$, a $k$-simplex $\sigma$ of dimension $k$ in an Euclidean space $\mathbb{R}^{n}$ is the convex hull of a set $P$ of $(k+1)$ affinely independent points in $\mathbb{R}^{n}$. For $0 \leq m \leq k$, an $m$-face of $\sigma$ is a $m$-simplex that is the convex hull of a nonempty subset of $P$. A \textit{proper face} of $\sigma$ is a simplex that is the convex hull of a proper subset of $P$ (any face except $\sigma$). $(k-1)$ faces of $\sigma$ are called \textit{facets} of $\sigma$.
 \end{definition}
-The last property is known as the \textit{triangle inequality}.
 
-\begin{remark}
-Later on, we'll encounter \textit{dissimilarity measures}, i.e., metrics that fail to satisfy one of the three points in the definition above. The most prominent of these will be the Kullback-Leibler divergence and the Gromov-Hausdorff distance.
-\end{remark}
+Typically we refer to a $0$-simplex as a \textit{vertex}, a $1$-simplex as an \textit{edge}, a $2$-simplex as a \textit{triangle} and so on. An illustration of those can be seen in \ref{fig:simplex_1}.
 
-Typical examples of known metrics include:
+\begin{figure}[h!]
+  \caption{From the left: a $0$-simplex, a $1$-simplex and a $2$-simplex}
+  \includegraphics[width=10cm, height=2cm]{simplex_1.pdf}
+  \centering
+  \label{fig:simplex_1}
+\end{figure}
 
-\begin{example}
-  On Euclidean spaces $\mathbb{R}^{n}$, for two $n$-tuples we have the standard distance metric given by
-  \begin{equation*}
-    \partial_{\mathbb{R}^{n}}((x_{1}, \ldots, x_{n}),(y_{1}, \ldots, y_{n})) = \sqrt{(x_{1}-y_{1})^{2} + \ldots (x_{n} - y_{n})^{2}}.
-  \end{equation*}
-\end{example}
+\begin{definition}[Geometric simplicial complex]
+  A \textit{geometric simplicial complex} $K$ is a set with finitely many simplices that satisfy the following:
+  \begin{itemize}
+    \item $K$ contains every face of each simplex in $K$.
+    \item For any two simplices $\sigma, \tau \in K$, their intersection $\sigma \cap \tau$ is either empty or a face or both $\sigma$ and $\tau$.
+  \end{itemize}
+\end{definition}
 
-\begin{example}
-  Fix an alphabet $\Sigma$. Let $x$ and $y$ be words of length $n$ with letters in $\Sigma$. The \textit{Hamming distance} is then defined as the number of positions at which the letters of $x$ and $y$ are different:
-  \begin{equation*}
-    \partial_{H}(x,y) = #\{i \: \vert \: x_{i} \ne y_{i}\}.
-  \end{equation*}
-\end{example}
-
-Another important notion that we'll use are \textit{open} and \textit{closed} balls of radius $\varepsilon$ and center $x \in X$:
-\begin{equation*}
-  B_{\varepsilon}(x) = \{z \in X \: \vert \: \partial_{X}(z,x) < \varepsilon \} \quad \text{and} \quad \overline{B}_{\varepsilon}(x) = \{z \in X \: \vert \: \partial_{X}(z,x) \leq \varepsilon \}
-\end{equation}
+This is also known as a \textit{triangulation}, where the \textit{dimension} $k$ of $K$ is the maximum dimension of any simplex in $K$. The two definitions above are highly geometric and easy to visualize and imagine. The next definition is more technical and abstract but nonetheless important.

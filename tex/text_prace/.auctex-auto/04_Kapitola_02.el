@@ -1,6 +1,8 @@
 (TeX-add-style-hook
  "04_Kapitola_02"
  (lambda ()
+   (LaTeX-add-labels
+    "fig:simplex_1")
    (LaTeX-add-environments
     "definition"
     "theorem"
