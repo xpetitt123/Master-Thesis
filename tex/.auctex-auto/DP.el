@@ -20,7 +20,9 @@
     "amsthm"
     "graphicx"
     "subfig"
-    "enumitem")
+    "enumitem"
+    "tikz"
+    "smartdiagram")
    (TeX-add-symbols
     '("sectionmark" 1)
     '("chaptermark" 1)

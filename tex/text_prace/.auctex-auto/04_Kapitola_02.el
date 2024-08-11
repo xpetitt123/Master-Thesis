@@ -2,6 +2,10 @@
  "04_Kapitola_02"
  (lambda ()
    (LaTeX-add-environments
-    "definition"))
+    "definition"
+    "theorem"
+    "lemma"
+    "corollary"
+    "example"))
  :latex)
 
