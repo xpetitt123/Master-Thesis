@@ -9,9 +9,9 @@
 \newtheorem{example}{Example}[section]
 \newtheorem*{remark}{Remark}
 
-The goal of this and the following chapters is to establish and set up the pipeline for extracting the algebraic invariants of our data. Usually, we can only work with sampled and discrete data coming from some set of measurements. As such, we can't directly use methods of algebraic topology since we won't usually be working with discrete topological spaces and to properly use these methods, we would need an uncountable amount of data; something that isn't feasible from a computational point of view.
+The goal of this and the following chapters is to establish and set up the pipeline for extracting the algebraic invariants of our data. Usually, we can only work with sampled and discrete data coming from some set of measurements. As such, we can't directly use methods of algebraic topology, since we won't typically be working with discrete topological spaces and to properly use these methods, we would need an uncountable amount of data; something that isn't feasible from a computational point of view.
 \par
-This forces us to use different methods to somehow approximate and recover the topology of the ambient space given only a finite set of points. Secondly, we also need to consider the \textit{scale} of the data - some interesting properties may be more apparent only after we ``zoom'' in closely on them, some may not become apparent at all. All in all, we will construct the following pipeline:
+This forces us to use different methods to somehow approximate and recover the topology of the ambient space given only a finite set of points. Secondly, we also need to consider the \textit{scale} of the data -- some interesting properties may be more apparent only after we ``zoom'' in closely on them, some may not become apparent at all. All in all, we will construct the following pipeline:
 
 \begin{center}
 \smartdiagram[sequence diagram]{
@@ -22,15 +22,15 @@ and repeat this step for all scales at once, effectively measuring the evolution
 
 \section{Simplicial complexes}
 \begin{definition}[Simplex]
-For $k \geq 0$, a $k$-simplex $\sigma$ of dimension $k$ in an Euclidean space $\mathbb{R}^{n}$ is the convex hull of a set $P$ of $(k+1)$ affinely independent points in $\mathbb{R}^{n}$. For $0 \leq m \leq k$, an $m$-face of $\sigma$ is a $m$-simplex that is the convex hull of a nonempty subset of $P$. A \textit{proper face} of $\sigma$ is a simplex that is the convex hull of a proper subset of $P$ (any face except $\sigma$). $(k-1)$ faces of $\sigma$ are called \textit{facets} of $\sigma$.
+For $k \geq 0$, a $k$-simplex $\sigma$ of dimension $k$ in a Euclidean space $\mathbb{R}^{n}$ is the convex hull of a set $P$ of $(k+1)$ affinely independent points in $\mathbb{R}^{n}$. For $0 \leq m \leq k$, an $m$-face of $\sigma$ is an $m$-simplex that is the convex hull of a nonempty subset of $P$. A \textit{proper face} of $\sigma$ is a simplex that is the convex hull of a proper subset of $P$ (any face except $\sigma$). $(k-1)$ faces of $\sigma$ are called \textit{facets} of $\sigma$.
 \end{definition}
 
-Typically we refer to a $0$-simplex as a \textit{vertex}, a $1$-simplex as an \textit{edge}, a $2$-simplex as a \textit{triangle} and so on. An illustration of those can be seen in \ref{fig:simplex_1}.
+Typically, we refer to a $0$-simplex as a \textit{vertex}, a $1$-simplex as an \textit{edge}, a $2$-simplex as a \textit{triangle} and so on. An illustration of those can be seen in \ref{fig:simplex_1}.
 
 \begin{figure}[h!]
-  \caption{From the left: a $0$-simplex, a $1$-simplex and a $2$-simplex}
-  \includegraphics[width=10cm, height=2cm]{simplex_1.pdf}
   \centering
+  \includegraphics[width=10cm, height=2cm]{simplex_1.pdf}
+  \caption{From the left: a $0$-simplex, a $1$-simplex and a $2$-simplex}
   \label{fig:simplex_1}
 \end{figure}
 
@@ -43,3 +43,38 @@ Typically we refer to a $0$-simplex as a \textit{vertex}, a $1$-simplex as an \t
 \end{definition}
 
 This is also known as a \textit{triangulation}, where the \textit{dimension} $k$ of $K$ is the maximum dimension of any simplex in $K$. The two definitions above are highly geometric and easy to visualize and imagine. The next definition is more technical and abstract but nonetheless important.
+
+\begin{definition}[Abstract simplex]
+  A collection $K$ of non-empty subsets of a given set $V(K)$ is an \textit{abstract simplicial complex}, if every element $\sigma \in K$ has all of its non-empty subsets $\sigma' \subseteq \sigma$ also in $K$. Each element $\sigma$ with a cardinality $|\sigma| = k+1$ is called a $k$-simplex and each of its subsets $\sigma' \subseteq \sigma$ with $|\sigma'|=k'+1$ is called a $k'$-face. Finally, a $(k-1)$-face of a $k$-simplex is called its \textit{facet}.
+\end{definition}
+
+\begin{remark}
+One could also dually define a $k$-coface, cofacet and its codimension but it's not terribly important.
+\end{remark}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=8cm, height=4cm]{simplex_2.pdf}
+  \caption{A simplicial complex with 4 vertices, 4 edges and 1 triangle.}
+  \label{fig:simplex_2}
+\end{figure}
+
+A geometric simplicial complex $K$ in $\mathbb{R}^{n}$ is called a \textit{geometric realization} of an abstract simplicial complex $K'$, if and only if there is an embedding $e: V(K') \to \mathbb{R}^{n}$, that takes every $k$-simplex $\{v_{0}, \ldots, v_{k}\}$ in $K'$ to a $k$-simplex in $K$ that is the convex hull of $e(v_{0}), \ldots, e(v_{k})$. An example is shown in \ref{fig:simplex_2} as this is the geometric realization of the abstract complex with vertices $A,B,C,D,$ edges $\{A,B\}, \{A,C\}, \{B,C\}, \{C,D\}$ and 1 triangle $\{A,B,C\}$.
+
+\begin{definition}[Underlying space]
+  The \textit{underlying space} of an abstract simplicial complex $K$, denoted by $|K|$, is the pointwise union of its simplices in its geometrical realization, i.e., $|K| = \bigcup_{\sigma \in K}|\sigma|$, where $|\sigma|$ is the restriction of this realization on $\sigma$. If $K$ is geometric, then its geometric realization can be taken as itself.
+\end{definition}
+
+Unless it is considered necessary, we won't be making the distinction between the two due to this equivalence between geometric and abstract simplicial complexes.
+
+\begin{definition}[$k$-skeleton]
+  For any $k \geq 0$, the $k$-skeleton of a simplicial $K$ complex, denoted by $K^{k}$, is the subcomplex formed by all simplices of dimension at most $k$.
+\end{definition}
+Given this, in \ref{fig:simplex_2}, the $1$-skeleton consists of the vertices $A,B,C,D$ and the edges joining those.
+
+\section{Nerves, Čech and Rips complexes}
+Given any open cover of a topological space, we are able to construct a simplicial complex on top of it. As we'll see, there isn't only one kind of complex we can build, depending on the properties we're looking for and its size, which has to be considered whenever we talk about any software implementation of the algorithms.
+
+\begin{definition}[Nerve]
+  Given a finite collection of sets $\mathfrak{U} = \{U_{\alpha}\}_{\alpha \in A}$, we define the \textit{nerve} of the set $\mathfrak{U}$ to be the simplicial complex $N(\mathfrak{U})$, whose vertex set is the index set $A$, and where a subset $\{\alpha_{0}, \ldots, \alpha_{k}\} \subseteq A$ spans a $k$-simplex in $N(\mathfrak{U})$ if and only if $U_{\alpha_{0}} \cap \ldots \cap U_{\alpha_{k}} \ne \emptyset$.
+\end{definition}

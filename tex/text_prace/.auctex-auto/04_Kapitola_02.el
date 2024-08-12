@@ -2,7 +2,8 @@
  "04_Kapitola_02"
  (lambda ()
    (LaTeX-add-labels
-    "fig:simplex_1")
+    "fig:simplex_1"
+    "fig:simplex_2")
    (LaTeX-add-environments
     "definition"
     "theorem"
