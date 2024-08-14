@@ -6,7 +6,11 @@
    (TeX-add-to-alist 'LaTeX-provided-class-options
                      '(("book" "12pt" "a4paper" "twoside" "final")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
-                     '(("inputenc" "utf8") ("fontenc" "IL2") ("babel" "english") ("palatino" "") ("longtable" "") ("amsmath" "") ("amssymb" "") ("amsthm" "") ("graphicx" "") ("subfig" "") ("enumitem" "") ("tikz" "") ("smartdiagram" "") ("biblatex" "backend=biber" "style=alphabetic" "sorting=ynt")))
+                     '(("inputenc" "utf8") ("fontenc" "IL2") ("babel" "english") ("palatino" "") ("longtable" "") ("amsmath" "") ("amssymb" "") ("amsthm" "") ("graphicx" "") ("subfig" "") ("enumitem" "") ("tikz" "") ("smartdiagram" "")))
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
+   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
    (TeX-run-style-hooks
     "latex2e"
     "book"
@@ -23,16 +27,13 @@
     "subfig"
     "enumitem"
     "tikz"
-    "smartdiagram"
-    "biblatex")
+    "smartdiagram")
    (TeX-add-symbols
     '("sectionmark" 1)
     '("chaptermark" 1)
     "Cbb"
     "Rbb"
     "Zbb"
-    "Nbb")
-   (LaTeX-add-bibliographies
-    "./Bibliography"))
+    "Nbb"))
  :latex)
 
