@@ -60,7 +60,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% BALIKY POTREBNE PRO SABLONU %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{longtable,lipsum} 
+\usepackage{longtable}
 %%% balik ``longtable`` je potrebny pro sazeni kapitoly s pouzitym znacenim, jinak neni potreba
 %%% balik ``lipsum`` je pouze pro sablonu, aby se generoval nahodny text - pro samotnou praci je mozne jej odstranit
 
@@ -68,7 +68,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% BALIKY POTREBNE PRO MATEMATIKU %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{amsmath,amssymb,amsthm, graphicx, subfig, enumitem, tikz, smartdiagram}
-
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+\addbibresource{./Bibliography.bib}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%% NASTAVENI POVINNYCH CASTI DLE SMERNICE DEKANA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -1,6 +1,6 @@
 \chapter{Simplicial Complexes and Homology}
 \graphicspath{ {/home/tomasp/Dokumenty/Master_Thesis/figures/} }
-%%Definitions, notations, remarks and examples
+%% Definitions, notations, remarks and examples
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}{Theorem}[section]
@@ -78,3 +78,21 @@ Given any open cover of a topological space, we are able to construct a simplici
 \begin{definition}[Nerve]
   Given a finite collection of sets $\mathfrak{U} = \{U_{\alpha}\}_{\alpha \in A}$, we define the \textit{nerve} of the set $\mathfrak{U}$ to be the simplicial complex $N(\mathfrak{U})$, whose vertex set is the index set $A$, and where a subset $\{\alpha_{0}, \ldots, \alpha_{k}\} \subseteq A$ spans a $k$-simplex in $N(\mathfrak{U})$ if and only if $U_{\alpha_{0}} \cap \ldots \cap U_{\alpha_{k}} \ne \emptyset$.
 \end{definition}
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=8cm]{nerve_1.pdf}
+  \caption{An example of a space $M$, its open cover $\mathfrak{U}$ and its nerve $N(\mathfrak{U})$.}
+  \label{fig:nerve_1}
+\end{figure}
+
+The following important theorem about nerves tells us when are the nerves ``equivalent'' to the original space. There are various formulation of this statement but since we are working primarily with finite metric spaces, we'll adopt the appropriate version for it.
+
+\begin{theorem}[Nerve theorem]
+  Given a finite cover $\mathfrak{U}$ (open or closed) of a metric space $M$, the underlying space $|N(\mathfrak{U})|$ is homotopy equivalent to $M$, if every non-empty intersection $\cap_{i=0}^{k}U_{\alpha_{i}}$ of cover elements is homotopy equivalent to a point, i.e., contractible.
+\end{theorem}
+
+For those interested in a proof of this statement, see \cite{Borsuk1948OnTI} for example.
+From this we can see, that the nerve is homotopy equivalent to $M$ in \ref{fig:nerve_1}.
+
