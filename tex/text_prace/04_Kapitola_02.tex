@@ -91,6 +91,22 @@ The following important theorem about nerves tells us when are the nerves ``equi
 
 \begin{theorem}[Nerve theorem]
   Given a finite cover $\mathfrak{U}$ (open or closed) of a metric space $M$, the underlying space $|N(\mathfrak{U})|$ is homotopy equivalent to $M$, if every non-empty intersection $\cap_{i=0}^{k}U_{\alpha_{i}}$ of cover elements is homotopy equivalent to a point, i.e., contractible.
+\label{theorem:Nerve theorem}
 \end{theorem}
 
-For those interested in a proof of this statement, see \cite{Borsuk1948OnTI} for example. From this we can see, that the nerve is homotopy equivalent to $M$ in \ref{fig:nerve_1}.
+For those interested in a proof of this statement, see \cite{Borsuk1948OnTI} for example. From this we can see, that the nerve is homotopy equivalent to $M$ in \ref{fig:nerve_1}. Now we can finally present the first construction of an abstract simplicial complex using the concept of a nerve, given a finite subset $P$ of a metric space $(M,d)$.
+
+\begin{definition}[Čech complex]
+  Let $(M,d)$ be a metric space and $P$ a finite subset of it. Given a real $r > 0$, the Čech complex $\mathbb{C}^{r}(P)$ is defined to be the nerve of the set $\{B(p_{i},r)\}$, where
+  \begin{equation*}
+    B(p_{i},r) = \{x \in M \: \vert \: d(p_{i},x) \leq r \}.
+  \end{equation*}
+\end{definition}
+
+One can easily deduce that if $M$ happens to be a Euclidean metric space, by Theorem~\ref{theorem:Nerve theorem}, the Čech complex will be homotopy equivalent to the space of union of the balls. The Čech complex has nice theoretical properties but the one predominantly implemented in most software packages is the Vietoris-Rips complex bellow.
+
+\begin{definition}[Vietoris-Rips complex]
+  Let $(P,d)$ be a finite metric space. Given a real $r>0$, the Vietoris-Rips (VR for short) complex is the abstract simplicial complex $\mathbb{VR}^{r}(P)$, where a simplex $\sigma \in \mathbb{VR}^{r}(P)$, if and only if $d(p,q) \leq 2r$ for every pair of vertices of $\sigma$.
+\end{definition}
+
+For an interactive visualization of the two, the reader may want to access the following sites - \cite{smajhiVietorisx2013RipsComplex} and \cite{saulnechComplex}.

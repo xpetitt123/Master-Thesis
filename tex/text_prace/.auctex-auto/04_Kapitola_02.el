@@ -6,7 +6,8 @@
    (LaTeX-add-labels
     "fig:simplex_1"
     "fig:simplex_2"
-    "fig:nerve_1")
+    "fig:nerve_1"
+    "theorem:Nerve theorem")
    (LaTeX-add-environments
     "definition"
     "theorem"
