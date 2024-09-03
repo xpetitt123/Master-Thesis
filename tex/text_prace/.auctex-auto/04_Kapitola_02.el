@@ -7,7 +7,8 @@
     "fig:simplex_1"
     "fig:simplex_2"
     "fig:nerve_1"
-    "theorem:Nerve theorem")
+    "theorem:Nerve theorem"
+    "fig:CechVR")
    (LaTeX-add-environments
     "definition"
     "theorem"

@@ -79,7 +79,6 @@ Given any open cover of a topological space, we are able to construct a simplici
   Given a finite collection of sets $\mathfrak{U} = \{U_{\alpha}\}_{\alpha \in A}$, we define the \textit{nerve} of the set $\mathfrak{U}$ to be the simplicial complex $N(\mathfrak{U})$, whose vertex set is the index set $A$, and where a subset $\{\alpha_{0}, \ldots, \alpha_{k}\} \subseteq A$ spans a $k$-simplex in $N(\mathfrak{U})$ if and only if $U_{\alpha_{0}} \cap \ldots \cap U_{\alpha_{k}} \ne \emptyset$.
 \end{definition}
 
-
 \begin{figure}[h!]
   \centering
   \includegraphics[width=10cm, height=8cm]{nerve_1.pdf}
@@ -109,4 +108,20 @@ One can easily deduce that if $M$ happens to be a Euclidean metric space, by The
   Let $(P,d)$ be a finite metric space. Given a real $r>0$, the Vietoris-Rips (VR for short) complex is the abstract simplicial complex $\mathbb{VR}^{r}(P)$, where a simplex $\sigma \in \mathbb{VR}^{r}(P)$, if and only if $d(p,q) \leq 2r$ for every pair of vertices of $\sigma$.
 \end{definition}
 
-For an interactive visualization of the two, the reader may want to access the following sites - \cite{smajhiVietorisx2013RipsComplex} and \cite{saulnechComplex}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=8cm, height=4cm]{CechVR.pdf}
+  \caption{On the left, the VR complex of three pairwise intersecting triangles. On the right, the corresponding Čech complex.}
+  \label{fig:CechVR}
+\end{figure}
+
+A simple example, where we can see the difference between the Čech and VR complex can be seen on \ref{fig:CechVR}. For a interactive visualization of the two, the reader may want to access the following sites - \cite{smajhiVietorisx2013RipsComplex} and \cite{saulnechComplex}. With the movement of the sliders there, the reader is introduced to another important concept that we will make use of - changing the radius $r$ and constructing a growing sequence of either Čech or VR complexes.
+
+Nevertheless, we don't have to worry too much about the differences between the two, given the following result.
+
+\begin{theorem}
+  Let $P$ be a finite subset of a metric space $(M,d)$. Then
+  \begin{equation}
+    \mathbb{C}^{r}(P) \subseteq \mathbb{V}^{r}(P) \subseteq \mathbb{C}^{2r}(P).
+  \end{equation}
+\end{theorem}
