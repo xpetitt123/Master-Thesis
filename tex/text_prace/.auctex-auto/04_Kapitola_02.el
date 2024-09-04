@@ -8,7 +8,8 @@
     "fig:simplex_2"
     "fig:nerve_1"
     "theorem:Nerve theorem"
-    "fig:CechVR")
+    "fig:CechVR"
+    "fig:sizeofVR")
    (LaTeX-add-environments
     "definition"
     "theorem"

@@ -102,7 +102,7 @@ For those interested in a proof of this statement, see \cite{Borsuk1948OnTI} for
   \end{equation*}
 \end{definition}
 
-One can easily deduce that if $M$ happens to be a Euclidean metric space, by Theorem~\ref{theorem:Nerve theorem}, the Čech complex will be homotopy equivalent to the space of union of the balls. The Čech complex has nice theoretical properties but the one predominantly implemented in most software packages is the Vietoris-Rips complex bellow.
+One can easily deduce that if $M$ happens to be a Euclidean metric space, according to Theorem~\ref{theorem:Nerve theorem}, the Čech complex will be homotopy equivalent to the space of union of the balls. The Čech complex has nice theoretical properties, but the one predominantly implemented in most software packages is the Vietoris-Rips complex bellow.
 
 \begin{definition}[Vietoris-Rips complex]
   Let $(P,d)$ be a finite metric space. Given a real $r>0$, the Vietoris-Rips (VR for short) complex is the abstract simplicial complex $\mathbb{VR}^{r}(P)$, where a simplex $\sigma \in \mathbb{VR}^{r}(P)$, if and only if $d(p,q) \leq 2r$ for every pair of vertices of $\sigma$.
@@ -115,7 +115,7 @@ One can easily deduce that if $M$ happens to be a Euclidean metric space, by The
   \label{fig:CechVR}
 \end{figure}
 
-A simple example, where we can see the difference between the Čech and VR complex can be seen on \ref{fig:CechVR}. For a interactive visualization of the two, the reader may want to access the following sites - \cite{smajhiVietorisx2013RipsComplex} and \cite{saulnechComplex}. With the movement of the sliders there, the reader is introduced to another important concept that we will make use of - changing the radius $r$ and constructing a growing sequence of either Čech or VR complexes.
+A simple example, where we can see the difference between the Čech and VR complex can be seen on \ref{fig:CechVR}. For an interactive visualization of the two, the reader may want to access the following sites - \cite{smajhiVietorisx2013RipsComplex} and \cite{saulnechComplex}. With the movement of the sliders there, the reader is introduced to another important concept that we will make use of - changing the radius $r$ and constructing a growing sequence of either Čech or VR complexes.
 
 Nevertheless, we don't have to worry too much about the differences between the two, given the following result.
 
@@ -125,3 +125,22 @@ Nevertheless, we don't have to worry too much about the differences between the 
     \mathbb{C}^{r}(P) \subseteq \mathbb{V}^{r}(P) \subseteq \mathbb{C}^{2r}(P).
   \end{equation}
 \end{theorem}
+
+\section{Sparse complexes}
+
+While the VR complex is the one you will usually encounter in most talks about TDA, it has a size problem. More often than not, both the Čech and VR complexes grow too large, even in low dimensions. A VR complex constructed out of a few thousand points can easily have millions of triangles. A short example of this behaviour can be seen in \ref{fig:sizeofVR}. As such, sometimes it is computationally less expensive to use more sparse alternatives instead. \footnote{Technically, the graph is based on the Rips filtration, a term we'll see in the future although it doesn't change the point presented here.}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=8cm, height=8cm]{sizeofVR.pdf}
+  \caption{An illustration of the growth of the VR complex when we increase the number of sampled points.}
+  \label{fig:sizeofVR}
+\end{figure}
+
+\subsection{Delaunay complex}
+
+This complex is usually used in various applications, such as mesh generation or 3D triangulation (for example, see \href{https://doc.cgal.org/latest/Manual/packages.html#PartTriangulationsAndDelaunayTriangulations}{the following}). However, it remains computationally expensive in dimensions greater than 3, and other complexes are preferred instead.
+
+\begin{definition}[Delaunay complex]
+Let $P$ be a finite point set in $R^{n}$. A $k$-simplex $\sigma$ is called \textit{Delaunay}, if its vertices are in P and there is an open $n$-ball whose boundary contains the boundary of this ball. A \textit{Delaunay complex} of $P$, denoted by Del $P$, is the simplicial complex with vertices in $P$, in which every simplex is Delaunay and $\vert$ Del $P \vert$ coincides with the convex hull of $P$.
+\end{definition}
