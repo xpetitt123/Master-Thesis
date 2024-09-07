@@ -8,6 +8,7 @@
     "rabadan2019topological"
     "yu2017ggtree"
     "Borsuk1948OnTI"
+    "chazelle1993optimal"
     "smajhiVietorisx2013RipsComplex"
     "saulnechComplex"))
  '(or :bibtex :latex))

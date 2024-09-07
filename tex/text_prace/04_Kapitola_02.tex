@@ -144,3 +144,33 @@ This complex is usually used in various applications, such as mesh generation or
 \begin{definition}[Delaunay complex]
 Let $P$ be a finite point set in $R^{n}$. A $k$-simplex $\sigma$ is called \textit{Delaunay}, if its vertices are in P and there is an open $n$-ball whose boundary contains the boundary of this ball. A \textit{Delaunay complex} of $P$, denoted by Del $P$, is the simplicial complex with vertices in $P$, in which every simplex is Delaunay and $\vert$ Del $P \vert$ coincides with the convex hull of $P$.
 \end{definition}
+
+The Delaunay complex is dual to another construction that you may or may not encounter in the wild - the Voronoi diagram.
+
+\begin{definition}[Voronoi diagram]
+  Given a finite point set $P \subset \mathbb{R}^{n}$ in generic position, the Voronoi diagram Vor($P$) of $P$ is the tessellation of the embedding space $\mathbb{R}^{n}$ into convex cells $V_{p}$ for every $p \in P$ where
+  \begin{equation*}
+    V_{p} = \{x \in \mathbb{R}^{n} \: \vert \: d(x,p) \leq d(x,q), \forall q \in P\}.
+  \end{equation*}
+  Additionally, a $k$-face of Vor($P$) is the intersection of $(d-k+1)$ Voronoi cells.
+\end{definition}
+
+The duality between a Delaunay complex and Voronoi diagram is better expressed through this little theorem.
+\begin{theorem}
+  For $P \in \subset \mathbb{R}^{n}$, Del($P$) is the nerve of the set of Voronoi cells $\{V_{p}\}_{p \in P}$, which is a closed cover of $\mathbb{R}^{n}$.
+\end{theorem}
+More specifically, a Delaunay $k$-simplex in Del($P$) is dual to a Voronoi $(d-k)$-face in Vor($P$).
+
+The reasons why Delaunay complexes are popular in dimensions $<3$ are the following
+\begin{theorem}
+  A triangulation of a point set $P \subset \mathbb{R}^{n}$ is a geometric simplicial complex whose vertex set is $P$ and whose simplices tessellate the convex hull of $P$. Among all triangulations of a point set $P \subset \mathbb{R}^{n}$, Del($P$) achieves the following:
+  \begin{enumerate}
+    \item In $\mathbb{R}^{2}$, Del($P$) maximizes the minimum angle of triangles in the complex.
+    \item In $\mathbb{R}^{2}$, Del($P$) minimizes the largest circumcircle for triangles in the complex.
+    \item For a simplex in Del($P$), let its min-ball be the smallest ball that contains the simplex in it. In all dimensions, Del($P$) minimizes the largest min-ball.
+  \end{enumerate}
+\end{theorem}
+Unfortunately, the size of a Delaunay complex is $O(n^{\lceil d/2 \rceil})$, with the same cost in computation (see \cite{chazelle1993optimal}).
+
+\subsection{Alpha complex}
+Alpha complexes are parametrized subcomplexes of the Delaunay complex by some real $\alpha \geq 0$.
