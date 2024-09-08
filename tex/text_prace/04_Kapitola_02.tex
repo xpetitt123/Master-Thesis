@@ -59,7 +59,8 @@ One could also dually define a $k$-coface, cofacet and its codimension but it's 
   \label{fig:simplex_2}
 \end{figure}
 
-A geometric simplicial complex $K$ in $\mathbb{R}^{n}$ is called a \textit{geometric realization} of an abstract simplicial complex $K'$, if and only if there is an embedding $e: V(K') \to \mathbb{R}^{n}$, that takes every $k$-simplex $\{v_{0}, \ldots, v_{k}\}$ in $K'$ to a $k$-simplex in $K$ that is the convex hull of $e(v_{0}), \ldots, e(v_{k})$. An example is shown in \ref{fig:simplex_2} as this is the geometric realization of the abstract complex with vertices $A,B,C,D,$ edges $\{A,B\}, \{A,C\}, \{B,C\}, \{C,D\}$ and 1 triangle $\{A,B,C\}$.
+A geometric simplicial complex $K$ in $\mathbb{R}^{n}$ is called a \textit{geometric realization} of an abstract simplicial complex $K'$, if and only if there is an embedding $e: V(K') \to \mathbb{R}^{n}$, that takes every $k$-simplex $\{v_{0}, \ldots, v_{k}\}$ in $K'$ to a $k$-simplex in $K$ that is the convex hull of $e(v_{0}), \ldots, e(v_{k})$. An example is shown in \ref{fig:simplex_2} as this is the geometric realization of the abstract complex with vertices $A,B,C,D,$ edges $\{A,B\}, \{A,C\}$,
+$\{B,C\}, \{C,D\}$ and 1 triangle $\{A,B,C\}$.
 
 \begin{definition}[Underlying space]
   The \textit{underlying space} of an abstract simplicial complex $K$, denoted by $|K|$, is the pointwise union of its simplices in its geometrical realization, i.e., $|K| = \bigcup_{\sigma \in K}|\sigma|$, where $|\sigma|$ is the restriction of this realization on $\sigma$. If $K$ is geometric, then its geometric realization can be taken as itself.
@@ -145,7 +146,14 @@ This complex is usually used in various applications, such as mesh generation or
 Let $P$ be a finite point set in $R^{n}$. A $k$-simplex $\sigma$ is called \textit{Delaunay}, if its vertices are in P and there is an open $n$-ball whose boundary contains the boundary of this ball. A \textit{Delaunay complex} of $P$, denoted by Del $P$, is the simplicial complex with vertices in $P$, in which every simplex is Delaunay and $\vert$ Del $P \vert$ coincides with the convex hull of $P$.
 \end{definition}
 
-The Delaunay complex is dual to another construction that you may or may not encounter in the wild - the Voronoi diagram.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=8cm]{Delaunay.pdf}
+  \caption{Delaunay complex on a sample of randomly generated points.}
+  \label{fig:Delaunay}
+\end{figure}
+
+An example of a Delaunay complex can be seen on \ref{fig:Delaunay}. The Delaunay complex is dual to another construction that you may or may not encounter in the wild - the Voronoi diagram.
 
 \begin{definition}[Voronoi diagram]
   Given a finite point set $P \subset \mathbb{R}^{n}$ in generic position, the Voronoi diagram Vor($P$) of $P$ is the tessellation of the embedding space $\mathbb{R}^{n}$ into convex cells $V_{p}$ for every $p \in P$ where
@@ -159,9 +167,17 @@ The duality between a Delaunay complex and Voronoi diagram is better expressed t
 \begin{theorem}
   For $P \in \subset \mathbb{R}^{n}$, Del($P$) is the nerve of the set of Voronoi cells $\{V_{p}\}_{p \in P}$, which is a closed cover of $\mathbb{R}^{n}$.
 \end{theorem}
-More specifically, a Delaunay $k$-simplex in Del($P$) is dual to a Voronoi $(d-k)$-face in Vor($P$).
-
+More specifically, a Delaunay $k$-simplex in Del($P$) is dual to a Voronoi $(d-k)$-face in Vor($P$). That duality can be seen on \ref{fig:Voronoi}.
+\footnote{Both \ref{fig:Delaunay} and \ref{fig:Voronoi} were generated using \cite{2020SciPy-NMeth}.}
 The reasons why Delaunay complexes are popular in dimensions $<3$ are the following
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=8cm]{Voronoi.pdf}
+  \caption{Voronoi diagram on a sample of randomly generated points dual to \ref{fig:Delaunay}.}
+  \label{fig:Voronoi}
+\end{figure}
+
 \begin{theorem}
   A triangulation of a point set $P \subset \mathbb{R}^{n}$ is a geometric simplicial complex whose vertex set is $P$ and whose simplices tessellate the convex hull of $P$. Among all triangulations of a point set $P \subset \mathbb{R}^{n}$, Del($P$) achieves the following:
   \begin{enumerate}
@@ -173,4 +189,32 @@ The reasons why Delaunay complexes are popular in dimensions $<3$ are the follow
 Unfortunately, the size of a Delaunay complex is $O(n^{\lceil d/2 \rceil})$, with the same cost in computation (see \cite{chazelle1993optimal}).
 
 \subsection{Alpha complex}
-Alpha complexes are parametrized subcomplexes of the Delaunay complex by some real $\alpha \geq 0$.
+Alpha complexes are parametrized subcomplexes of the Delaunay complex by some real $\alpha \geq 0$. More specifically, for a given point set $P$ and some $\alpha \geq 0$, an alpha complex consists of all simplices in Del($P$) that have a circumscribing ball of radius at most $\alpha$. An alternative but equivalent definition follows like this - for each point $p \in P$, let $B(p,\alpha)$ be the closed ball of radius $\alpha$ centered at $p$. Consider the closed set $D^{\alpha}_{p}$ be defined as:
+\begin{equation*}
+  D^{\alpha}_{p} = \{x \in B(p,\alpha) \: \vert \: d(x,p) \leq d(x,q), \forall q \in P\}.
+\end{equation*}
+Then the alpha complex $\text{Del}^{\alpha}(P)$ is the nerve of the closed sets $\{D^{\alpha}_{p}\}_{p \in P}$.
+We can use the duality of the Delaunay complex to introduce a third definition - an alpha complex contains a $k$-simplex $\sigma = \{p_{0}, \ldots, p_{k}\}$, if and only if $\bigcup_{p \in P}B(p,\alpha)$ meets the intersection of Voronoi cells $V_{p_{0}} \cup \ldots \cup V_{p_{k}}$.
+
+\subsection{Graph induced complex}
+Lastly, we present here another sparse complex that instead uses subsampling to tackle the size problem that the VR or Čech complexes have, while capturing the topology and even the geometry of the point cloud more efficiently. This construction was introduced in \cite{dey2013graphinducedcomplexpoint}.
+
+\begin{definition}[Graph induced complex]
+  Let $(P,d)$ be a metric space, where $P$ is a finite set and $G(P)$ be a graph with vertices in $P$. Let $Q \subseteq P$ and let $\nu : P \to Q$ the mapping that sets $\nu(p)$ to be any point in argmin $d(p,Q)$. The \textit{graph induced complex} (GIC) $\mathbb{G}(G(P),Q,d)$ is the simplicial complex containing a $k$-simplex $\sigma=\{q_{1}, \ldots, q_{k+1}\}$, $q_{i} \in Q$, if and only if there exists a $(k+1)$-clique in $G(P)$ spanned by vertices $\{p_{1}, \ldots, p_{k+1}\} \subseteq P$ so that $q_{i} \in \nu(p_{i})$ for each $i \in \{1,2, \ldots, k+1\}$.
+\end{definition}
+
+For the input graph $G(P)$ we may consider the neighborhood graph $G^{\alpha}(P) := (P,E)$, where there is an edge $\{p,q\} \in E$, if and only if $d(p,q) \leq \alpha$. If $P$ is sufficiently dense, then $G^{\alpha}(P)$ should capture the local neighborhoods of the sample points.
+
+In the following, the quality of the sampled space after subsampling with $Q$ will be quantified with a parameter $\delta > 0$.
+
+\begin{definition}
+  A subset $Q \subseteq P$ is called a $\delta$-sample of a metric space $(P,d)$, if the following condition holds:
+  \begin{itemize}
+          \item $\forall p \in P$, there exists a $q \in Q$, so that $d(p,q) \leq \delta$.
+  \end{itemize}
+  It is called $\delta$-sparse, if the previous and next condition holds together:
+ \begin{itemize}
+   \item $\forall (q,r) \in Q \times Q$ with $q \neq r$, $d(q,r) \geq \delta$.
+  \end{itemize}
+\end{definition}
+The metric itself is usually taken to be either the Euclidean metric or the graph metric $d_{G}$ derived from the input graph $G(P)$. In those two cases we have several existence and inference results involving the GIC; see \cite{dey2013graphinducedcomplexpoint} again for that. The paper also includes an empirical comparison of the GIC with the VR complex together with another sparse complex, the Witness complex, which we won't discuss in this thesis. The simulations show that the GIC can have a size similar to the Witness complex (which is usually smaller but also fails to capture the topology more because of it) and maintains the accuracy of the Rips complex.

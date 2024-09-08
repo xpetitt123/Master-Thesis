@@ -9,7 +9,9 @@
     "fig:nerve_1"
     "theorem:Nerve theorem"
     "fig:CechVR"
-    "fig:sizeofVR")
+    "fig:sizeofVR"
+    "fig:Delaunay"
+    "fig:Voronoi")
    (LaTeX-add-environments
     "definition"
     "theorem"
