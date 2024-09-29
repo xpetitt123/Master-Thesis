@@ -6,6 +6,7 @@
    (LaTeX-add-bibitems
     "dey2022computational"
     "rabadan2019topological"
+    "hatcher2002algebraic"
     "yu2017ggtree"
     "Borsuk1948OnTI"
     "chazelle1993optimal"

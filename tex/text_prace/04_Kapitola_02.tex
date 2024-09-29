@@ -112,7 +112,7 @@ One can easily deduce that if $M$ happens to be a Euclidean metric space, accord
 \begin{figure}[h!]
   \centering
   \includegraphics[width=8cm, height=4cm]{CechVR.pdf}
-  \caption{On the left, the VR complex of three pairwise intersecting triangles. On the right, the corresponding Čech complex.}
+  \caption{On the left, the VR complex of three pairwise intersecting circles. On the right, the corresponding Čech complex.}
   \label{fig:CechVR}
 \end{figure}
 
@@ -212,9 +212,78 @@ In the following, the quality of the sampled space after subsampling with $Q$ wi
   \begin{itemize}
           \item $\forall p \in P$, there exists a $q \in Q$, so that $d(p,q) \leq \delta$.
   \end{itemize}
-  It is called $\delta$-sparse, if the previous and next condition holds together:
+  It is called $\delta$-sparse, if the previous and next condition hold together:
  \begin{itemize}
    \item $\forall (q,r) \in Q \times Q$ with $q \neq r$, $d(q,r) \geq \delta$.
   \end{itemize}
 \end{definition}
 The metric itself is usually taken to be either the Euclidean metric or the graph metric $d_{G}$ derived from the input graph $G(P)$. In those two cases we have several existence and inference results involving the GIC; see \cite{dey2013graphinducedcomplexpoint} again for that. The paper also includes an empirical comparison of the GIC with the VR complex together with another sparse complex, the Witness complex, which we won't discuss in this thesis. The simulations show that the GIC can have a size similar to the Witness complex (which is usually smaller but also fails to capture the topology more because of it) and maintains the accuracy of the Rips complex.
+
+\section{Chains, cycles and homology}
+We make the daring assumption that the reader has some knowledge of algebra, group theory and topology in order to understand the next part. If not, maybe an appendix will be written in the future, who knows?
+
+\subsection{Chains}
+If $K$ is a simplicial $k$-complex with a $m_{p}$ number of $p$-simplices, then a $p$-chain $c$ in $K$ is simply the formal sum of $p$-simplices multiplied by some coefficients from a ring $R$. Addition of $p$-chains is defined in the following natural way: if $c = \sum \alpha_{i}\sigma_{i}$ and $c' = \sum \alpha_{i}'\sigma_{i},$ then
+
+\begin{equation*}
+  c + c' = \sum_{i=1}^{m_{p}} (\alpha_{i} + \alpha_{i}')\sigma_{i}.
+\end{equation*}
+
+Generally speaking, the multiplication by coefficients from $R$ turn chains into an $R$-module. In the context of this work, we will only consider coefficients coming from some field $\boldsymbol{k},$ more specifically from $\boldsymbol{k} = \mathbb{Z}_{2}$. This is computationally convenient because it turns chain addition into, for example in the case of 1-chains,
+
+\begin{equation*}
+  (e_{1} + e_{2} + e_{3}) + (e_{1} + e_{2} + e_{4}) = e_{3} + e_{4},
+\end{equation*}
+
+since in $\mathbb{Z}_{2}$ we have that $0 + 0 = 0, 0 + 1 = 1$ and $1+1 = 0$. This also implies that
+
+\begin{equation*}
+  c + c = \sum_{i=1}^{m_{p}} = (\alpha_{i} + \alpha_{i})\sigma_{i} = 0\sigma_{i} = 0,
+\end{equation*}
+
+i.e., $p$-chains with $\mathbb{Z}_{2}$ addition form a group, the identity here is the chain $0 = \sum_{i=1}^{m_{p}}0\sigma_{i}$, and the inverse of $c$ is $c$ itself due to the above. We call this group the \textit{$p$-th chain group} $C_{p}(K)$.
+
+\subsection{Boundary operator and cycles}
+Since our goal is to study the changes in topology across different scales, we need a way to connect higher dimensional chains with lower dimensional ones. For that, we introduce the boundary operator: Given a $p$-simplex $\sigma = \{v_{0}, \ldots, v_{p}\}$, let
+
+\begin{equation*}
+  \partial_{p}\sigma = \sum_{i=0}^{p}\{v_{0}, \ldots, \hat{v}_{i}, \ldots, v_{p}\},
+\end{equation*}
+where $\hat{v}_{i}$ means that this vertex is omitted. Extending this definition to a $p$-chain, we get the boundary operator homomorphism $\partial_{p}: C_{p} \to C_{p-1}$ that returns a $(p-1)$-chain when given a $p$-chain in the following manner
+
+\begin{equation*}
+  \partial_{p}c = \sum_{i=1}^{m_{p}}\alpha_{i}(\partial_{p}\sigma_{i}), \: \text{for} \: c = \sum_{i=1}^{m_{p}}\alpha_{i}\sigma_{i} \in C_{p}.
+\end{equation*}
+
+A couple edge cases have to be considered. For $p = 0$, we get that $\partial_{0}c = \emptyset$. The chain group $C_{-1}$ has only one element $0$. And if $K$ is a $k$-complex, then $C_{p} = 0$ for $p>k$. In general, most textbooks and articles will present the form of the boundary operator as follows:
+
+\begin{equation*}
+  \partial_{p}\sigma = \sum_{i=0}^{p}(-1)^{i} \{v_{0}, \ldots, \hat{v}_{i}, \ldots, v_{p}\},
+\end{equation*}
+
+which differs from our choice by the factor of $(-1)^{i}$. But remember that we're working in $\mathbb{Z}_{2}$, where the multiplicative factor becomes unnecessary due to the addition laws. As such, the boundary operator applied to the $2$-chain $\{a,b,c\}$ gives us
+
+\begin{equation*}
+  \partial_{2}(abc) = ab + bc + ca,
+\end{equation*}
+instead of $ab - bc + ca$ as you may encounter in other texts.
+
+Applying the boundary operator twice in a row turns out to produce the empty chain.
+
+\begin{lemma}
+  For $p>0$ and any $p$-chain $c$, $\partial_{p-1}\circ\partial_{p}(c) = 0$.
+\end{lemma}
+
+\begin{proof}
+Trivial; can be found in any textbook about algebraic topology, for example \cite{hatcher2002algebraic}.
+\end{proof}
+
+By extending the boundary operator now to chain groups, we can construct a sequence called a \textit{chain complex}:
+
+\begin{figure}[h]
+\begin{tikzcd}
+0 = C_{k+1} \arrow[r, "\partial_{k+1}"] & C_{k} \arrow[r, "\partial_{k}"] & \cdots \arrow[r] & \cdots \arrow[r] & C_{1} \arrow[r, "\partial_{1}"] & C_{0} \arrow[r, "\partial_{0}"] & C_{-1}=0.
+\end{tikzcd}
+\end{figure}
+It can be worthwhile to mention that for $p \geq -1$, each of the $C_{p}$ is a vector space.
+
