@@ -287,3 +287,41 @@ By extending the boundary operator now to chain groups, we can construct a seque
 \end{figure}
 It can be worthwhile to mention that for $p \geq -1$, each of the $C_{p}$ is a vector space.
 
+\subsection{Cycle and boundary groups}
+Just like with the chain groups, we can identify two other natural groups of interests - the \textit{cycle} and \textit{boundary} groups. We start by defining what a cycle is - a $p$-chain $c$ is a $p$-cycle if $\partial c = 0$, i.e., a chain with an empty boundary.
+
+The $p$-cycles form the \textit{$p$-th cycle group} $Z_{p}$ with the same chain addition operation inherited from chain groups. From the above, we can see that ker $\partial_{p} = Z_{p}$.
+
+We saw that after applying the boundary operator to the $2$-chain $\{a,b,c\}$, the result was
+
+\begin{equation*}
+\partial_2(abc) = ab + bc + ca.
+\end{equation*}
+This $1$-chain is a $1$-cycle since
+\begin{equation*}
+\partial_{1}(ab + bc + ca) = (a+b) + (b+c) + (c+a) = 0.
+\end{equation*}
+
+It's not difficult to conclude from this that the boundary of a $p$-chain is a $(p-1)$-cycle. This begs the question - which $(p-1)$-chains can be obtained this way? We call the set of all $(p-1)$-chains that are the result of an application of the boundary operator $\partial_{p}$ on $p$-chains the \textit{$(p-1)$-th boundary group} $B_{p-1} = \partial_{p}(C_{p})$. This is equivalent to saying that $B_{p-1} = \text{im} \: \partial_{p}$. It is left as an exercise for the reader to check that $\partial_{p-1}B_{p-1} = 0$ for all $p>0$, which implies that $B_{p-1} \subseteq Z_{p-1}$.
+
+\begin{theorem}
+  For a simplicial $k$-complex,
+  \begin{itemize}
+    \item $C_{0} = Z_{0}$ and $B_{k} = 0$.
+    \item For $p \geq 0$, $B_{p} \subseteq Z_{p} \subseteq C_{p}$.
+    \item Both $B_{p}$ and $Z_{p}$ are vector spaces.
+  \end{itemize}
+\end{theorem}
+
+\subsection{Homology}
+
+We can finally define the most important notion in this work - homology. Homology is primarily used to quantify and measure the failure of a cycle to be a boundary by putting cycles that differ by a boundary in the same equivalence class.
+
+\begin{definition}[Homology group]
+  For $p \geq 0$, the \textit{$p$-th homology group} is the quotient group $H_{p} = Z_{p} / B_{p}$. Since we're using $\mathbb{Z}_{2}$ as our coefficient field, $H_{p}$ is a vector space, where we call its dimension the $p$-th Betti number
+  \begin{equation*}
+    \beta_{p} := \text{dim} \: H_{p}.
+  \end{equation*}
+\end{definition}
+
+The equivalence classes are called \textit{homology classes} in this context. Two cycles $c, c' \in Z_{p}$ are in the same homology class, iff $c \in c' + B_{p}$, which under $\mathbb{Z}_{2}$ coefficients translates to $c + c' \in B_{p}$.
