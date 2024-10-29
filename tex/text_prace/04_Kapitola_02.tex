@@ -325,3 +325,18 @@ We can finally define the most important notion in this work - homology. Homolog
 \end{definition}
 
 The equivalence classes are called \textit{homology classes} in this context. Two cycles $c, c' \in Z_{p}$ are in the same homology class, iff $c \in c' + B_{p}$, which under $\mathbb{Z}_{2}$ coefficients translates to $c + c' \in B_{p}$.
+
+We have the following useful statements with our choice of field coefficients:
+
+\begin{theorem}
+For $p \geq 0$,
+  \begin{itemize}
+    \item $H_{P}$ is a vector space when defined over $\mathbb{Z}_{2}$.
+    \item The Betti number, $\beta_{p} = \text{dim}\:H_{p}$, is given by $\beta_{p} = \text{dim}\:Z_{p} - \text{dim}\:B_{p}$.
+    \item There are exactly $2^{\beta_{p}}$ homology classes in $H_{p}$ when defined over $\mathbb{Z}_{2}$.
+  \end{itemize}
+\end{theorem}
+
+Generally speaking, $H_{p}$ isn't always a vector space over $\mathbb{Z}$ as there might be torsion subgroups.
+
+Now what is homology useful for, in the context of statistics and data analysis? Homology, more specifically Betti numbers, tells us the number of $n$-dimensional ``holes'' or cavities in our data. This turns out to be an strong, invariant characteristic of the dataset that we work with and allows us to discover high-dimensional structures that normally we wouldn't be able to notice.
