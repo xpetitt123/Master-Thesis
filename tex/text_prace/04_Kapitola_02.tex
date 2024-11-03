@@ -339,4 +339,131 @@ For $p \geq 0$,
 
 Generally speaking, $H_{p}$ isn't always a vector space over $\mathbb{Z}$ as there might be torsion subgroups.
 
-Now what is homology useful for, in the context of statistics and data analysis? Homology, more specifically Betti numbers, tells us the number of $n$-dimensional ``holes'' or cavities in our data. This turns out to be an strong, invariant characteristic of the dataset that we work with and allows us to discover high-dimensional structures that normally we wouldn't be able to notice.
+Now what is homology useful for, in the context of statistics and data analysis? The homology group $H_{n}(X)$ of some topological space, more specifically its Betti number, tells us the number of ``holes'' with a $n$-dimensional boundary in our data. For example, a $0$-dimensional hole is merely the gap between any two components. It implies then that $H_{0}(X)$ desribes the path-connected components in $X$. This turns out to be an strong, invariant characteristic of the dataset that we work with and allows us to discover high-dimensional structures that normally we wouldn't be able to notice.
+
+A few informal examples may be useful to the reader; the proofs of which use more complicated techniques such as the Mayer-Vietoris sequence and so they will be omitted since this isn't an algebraic topology textbook. It isn't hard to see that $S^{1}$, the one-dimensional sphere, has only 1 path-connected component and 1 one-dimensional hole in the middle. We can then describe its homology groups as
+
+\begin{equation*}
+  H_{k}(S^{1}) = \begin{cases}
+    \mathbb{Z} \qquad k = 0,1 \\
+    \{0\} \quad \text{otherwise}
+                \end{cases}
+\end{equation*}
+
+The corresponding Betti numbers here would be $\beta_{0} = \beta_{1} = 1$ and $\beta_{k} = 0, \forall k > 1$. This aligns with our intuition that a circle has a hole in the middle, one boundary line trapping said hole and no other high-dimensional structure. The argument can be extended for the general $n$-sphere to produce
+
+\begin{equation*}
+  H_{k}(S^{n}) = \begin{cases}
+    \mathbb{Z} \qquad k = 0,n \\
+    \{0\} \quad \text{otherwise}
+                \end{cases}
+\end{equation*}
+
+With a little more effort and imagination, it isn't hard to see that the homology groups for the $2$-dimensional torus $T^{2}$ are
+
+\begin{equation*}
+  H_{k}(T^{2}) = \begin{cases}
+    \mathbb{Z} \qquad \qquad k = 0,2 \\
+    \mathbb{Z} \times \mathbb{Z} \qquad k = 1 \\
+    \{0\} \qquad \text{otherwise}
+                \end{cases}
+\end{equation*}
+
+where the two 1-dimensional holes describe the circles around the width and length of the torus. Once again, in general the situation is
+
+\begin{equation*}
+  H_{k}(T^{n}) = \begin{cases}
+    \mathbb{Z}^{\binom{n}{k}} \qquad 0 \leq k \leq n  \\
+    \{0\} \qquad \text{otherwise}
+                \end{cases}
+\end{equation*}
+
+\subsection{Induced homology}
+To have a better understanding of homology, we have to know how it behaves if we move from one topological space to another. In our case, we will look into simplicial complexes and simplicial maps between them since we can only ever approximate a continuous space. Simplicial maps take cycles to cycles and boundaries to boundaries, which suggests the following definition.
+
+\begin{definition}[Chain map]
+  Let $f:K_{1} \to K_{2}$ be a simplicial map. The chain map $f_{\#}: C_{p}(K_{1}) \to C_{p}(K_{2})$ corresponding to $f$ is defined as follows. If $c = \sum \alpha_{i}\sigma_{i}$ is a $p$-chain, then $f_{\#}(c) = \sum \alpha_{i} \tau_{i}$, where
+  \begin{equation*}
+    \tau_{i} =
+    \begin{cases}
+      f(\sigma_{i}), \quad \text{if} \: f(\sigma_{i}) \: \text{is a $p$-simplex in} \: K_{2} \\
+      0 \qquad \quad \text{otherwise}.
+    \end{cases}
+  \end{equation*}
+\end{definition}
+
+\begin{lemma}
+Let $f: K_{1} \to K_{2}$ a simplicial map. Let $\partial_{p}^{K_{1}}$ and $\partial_{p}^{K_{2}}$ denote the boundary homomorphisms in dimension $p \geq 0$. Then, the induced chain maps commute with the boundary homomorphisms, i.e., $f_{\#} \circ \partial_{p}^{K_{1}} = \partial_{p}^{K_{2}} \circ f_{\#}$.
+\end{lemma}
+
+This result can be better expressed via the commutativity of the diagram below:
+
+\begin{figure}[h]
+\centering
+\begin{tikzcd}
+C_{p}(K_{1}) \arrow[rr, "f_{\#}"] \arrow[dd, "\partial_{p}^{K_{1}}"] &  & C_{p}(K_{2}) \arrow[dd, "\partial_{p}^{K_{2}}"] \\
+                                                                     &  &                                                 \\
+C_{p-1}(K_{1}) \arrow[rr, "f_{\#}"']                                 &  & C_{p-1}(K_{2})
+\end{tikzcd}
+\end{figure}
+
+Essentially, if we start from the top left, the path that we choose doesn't matter because we'll reach the same chain in the end. From the above, since $B_{p}(K_{1}) \subseteq Z_{p}(K_{1})$, we see that $f_{\#}(B_{p}(K_{1})) \subseteq f_{\#}(Z_{p}(K_{1}))$, which allows us to have a well defined induced map in the quotient space
+
+\begin{equation*}
+  f_{*}(Z_{p}(K_{1})/B_{p}(K_{1})) := f_{\#}(Z_{p}(K_{1})) / f_{\#}(B_{p}(K_{1})).
+\end{equation*}
+
+From the commutativity of the diagram, $f_{\#}(Z_{p}(K_{1})) \subseteq Z_{p}(K_{2})$, likewise for $B_{p}(K_{1})$, which then induces a homomorphism between the homology groups
+
+\begin{equation*}
+  f_{*}: Z_{p}(K_{1})/B_{p}(K_{1}) \to Z_{p}(K_{2})/B_{p}(K_{2}),
+\end{equation*}
+or $f_{*}: H_{p}(K_{1}) \to H_{p}(K_{2})$. We can now state the desired result.
+
+\begin{lemma}
+  For two contiguous maps $f_{1}: K_{1} \to K_{2}$ and $f_{2}: K_{1} \to K_{2}$, the induced maps $f_{1_{*}}: H_{p}(K_{1}) \to H_{p}(K_{2})$ and $f_{2_{*}}: H_{p}(K_{1}) \to H_{p}(K_{2})$ are equal.
+\end{lemma}
+
+\subsection{Cohomology}
+Cohomology is the dual concept of homology. While in general cohomology has a richer structure and is a finer invariant than homology, in our case we won't explore the differences between the two as most of the popular software uses homology for their calculations. As usual, we will work with coefficients in $\mathbb{Z}_{2}$.
+
+A $p$-cochain is a homomorphism $\phi: C_{p} \to \mathbb{Z}_{2}$ from the chain group to the coefficient ring $\mathbb{Z}_{2}$. The cochain is determined by its values on every $p$-simplex $\sigma \in K$, i.e., a $p$-chain $c = \sum_{i=1}^{m_{p}}\alpha_{i}\sigma_{i}$ assigns a value
+
+\begin{equation*}
+  \phi(c) = \alpha_{1}\phi(\sigma_{1}) + \ldots + \alpha_{m_{p}}\phi(\sigma_{m_{p}})
+\end{equation*}
+
+that is either $0$ or $1$. It isn't hard to verify that $\phi(c + c') = \phi(c) + \phi(c')$. The cochain that gives the value $1$ to a simplex is called its dual cochain $c^{*}$. $p$-cochains form the cochain group $C^{p}$ dual to $C_{p}$ with addition defined by $(\phi + \phi')(c) = \phi(c) + \phi'(c)$ and scalar multiplication $(\alpha \phi)(c) = \alpha \phi(c)$, where we used $\mathbb{Z}_{2}$ addition and multiplication. Hence, $C^{p}$ is a vector space.
+
+Similarly to chain boundaries, there is the notion of a cochain coboundary $\delta_{p}: C^{p} \to C^{p+1}$. For a $p$-cochain $\phi$, its $(p+1)$-coboundary is given by the homomorphism $\delta \phi: C^{p+1} \to \mathbb{Z}_{2}$ defined as $\delta \phi(c) = \phi(\partial c)$ for any $(p+1)$-chain $c$. Repeated iteration of the $\delta$ operator gives us the sequence
+
+\begin{figure}[h]
+\centering
+\begin{tikzcd}
+0 = C^{-1} \arrow[r, "\delta_{-1}"] & C^{0} \arrow[r, "\delta_{0}"] & \ldots \arrow[r, "\delta_{k-1}"] & C^{k} \arrow[r, "\delta_{k}"] & C^{k+1} = 0.
+\end{tikzcd}
+\end{figure}
+
+$p$-coboundaries form the coboundary group and vector space $B^{p}$ with addition and scalar multiplication being the same as in $C^{p}$. Finally, we only need cocycles to define what the cohomology group is. A $p$-cochain $\phi$ is called a $p$-cocycle if its coboundary $\delta \phi$ is a zero homomorphism. The set of $p$-cocycles forms the group and vector space $Z^{p}$ with the operations induced by $C^{p}$ once again.
+
+The coboundary operator $\delta$ also satisfies the same property as the boundary $\partial$.
+
+\begin{lemma}
+For $p >0$, $\delta_{p} \circ \delta_{p-1} = 0$, which implies $B^{p} \subseteq Z^{p}$.
+\end{lemma}
+
+\begin{definition}[Cohomology group]
+Since $B^{p}$ is a subgroup of $Z^{p}$, the $p$-th cohomology group is the quotient group $Z^{p} / B^{p}$.
+\end{definition}
+
+Just like for the homology groups, a simplicial map $f: K_{1} \to K_{2}$ induces a homomorphism $f^{*}$ between cohomology groups; this time in the \textit{opposite} direction.
+
+\begin{lemma}
+A simplicial map $f: K_{1} \to K_{2}$ induces a homomorphism $f^{*}: H^{p}(K_{2}) \to H^{p}(K_{1})$ for every $p \geq 0$.
+\end{lemma}
+
+\section{Practical questions}
+
+Now that we have a basic rundown of what simplicial complexes and homology are, we can move towards more practical questions. How do we actually compute the homology of an object? What is the available software? And the most important question, since we always have to work with discrete samples from some given space - can we accurately approximate the homology of a space given enough sample points?
+
+\subsection{Calculating homology}
