@@ -14,15 +14,15 @@ The goal of this and the following chapters is to establish and set up the pipel
 This forces us to use different methods to somehow approximate and recover the topology of the ambient space given only a finite set of points. Secondly, we also need to consider the \textit{scale} of the data -- some interesting properties may be more apparent only after we ``zoom'' in closely on them, some may not become apparent at all. All in all, we will construct the following pipeline:
 
 \begin{center}
-\smartdiagram[sequence diagram]{
-  Discrete data, Simplicial complex, Algebraic invariants}
+  \smartdiagram[sequence diagram]{
+    Discrete data, Simplicial complex, Algebraic invariants}
 \end{center}
 
 and repeat this step for all scales at once, effectively measuring the evolution of the algebraic invariants through the changes in the feature scale.
 
 \section{Simplicial complexes}
 \begin{definition}[Simplex]
-For $k \geq 0$, a $k$-simplex $\sigma$ of dimension $k$ in a Euclidean space $\mathbb{R}^{n}$ is the convex hull of a set $P$ of $(k+1)$ affinely independent points in $\mathbb{R}^{n}$. For $0 \leq m \leq k$, an $m$-face of $\sigma$ is an $m$-simplex that is the convex hull of a nonempty subset of $P$. A \textit{proper face} of $\sigma$ is a simplex that is the convex hull of a proper subset of $P$ (any face except $\sigma$). $(k-1)$ faces of $\sigma$ are called \textit{facets} of $\sigma$.
+  For $k \geq 0$, a $k$-simplex $\sigma$ of dimension $k$ in a Euclidean space $\mathbb{R}^{n}$ is the convex hull of a set $P$ of $(k+1)$ affinely independent points in $\mathbb{R}^{n}$. For $0 \leq m \leq k$, an $m$-face of $\sigma$ is an $m$-simplex that is the convex hull of a nonempty subset of $P$. A \textit{proper face} of $\sigma$ is a simplex that is the convex hull of a proper subset of $P$ (any face except $\sigma$). $(k-1)$ faces of $\sigma$ are called \textit{facets} of $\sigma$.
 \end{definition}
 
 Typically, we refer to a $0$-simplex as a \textit{vertex}, a $1$-simplex as an \textit{edge}, a $2$-simplex as a \textit{triangle} and so on. An illustration of those can be seen in \ref{fig:simplex_1}.
@@ -37,8 +37,8 @@ Typically, we refer to a $0$-simplex as a \textit{vertex}, a $1$-simplex as an \
 \begin{definition}[Geometric simplicial complex]
   A \textit{geometric simplicial complex} $K$ is a set with finitely many simplices that satisfy the following:
   \begin{itemize}
-    \item $K$ contains every face of each simplex in $K$.
-    \item For any two simplices $\sigma, \tau \in K$, their intersection $\sigma \cap \tau$ is either empty or a face or both $\sigma$ and $\tau$.
+  \item $K$ contains every face of each simplex in $K$.
+  \item For any two simplices $\sigma, \tau \in K$, their intersection $\sigma \cap \tau$ is either empty or a face or both $\sigma$ and $\tau$.
   \end{itemize}
 \end{definition}
 
@@ -49,7 +49,7 @@ This is also known as a \textit{triangulation}, where the \textit{dimension} $k$
 \end{definition}
 
 \begin{remark}
-One could also dually define a $k$-coface, cofacet and its codimension but it's not terribly important.
+  One could also dually define a $k$-coface, cofacet and its codimension but it's not terribly important.
 \end{remark}
 
 \begin{figure}[h!]
@@ -91,22 +91,22 @@ The following important theorem about nerves tells us when are the nerves ``equi
 
 \begin{theorem}[Nerve theorem]
   Given a finite cover $\mathfrak{U}$ (open or closed) of a metric space $M$, the underlying space $|N(\mathfrak{U})|$ is homotopy equivalent to $M$, if every non-empty intersection $\cap_{i=0}^{k}U_{\alpha_{i}}$ of cover elements is homotopy equivalent to a point, i.e., contractible.
-\label{theorem:Nerve theorem}
+  \label{theorem:Nerve theorem}
 \end{theorem}
 
 For those interested in a proof of this statement, see \cite{Borsuk1948OnTI} for example. From this we can see, that the nerve is homotopy equivalent to $M$ in \ref{fig:nerve_1}. Now we can finally present the first construction of an abstract simplicial complex using the concept of a nerve, given a finite subset $P$ of a metric space $(M,d)$.
 
 \begin{definition}[Čech complex]
-  Let $(M,d)$ be a metric space and $P$ a finite subset of it. Given a real $r > 0$, the Čech complex $\mathbb{C}^{r}(P)$ is defined to be the nerve of the set $\{B(p_{i},r)\}$, where
+  Let $(M,d)$ be a metric space and $P$ a finite subset of it. Given a real $\varepsilon > 0$, the Čech complex $\mathbb{C}^{\varepsilon}(P)$ is defined to be the nerve of the set $\{B(p_{i},\varepsilon)\}$, where
   \begin{equation*}
-    B(p_{i},r) = \{x \in M \: \vert \: d(p_{i},x) \leq r \}.
+    B(p_{i},\varepsilon) = \{x \in M \: \vert \: d(p_{i},x) \leq \varepsilon \}.
   \end{equation*}
 \end{definition}
 
 One can easily deduce that if $M$ happens to be a Euclidean metric space, according to Theorem~\ref{theorem:Nerve theorem}, the Čech complex will be homotopy equivalent to the space of union of the balls. The Čech complex has nice theoretical properties, but the one predominantly implemented in most software packages is the Vietoris-Rips complex bellow.
 
 \begin{definition}[Vietoris-Rips complex]
-  Let $(P,d)$ be a finite metric space. Given a real $r>0$, the Vietoris-Rips (VR for short) complex is the abstract simplicial complex $\mathbb{VR}^{r}(P)$, where a simplex $\sigma \in \mathbb{VR}^{r}(P)$, if and only if $d(p,q) \leq 2r$ for every pair of vertices of $\sigma$.
+  Let $(P,d)$ be a finite metric space. Given a real $\varepsilon>0$, the Vietoris-Rips (VR for short) complex is the abstract simplicial complex $\mathbb{VR}^{\varepsilon}(P)$, where a simplex $\sigma \in \mathbb{VR}^{\varepsilon}(P)$, if and only if $d(p,q) \leq 2\varepsilon$ for every pair of vertices of $\sigma$.
 \end{definition}
 
 \begin{figure}[h!]
@@ -123,7 +123,7 @@ Nevertheless, we don't have to worry too much about the differences between the 
 \begin{theorem}
   Let $P$ be a finite subset of a metric space $(M,d)$. Then
   \begin{equation}
-    \mathbb{C}^{r}(P) \subseteq \mathbb{V}^{r}(P) \subseteq \mathbb{C}^{2r}(P).
+    \mathbb{C}^{\varepsilon}(P) \subseteq \mathbb{V}^{\varepsilon}(P) \subseteq \mathbb{C}^{2\varepsilon}(P).
   \end{equation}
 \end{theorem}
 
@@ -143,7 +143,7 @@ While the VR complex is the one you will usually encounter in most talks about T
 This complex is usually used in various applications, such as mesh generation or 3D triangulation (for example, see \href{https://doc.cgal.org/latest/Manual/packages.html#PartTriangulationsAndDelaunayTriangulations}{the following}). However, it remains computationally expensive in dimensions greater than 3, and other complexes are preferred instead.
 
 \begin{definition}[Delaunay complex]
-Let $P$ be a finite point set in $R^{n}$. A $k$-simplex $\sigma$ is called \textit{Delaunay}, if its vertices are in P and there is an open $n$-ball whose boundary contains the boundary of this ball. A \textit{Delaunay complex} of $P$, denoted by Del $P$, is the simplicial complex with vertices in $P$, in which every simplex is Delaunay and $\vert$ Del $P \vert$ coincides with the convex hull of $P$.
+  Let $P$ be a finite point set in $R^{n}$. A $k$-simplex $\sigma$ is called \textit{Delaunay}, if its vertices are in P and there is an open $n$-ball whose boundary contains the boundary of this ball. A \textit{Delaunay complex} of $P$, denoted by Del $P$, is the simplicial complex with vertices in $P$, in which every simplex is Delaunay and $\vert$ Del $P \vert$ coincides with the convex hull of $P$.
 \end{definition}
 
 \begin{figure}[h!]
@@ -181,9 +181,9 @@ The reasons why Delaunay complexes are popular in dimensions $<3$ are the follow
 \begin{theorem}
   A triangulation of a point set $P \subset \mathbb{R}^{n}$ is a geometric simplicial complex whose vertex set is $P$ and whose simplices tessellate the convex hull of $P$. Among all triangulations of a point set $P \subset \mathbb{R}^{n}$, Del($P$) achieves the following:
   \begin{enumerate}
-    \item In $\mathbb{R}^{2}$, Del($P$) maximizes the minimum angle of triangles in the complex.
-    \item In $\mathbb{R}^{2}$, Del($P$) minimizes the largest circumcircle for triangles in the complex.
-    \item For a simplex in Del($P$), let its min-ball be the smallest ball that contains the simplex in it. In all dimensions, Del($P$) minimizes the largest min-ball.
+  \item In $\mathbb{R}^{2}$, Del($P$) maximizes the minimum angle of triangles in the complex.
+  \item In $\mathbb{R}^{2}$, Del($P$) minimizes the largest circumcircle for triangles in the complex.
+  \item For a simplex in Del($P$), let its min-ball be the smallest ball that contains the simplex in it. In all dimensions, Del($P$) minimizes the largest min-ball.
   \end{enumerate}
 \end{theorem}
 Unfortunately, the size of a Delaunay complex is $O(n^{\lceil d/2 \rceil})$, with the same cost in computation (see \cite{chazelle1993optimal}).
@@ -210,11 +210,11 @@ In the following, the quality of the sampled space after subsampling with $Q$ wi
 \begin{definition}
   A subset $Q \subseteq P$ is called a $\delta$-sample of a metric space $(P,d)$, if the following condition holds:
   \begin{itemize}
-          \item $\forall p \in P$, there exists a $q \in Q$, so that $d(p,q) \leq \delta$.
+  \item $\forall p \in P$, there exists a $q \in Q$, so that $d(p,q) \leq \delta$.
   \end{itemize}
   It is called $\delta$-sparse, if the previous and next condition hold together:
- \begin{itemize}
-   \item $\forall (q,r) \in Q \times Q$ with $q \neq r$, $d(q,r) \geq \delta$.
+  \begin{itemize}
+  \item $\forall (q,r) \in Q \times Q$ with $q \neq r$, $d(q,r) \geq \delta$.
   \end{itemize}
 \end{definition}
 The metric itself is usually taken to be either the Euclidean metric or the graph metric $d_{G}$ derived from the input graph $G(P)$. In those two cases we have several existence and inference results involving the GIC; see \cite{dey2013graphinducedcomplexpoint} again for that. The paper also includes an empirical comparison of the GIC with the VR complex together with another sparse complex, the Witness complex, which we won't discuss in this thesis. The simulations show that the GIC can have a size similar to the Witness complex (which is usually smaller but also fails to capture the topology more because of it) and maintains the accuracy of the Rips complex.
@@ -275,15 +275,15 @@ Applying the boundary operator twice in a row turns out to produce the empty cha
 \end{lemma}
 
 \begin{proof}
-Trivial; can be found in any textbook about algebraic topology, for example \cite{hatcher2002algebraic}.
+  Trivial; can be found in any textbook about algebraic topology, for example \cite{hatcher2002algebraic}.
 \end{proof}
 
 By extending the boundary operator now to chain groups, we can construct a sequence called a \textit{chain complex}:
 
 \begin{figure}[h]
-\begin{tikzcd}
-0 = C_{k+1} \arrow[r, "\partial_{k+1}"] & C_{k} \arrow[r, "\partial_{k}"] & \cdots \arrow[r] & \cdots \arrow[r] & C_{1} \arrow[r, "\partial_{1}"] & C_{0} \arrow[r, "\partial_{0}"] & C_{-1}=0.
-\end{tikzcd}
+  \begin{tikzcd}
+    0 = C_{k+1} \arrow[r, "\partial_{k+1}"] & C_{k} \arrow[r, "\partial_{k}"] & \cdots \arrow[r] & \cdots \arrow[r] & C_{1} \arrow[r, "\partial_{1}"] & C_{0} \arrow[r, "\partial_{0}"] & C_{-1}=0.
+  \end{tikzcd}
 \end{figure}
 It can be worthwhile to mention that for $p \geq -1$, each of the $C_{p}$ is a vector space.
 
@@ -295,11 +295,11 @@ The $p$-cycles form the \textit{$p$-th cycle group} $Z_{p}$ with the same chain 
 We saw that after applying the boundary operator to the $2$-chain $\{a,b,c\}$, the result was
 
 \begin{equation*}
-\partial_2(abc) = ab + bc + ca.
+  \partial_2(abc) = ab + bc + ca.
 \end{equation*}
 This $1$-chain is a $1$-cycle since
 \begin{equation*}
-\partial_{1}(ab + bc + ca) = (a+b) + (b+c) + (c+a) = 0.
+  \partial_{1}(ab + bc + ca) = (a+b) + (b+c) + (c+a) = 0.
 \end{equation*}
 
 It's not difficult to conclude from this that the boundary of a $p$-chain is a $(p-1)$-cycle. This begs the question - which $(p-1)$-chains can be obtained this way? We call the set of all $(p-1)$-chains that are the result of an application of the boundary operator $\partial_{p}$ on $p$-chains the \textit{$(p-1)$-th boundary group} $B_{p-1} = \partial_{p}(C_{p})$. This is equivalent to saying that $B_{p-1} = \text{im} \: \partial_{p}$. It is left as an exercise for the reader to check that $\partial_{p-1}B_{p-1} = 0$ for all $p>0$, which implies that $B_{p-1} \subseteq Z_{p-1}$.
@@ -307,9 +307,9 @@ It's not difficult to conclude from this that the boundary of a $p$-chain is a $
 \begin{theorem}
   For a simplicial $k$-complex,
   \begin{itemize}
-    \item $C_{0} = Z_{0}$ and $B_{k} = 0$.
-    \item For $p \geq 0$, $B_{p} \subseteq Z_{p} \subseteq C_{p}$.
-    \item Both $B_{p}$ and $Z_{p}$ are vector spaces.
+  \item $C_{0} = Z_{0}$ and $B_{k} = 0$.
+  \item For $p \geq 0$, $B_{p} \subseteq Z_{p} \subseteq C_{p}$.
+  \item Both $B_{p}$ and $Z_{p}$ are vector spaces.
   \end{itemize}
 \end{theorem}
 
@@ -329,11 +329,11 @@ The equivalence classes are called \textit{homology classes} in this context. Tw
 We have the following useful statements with our choice of field coefficients:
 
 \begin{theorem}
-For $p \geq 0$,
+  For $p \geq 0$,
   \begin{itemize}
-    \item $H_{P}$ is a vector space when defined over $\mathbb{Z}_{2}$.
-    \item The Betti number, $\beta_{p} = \text{dim}\:H_{p}$, is given by $\beta_{p} = \text{dim}\:Z_{p} - \text{dim}\:B_{p}$.
-    \item There are exactly $2^{\beta_{p}}$ homology classes in $H_{p}$ when defined over $\mathbb{Z}_{2}$.
+  \item $H_{P}$ is a vector space when defined over $\mathbb{Z}_{2}$.
+  \item The Betti number, $\beta_{p} = \text{dim}\:H_{p}$, is given by $\beta_{p} = \text{dim}\:Z_{p} - \text{dim}\:B_{p}$.
+  \item There are exactly $2^{\beta_{p}}$ homology classes in $H_{p}$ when defined over $\mathbb{Z}_{2}$.
   \end{itemize}
 \end{theorem}
 
@@ -347,7 +347,7 @@ A few informal examples may be useful to the reader; the proofs of which use mor
   H_{k}(S^{1}) = \begin{cases}
     \mathbb{Z} \qquad k = 0,1 \\
     \{0\} \quad \text{otherwise}
-                \end{cases}
+  \end{cases}
 \end{equation*}
 
 The corresponding Betti numbers here would be $\beta_{0} = \beta_{1} = 1$ and $\beta_{k} = 0, \forall k > 1$. This aligns with our intuition that a circle has a hole in the middle, one boundary line trapping said hole and no other high-dimensional structure. The argument can be extended for the general $n$-sphere to produce
@@ -356,7 +356,7 @@ The corresponding Betti numbers here would be $\beta_{0} = \beta_{1} = 1$ and $\
   H_{k}(S^{n}) = \begin{cases}
     \mathbb{Z} \qquad k = 0,n \\
     \{0\} \quad \text{otherwise}
-                \end{cases}
+  \end{cases}
 \end{equation*}
 
 With a little more effort and imagination, it isn't hard to see that the homology groups for the $2$-dimensional torus $T^{2}$ are
@@ -366,7 +366,7 @@ With a little more effort and imagination, it isn't hard to see that the homolog
     \mathbb{Z} \qquad \qquad k = 0,2 \\
     \mathbb{Z} \times \mathbb{Z} \qquad k = 1 \\
     \{0\} \qquad \text{otherwise}
-                \end{cases}
+  \end{cases}
 \end{equation*}
 
 where the two 1-dimensional holes describe the circles around the width and length of the torus. Once again, in general the situation is
@@ -375,7 +375,7 @@ where the two 1-dimensional holes describe the circles around the width and leng
   H_{k}(T^{n}) = \begin{cases}
     \mathbb{Z}^{\binom{n}{k}} \qquad 0 \leq k \leq n  \\
     \{0\} \qquad \text{otherwise}
-                \end{cases}
+  \end{cases}
 \end{equation*}
 
 \subsection{Induced homology}
@@ -393,18 +393,18 @@ To have a better understanding of homology, we have to know how it behaves if we
 \end{definition}
 
 \begin{lemma}
-Let $f: K_{1} \to K_{2}$ a simplicial map. Let $\partial_{p}^{K_{1}}$ and $\partial_{p}^{K_{2}}$ denote the boundary homomorphisms in dimension $p \geq 0$. Then, the induced chain maps commute with the boundary homomorphisms, i.e., $f_{\#} \circ \partial_{p}^{K_{1}} = \partial_{p}^{K_{2}} \circ f_{\#}$.
+  Let $f: K_{1} \to K_{2}$ a simplicial map. Let $\partial_{p}^{K_{1}}$ and $\partial_{p}^{K_{2}}$ denote the boundary homomorphisms in dimension $p \geq 0$. Then, the induced chain maps commute with the boundary homomorphisms, i.e., $f_{\#} \circ \partial_{p}^{K_{1}} = \partial_{p}^{K_{2}} \circ f_{\#}$.
 \end{lemma}
 
 This result can be better expressed via the commutativity of the diagram below:
 
 \begin{figure}[h]
-\centering
-\begin{tikzcd}
-C_{p}(K_{1}) \arrow[rr, "f_{\#}"] \arrow[dd, "\partial_{p}^{K_{1}}"] &  & C_{p}(K_{2}) \arrow[dd, "\partial_{p}^{K_{2}}"] \\
-                                                                     &  &                                                 \\
-C_{p-1}(K_{1}) \arrow[rr, "f_{\#}"']                                 &  & C_{p-1}(K_{2})
-\end{tikzcd}
+  \centering
+  \begin{tikzcd}
+    C_{p}(K_{1}) \arrow[rr, "f_{\#}"] \arrow[dd, "\partial_{p}^{K_{1}}"] &  & C_{p}(K_{2}) \arrow[dd, "\partial_{p}^{K_{2}}"] \\
+    &  &                                                 \\
+    C_{p-1}(K_{1}) \arrow[rr, "f_{\#}"']                                 &  & C_{p-1}(K_{2})
+  \end{tikzcd}
 \end{figure}
 
 Essentially, if we start from the top left, the path that we choose doesn't matter because we'll reach the same chain in the end. From the above, since $B_{p}(K_{1}) \subseteq Z_{p}(K_{1})$, we see that $f_{\#}(B_{p}(K_{1})) \subseteq f_{\#}(Z_{p}(K_{1}))$, which allows us to have a well defined induced map in the quotient space
@@ -438,10 +438,10 @@ that is either $0$ or $1$. It isn't hard to verify that $\phi(c + c') = \phi(c) 
 Similarly to chain boundaries, there is the notion of a cochain coboundary $\delta_{p}: C^{p} \to C^{p+1}$. For a $p$-cochain $\phi$, its $(p+1)$-coboundary is given by the homomorphism $\delta \phi: C^{p+1} \to \mathbb{Z}_{2}$ defined as $\delta \phi(c) = \phi(\partial c)$ for any $(p+1)$-chain $c$. Repeated iteration of the $\delta$ operator gives us the sequence
 
 \begin{figure}[h]
-\centering
-\begin{tikzcd}
-0 = C^{-1} \arrow[r, "\delta_{-1}"] & C^{0} \arrow[r, "\delta_{0}"] & \ldots \arrow[r, "\delta_{k-1}"] & C^{k} \arrow[r, "\delta_{k}"] & C^{k+1} = 0.
-\end{tikzcd}
+  \centering
+  \begin{tikzcd}
+    0 = C^{-1} \arrow[r, "\delta_{-1}"] & C^{0} \arrow[r, "\delta_{0}"] & \ldots \arrow[r, "\delta_{k-1}"] & C^{k} \arrow[r, "\delta_{k}"] & C^{k+1} = 0.
+  \end{tikzcd}
 \end{figure}
 
 $p$-coboundaries form the coboundary group and vector space $B^{p}$ with addition and scalar multiplication being the same as in $C^{p}$. Finally, we only need cocycles to define what the cohomology group is. A $p$-cochain $\phi$ is called a $p$-cocycle if its coboundary $\delta \phi$ is a zero homomorphism. The set of $p$-cocycles forms the group and vector space $Z^{p}$ with the operations induced by $C^{p}$ once again.
@@ -449,17 +449,17 @@ $p$-coboundaries form the coboundary group and vector space $B^{p}$ with additio
 The coboundary operator $\delta$ also satisfies the same property as the boundary $\partial$.
 
 \begin{lemma}
-For $p >0$, $\delta_{p} \circ \delta_{p-1} = 0$, which implies $B^{p} \subseteq Z^{p}$.
+  For $p >0$, $\delta_{p} \circ \delta_{p-1} = 0$, which implies $B^{p} \subseteq Z^{p}$.
 \end{lemma}
 
 \begin{definition}[Cohomology group]
-Since $B^{p}$ is a subgroup of $Z^{p}$, the $p$-th cohomology group is the quotient group $Z^{p} / B^{p}$.
+  Since $B^{p}$ is a subgroup of $Z^{p}$, the $p$-th cohomology group is the quotient group $Z^{p} / B^{p}$.
 \end{definition}
 
 Just like for the homology groups, a simplicial map $f: K_{1} \to K_{2}$ induces a homomorphism $f^{*}$ between cohomology groups; this time in the \textit{opposite} direction.
 
 \begin{lemma}
-A simplicial map $f: K_{1} \to K_{2}$ induces a homomorphism $f^{*}: H^{p}(K_{2}) \to H^{p}(K_{1})$ for every $p \geq 0$.
+  A simplicial map $f: K_{1} \to K_{2}$ induces a homomorphism $f^{*}: H^{p}(K_{2}) \to H^{p}(K_{1})$ for every $p \geq 0$.
 \end{lemma}
 
 \section{Practical questions}
@@ -467,3 +467,159 @@ A simplicial map $f: K_{1} \to K_{2}$ induces a homomorphism $f^{*}: H^{p}(K_{2}
 Now that we have a basic rundown of what simplicial complexes and homology are, we can move towards more practical questions. How do we actually compute the homology of an object? What is the available software? And the most important question, since we always have to work with discrete samples from some given space - can we accurately approximate the homology of a space given enough sample points?
 
 \subsection{Calculating homology}
+
+We can start by constructing a simplicial complex homeomorphic to the $2-$sphere $S^{2}$ as follows
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzcd}
+    y \arrow[rrrr, "b"]                                                           &  &  &  & z                  \\
+    &  &  &  &                    \\
+    x \arrow[rrrr, "a"'] \arrow[rrrruu, "B"] \arrow[uu, "a"] \arrow[rrrruu, "A"'] &  &  &  & y \arrow[uu, "b"']
+  \end{tikzcd}
+\end{figure}
+
+In this relatively simple example, its chain complex is characterized by
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzcd}
+    \cdots \arrow[r] & 0 \arrow[r, "\partial_{3}"] & {\langle A,B \rangle} \arrow[r, "\partial_{2}"] & {\langle a,b,c \rangle} \arrow[r, "\partial_{1}"] & {\langle x,y,z \rangle} \arrow[r, "\partial_{0}"] & 0
+  \end{tikzcd}
+\end{figure}
+
+Our goal will be to compure the homology group $H_{0}$ of this simplicial complex, and by extension, of $S^{2}$. We already know that $\text{ker}\:\partial_{0}\langle x,y,z \rangle$ is $\langle x,y,z \rangle$ itself. Now we need to figure out what $\text{Im}\:\partial_{1}$ is. For that, the behaviour of $\partial_{1}$ on any $1-$chain $la + mb + nc$ is needed.
+
+Following the properties of the maps $\partial_{i}$, we have that
+
+\begin{align*}
+  \partial_{1}(la + mb + nc) &= l\partial_{1}(a) + m\partial_{1}(b) + n\partial_{1}(c) \\
+  &= l(y-x) + m(z-y) + n(z-x) \\
+  &= (-l-n)x + (l-m)y + (m+n)z.
+\end{align*}
+
+We can represent this chain with a $3-$tuple $[l,m,n]^{T} \in \mathbb{Z}^{3}$ since this is a finitely generated abelian group of rank $3$. Writing the equation above as a tranformation
+
+\begin{equation*}
+  [l,m,n]^{T} \to [-l-n,l-m,m+n]^{T},
+\end{equation*}
+
+allows us to represent the effect of $\partial_{1}$ as a matrix
+
+\begin{equation*}
+  [\partial_{1}] =
+  \begin{pmatrix}
+    -1 & 0 & -1 \\
+    1 & -1 & 0 \\
+    0 & 1 & 1
+  \end{pmatrix}
+\end{equation*}
+
+Elementary row-reduction methods yield
+
+\begin{equation*}
+  \begin{pmatrix}
+    1 & 0 & 1 \\
+    0 & 1 & 1 \\
+    0 & 0 & 0
+  \end{pmatrix}
+\end{equation*}
+
+From this matrix, we can easily find a basis of $\text{Im}\:\partial_{1}$
+\begin{equation*}
+  [-1,1,0]^{T}, [0, -1, 1]^{T},
+\end{equation*}
+which corresponds to $(y-x)$ and $(z-y)$. Computing $H_{0}$ now amounts to computing the quotient
+\begin{equation*}
+  H_{0} = \langle x,y,z \rangle / \langle y-x, z-y \rangle.
+\end{equation*}
+
+We can identify $(y-x)$ and $(z-y)$, which forces the quotient homomorphism $q: \text{Ker}\:\partial_{1} \to H_{0}$ to behave as follows:
+\begin{align*}
+  q(y-x) &= q(y) - q(x) = 0 \Longrightarrow q(y) = q(x) \\
+  q(z-y) &= q(z) - q(y) = 0 \Longrightarrow q(z) = q(y)
+\end{align*}
+
+To obtain the quotient, we first swap $y$ by $x$:
+\begin{equation*}
+  H_{0} = \langle x,x,z \rangle / \langle 0, z-x \rangle = \langle x,z \rangle / \langle z-x \rangle
+\end{equation*}
+
+Then we swap $z$ with $y$:
+\begin{equation*}
+  H_{0} = \langle x,x \rangle / 0 = \langle x \rangle
+\end{equation*}
+
+Therefore $H_{0} \cong Z$ and the $2-$sphere $S^{2}$ has only one connected component - itself. The essence of this example lies in reducing the calculation of homology groups to matrix manipulations. Typically, a homology solver will make use of the Smith normal form of a matrix.
+
+\begin{definition}[Smith normal form]
+  For any $m \times n$ matrix $A$, there exists an invertible $n \times n$ matrix $U$ and an invertible $m \times m$ matrix $V$ such that $UAV$ is equal to a matrix of the form
+  \begin{equation*}
+    D =
+    \begin{bmatrix}
+      \alpha_1 & 0 & 0 & & \dots & 0\\
+      0 & \alpha_2 & 0 & & & 0\\
+      0 & 0 & \ddots \\
+      \vdots & & & \alpha_r \\
+      & & & & 0\\
+      0 & & & & & \ddots \\
+      & & & & & & 0
+    \end{bmatrix}
+  \end{equation*}
+
+  Furthemore, if $A$ is an integer matrix, then $U,V,D$ are all integer matrices and the $\alpha_{i}$ satisfy $\alpha_{i} | \alpha_{i+1}$ for all $1 \leq i < r$.
+\end{definition}
+
+For the computation of the homology groups, we use the following theorem that we won't prove here.
+
+\begin{theorem}
+  Let $A$ be a $m \times n$ integer matrix, $B$ an $l \times m$ integer matrix such that $BA = 0$. Then
+  \begin{equation*}
+    Ker(B)/Im(A) = \bigoplus_{i=1}^r \mathbb{Z}/\alpha_i \oplus \mathbb{Z}^{m-r-s},
+  \end{equation*}
+  where $r = rank(A), s = rank(B)$ and $\alpha_{1}, \ldots, \alpha_{r}$ are the non-zero elements on the diagonal of the Smith normal form of $A$.
+\end{theorem}
+
+Most homology solvers make use of additional optimization steps before resorting to matrix algebra. Libraries such as Linbox \cite{linbox} (written in C++) can be used to compute the Smith normal form. The library Perseus \cite{perseus} (written in C++) computes both ``standard'' and persistent homology, which we will discuss in later chapters. Kenzo \cite{kenzo} (written in Common Lisp) can additionaly give presentations of homology groups, implementing methods of so-called \textit{Constructive Algebraic Topology}. Gmsh \cite{gmsh} provides homology solvers for finite element meshes. There are many more open-source libraries in the wild, some of which we'll use in our applied examples.
+
+But what about the stability and precision of this process? In the example we presented, there wasn't anything to worry about. On the other hand, what we will usually end up working with are simplicial complexes generated from sample data; the Čech and Vietoris-Rips complex, for example. Not only do we have to deal with errors of measurements and noise in our data but also the failure of our generated complex to match the ``true'' topological space where our data lives. The more precise formulation of this problem can be stated as: Let $(P, d)$ be a finite metric space of samples from a topological space $A$. When is $|\mathbb{VR}^{\varepsilon}(P, d)|$ or $|\mathbb{C}^{\varepsilon}(P, d)|$ homotopy equivalent to $A$?
+
+We will attack the idea of \textit{geometric sampling} in later chapters as well, specifically, when we will introduce the idea of statistical testing and estimation while working with homology groups. For now, we can settle on a basic, minimal guarantee result known as the \textit{Niyogi-Smale-Weinberger theorem}. The idea of the theorem is that if we have sufficiently many points sample uniformly from a compact Riemannian manifold $M \subset \mathbb{R}^{n}$, there exists an isomorphism
+
+\begin{equation*}
+  H_{*}\left(\bigcup_{x \in M} B_{\varepsilon}(x) \right) \cong H_{*}(M)
+\end{equation*}
+
+with high probability for a suitable choice of $\varepsilon$. For a manifold $M \subset \mathbb{R}^{n}$, the choice of $\varepsilon$ is influenced by two factors -- its intrinsic curvature and how twisted the embedding into $\mathbb{R}^{n}$ is. The quantity used to encode the appropriate interval of $\varepsilon$ values is called the \textit{condition number}. The condition number is more precisely defined as the minimum radius at which the tubular neighbourhood of a manifold self-intersects.
+
+\begin{theorem}[Niyogi-Smale-Weinberger theorem]
+  Let $M$ be a compact submanifold of $\mathbb{R}^{n}$ with condition number $\tau$ and let $\{x_{1}, \ldots, x_{k}\}$ be a set of points drawn from $M$ according to the volume measure. Fix $0 < \varepsilon < \tau/2$. Then if
+  \begin{equation*}
+    k > \beta_{1}\left(\log(\beta_{2}) + \log(1/\delta) \right),
+  \end{equation*}
+  there is a homotopy equivalence
+  \begin{equation*}
+    \left(\bigcup_{z \in \{x_{1}, \ldots, x_{k}\}} B_{\varepsilon}(z) \right) \cong M
+  \end{equation*}
+  between the union of balls and $M$ with probability $> 1 - \delta$ and the homology groups coincide. Here
+  \begin{equation*}
+    \beta_{1} = \frac{\text{vol}\:(M)}{\cos^{n}(\theta_{1})\text{vol}\:(B^{n}_{\varepsilon/4})}
+  \end{equation*}
+  and
+  \begin{equation*}
+    \beta_{2} = \frac{\text{vol}\:(M)}{\cos^{n}(\theta_{2})\text{vol}\:(B^{n}_{\varepsilon/8})}
+  \end{equation*}
+  where $\theta_{1} = \arcsin(\frac{\varepsilon}{8\tau}), \theta_{2} = \arcsin(\frac{\varepsilon}{16\tau})$ and $\text{vol}\:(B^{n}_{r})$
+  denotes the volume of the $n-$dimensional ball of radius $r$.
+\end{theorem}
+
+For example, the condition number of a sphere is its radius. For the unit $1-$sphere $S^{1} \subset \mathbb{R}^{2}$, $\delta = 0.01$ and $\varepsilon = \frac{1}{4}$, we obtain
+\begin{equation*}
+  \beta_{1} = 512, \quad \beta_{2} = 2048,
+\end{equation*}
+meaning that the minimum number of sample required is
+\begin{equation*}
+  512(7.6 + 4.6) \sim 6260.
+\end{equation*}
+
+While the result is theoretically important, its practical use is limited. The estimation of the condition number is usually difficult or simply impossible, and the obtained bound is too large, as the above example demonstrates. As such, we will rely on other methods and results that are computationally feasible while lowering the number of samples needed.
