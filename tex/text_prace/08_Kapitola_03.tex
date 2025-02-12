@@ -21,7 +21,7 @@ The idea is to translate this rate of survival on the level of points to the sur
 It should be noted that there are two different scenarios where persistence takes place. One is where our function is defined on a topological space, which would require the use of singular homology; previously established to be computationally intractable. The other, the one we are interested in, is the case where the function is defined on a simplicial complex. The sequence of sublevel sets there is simply the nested sequence of subcomplexes, usually referred to as a \textit{filtration}. Naturally, here we will be working with simplicial homology, which we know how to efficiently compute.
 
 \subsection{Filtration and persistence}
-\subsubsection{Topological spaces}
+\subsubsection{Space filtration of topological spaces}
 
 Let $f: \mathbb{T} \to \mathbb{R}$ be a function defined on a topological space $\mathbb{T}$. If we denote $\mathbb{T}_{a} = f^{-1}(-\infty, a]$, the sublevel set of the function $f$ for the value $a$, then certainly this inclusion holds:
   \begin{equation*}
@@ -46,7 +46,7 @@ Let $f: \mathbb{T} \to \mathbb{R}$ be a function defined on a topological space 
   \begin{equation*}
     h_{p}^{i,j} = \iota_{*}: H_{p}(\mathbb{T}_{a_{i}}) \to H_{p}(\mathbb{T}_{a_{j}})
   \end{equation*}
-  for all $p \geq 0$, $0 \leq i \leq j \leq n$. Doing this, we tranform the nested sublevel sets into a structure we call a \textit{homology module}:
+  for all $p \geq 0$, $0 \leq i \leq j \leq n$. Doing this, we transform the nested sublevel sets into a structure we call a \textit{homology module}:
 
   \begin{figure}[h]
     \centering
@@ -54,3 +54,75 @@ Let $f: \mathbb{T} \to \mathbb{R}$ be a function defined on a topological space 
       0 = H_{p}(\mathbb{T}_{a_{0}}) \arrow[r, hook] & H_{p}(\mathbb{T}_{a_{1}}) \arrow[r, hook] & H_{p}(\mathbb{T}_{a_{2}}) \arrow[r, hook] & \ldots \arrow[r, hook] & H_{p}(\mathbb{T}_{a_{n}}).
     \end{tikzcd}
   \end{figure}
+
+  To put it back into perspective, the homomorphism $h_{p}^{i,j}$ sends the homology classes of $\mathbb{T}_{a_{i}}$ to those of $\mathbb{T}_{a_{j}}$. Those that die are precisely the ones that become trivial, while others may survive. This is the information contained in $\text{Im}\:h_{p}^{i,j}$.
+
+  \subsubsection{Simplicial filtration of simplicial complexes}
+  To avoid the computation of singular homology groups for each of the sublevel sets, we accept the loss of information that comes with using a discrete model to replace a continuous one. We first replace the topological space with a generated simplicial complex on top of the sampled points. From there, the singular homology groups are naturally replaced with simplicial homology groups. For point cloud data, we replace the continuous union of balls with either their nerve, Čech or Vietoris-Rips complex. With other types of data, the first step is to usually use some transformation to convert the samples into a point cloud of data. We'll see a couple of methods while working with time series or signals, for example.
+
+  The discrete analogue of what we described above goes as follows: a filtration $\mathcal{F} = \mathcal{F}(K)$ of a simplicial complex $K$ is a sequence of nested subcomplexes
+  \begin{equation*}
+    \mathcal{F} : \varnothing = K_{0} \subseteq K_{1} \subseteq \ldots \subseteq K_{n} = K,
+  \end{equation*}
+  or equivalently
+
+  \begin{figure}[h!]
+    \centering
+    \begin{tikzcd}
+      \mathcal{F} : \varnothing = K_{0} \arrow[r, hook] & K_{1} \arrow[r, hook] & \ldots \arrow[r, hook] & K_{n} = K.
+    \end{tikzcd}
+  \end{figure}
+
+  The filtration $\mathcal{F}$ is called \textit{simplex-wise} if either $K_{i} \backslash K_{i-1}$ is empty or a single simplex for every $i \in [1,n]$. Having defined what the simplicial filtration is, we need to place some restrictions on the function $f$ for it to be properly defined.
+
+  \par
+  Given a simplicial complex $K$ and a function $f: K \to \mathbb{R}$. We call $f$ a \textit{simplex-wise monotone} function if for every $\sigma' \subseteq \sigma$, we have $f(\sigma') \leq f(\sigma)$. This guarantees that the sets $f^{-1}(-\infty, a]$ are subcomplexes for every $a \in \mathbb{R}$. Therefore, denoting $K_{i} = f^{-1}(-\infty, a_{i}]$ and setting $a_{0} = -\infty$, we immediately get the filtration:
+
+      \begin{figure}[h!]
+        \centering
+        \begin{tikzcd}
+          \varnothing = K_{0} \arrow[r, hook] & K_{1} \arrow[r, hook] & \ldots \arrow[r, hook] & K_{n} = K.
+        \end{tikzcd}
+      \end{figure}
+
+      A \textit{vertex function} $f:V(K) \to \mathbb{R}$ is defined on the vertex set $V(K)$ of the complex $K$. Once again, a filtration can be constructed from a function like this. Vertex functions are related to what we call piecewise linear functions, or PL-functions.
+
+      \begin{definition}[PL-functions]
+        Given a simplicial complex $K$, a \textit{piecewise-linear} (PL) function $f: |K| \to \mathbb{R}$ is defined to be the linear extension of a vertex function $f_{V}: V(K) \to \mathbb{R}$ defined on vertices of $K$, so that for every point $x \in |K|, \bar{f}(x) = \sum_{i=1}^{k+1}\alpha_{i}f_{V}(v_{i})$, where $\sigma = \{v_{1}, \ldots, v_{k+1}\}$ is the unique lowest dimensional simplex of dimension $k\geq 0$ containing $x$ and $\alpha_{1}, \ldots, \alpha_{k+1}$ are the barycentric coordinates of $x$ in $\sigma$.
+      \end{definition}
+
+      PL-functions are closely related to vertex functions since a vertex functions defined a PL function on the underlying space $|K|$ of $K$ by interpolating $f$ over the simplices, while the restriction of a PL function to vertices gives us the corresponding vertex function. Finally, any simplicial filtration $\mathcal{F}$ can be induced by a function as follows:
+
+      \begin{definition}[Filtration function]
+        If a simplicial filtration $\mathcal{F}$ is obtained from a simplex-wise monotone function or a vertex function $f$, then $\mathcal{F}$ is induced by $f$. If $\mathcal{F}$ is given without any explicit function, we say that $\mathcal{F}$ is induced by the simplex-wise monotone function $f$, where every simplex $\sigma \in (K_{i} \backslash K_{i-1})$ for $K_{i-1} \ne K_{i}$ is given the value $f(\sigma) = i$.
+      \end{definition}
+
+\subsection{Persistence}
+In either of the cases, we obtain at the end a homology module:
+\begin{equation*}
+H_{p}\mathcal{F}:0 = H_{p}(X_{0}) \to H_{p}(X_{1}) \to \ldots \to H_{p}(X_{n}) = H_{p}(X)
+\end{equation*}
+with the maps $h^{i,j}_{p}: H_{p}(X_{i}) \to H_{p}(X_{j})$ where $X_{i} = \mathbb{T}_{a_{i}}$ if $\mathcal{F}$ is a space filtration of a topological space or $X_{i} = K_{i}$ if $\mathcal{F}$ is a simplicial filtration of a simplicial complex $K$.
+
+As already mentioned, we are interested in observing when and where homology classes are born and when they die. We will call homology modules as persistence modules to point out the fact that we can replace homology groups with vector spaces.
+
+\begin{definition}[Persistent Betti numbers]
+  The \textit{p-th persistent homology groups} are the images of the homomorphisms, that is, $H^{i,j}_{p} = \text{Im}\:h^{i,j}_{p}$ for $0 \leq i \leq j \leq n$. The \textit{p-th persistent Betti numbers} are the dimensions $\beta^{i,j}_{p} = \text{dim}\:H^{i,j}_{p}$.
+\end{definition}
+
+Catching when a class is born or dies requires precision since when one class is born, others that are the sum of this class are also born, and we want to avoid counting duplicates. A similar case holds also for the case when a class dies. One can conclude the following directly from the definitions:
+
+\begin{lemma}
+  $H^{i,j}_{p} = Z_{p}(X_{i}) / (B_{p}(X_{j}) \cap Z_{p}(X_{i}))$ and $\beta^{i,j}_{p} = \text{dim}\:H^{i,j}_{p}$.
+\end{lemma}
+Since $X_{i} \subseteq X_{j}$, then $Z_{p}(X_{i})$ is the subgroup of $Z_{p}(X_{j})$ and the above is well-defined. We can now formally define when a class dies and is born.
+
+\begin{definition}[Birth and death]
+  A non-trivial $p$-th homology class $\xi \in H_{p}(X_{a})$ is born at $X_{i}$, $i \leq a$, if $\xi \in H^{i, a}_{p}$ but $\xi \notin H^{i-1, a}_{p}$. Conversely, a non-trivial $p$-th homology class $\xi \in H_{p}(X_{a})$ dies entering $X_{j}$, $a < j$, if $h^{a, j-1}_{p}(\xi)$ is not zero but $h^{a, j}_{p}(\xi) = 0$.
+\end{definition}
+
+It is good to point out that not all classes born in some $X_{i}$ necessarily die entering some $X_{j}$ later; some classes persist throughout the entire lifetime of the module.
+
+\begin{theorem}
+  Let $[c] \in H_{p}(X_{j-1})$ be a $p$-th homology class that dies entering $X_{j}$. Then it is born at $X_{i}$ if and only if there exists a sequence $i_{1} \leq i_{2} \leq \ldots \leq i_{k} = i$ for some $k \geq 1$ so that $0 \neq [c_{i_{l}}] \in H_{p}(X_{j-1})$ is born at $X_{i_{l}}$ for every $l \in \{1, \ldots, k\}$ and $[c] = [c_{i_{1}}] + \ldots + [c_{i_{k}}].$
+\end{theorem}
