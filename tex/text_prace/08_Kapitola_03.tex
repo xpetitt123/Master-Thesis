@@ -97,6 +97,8 @@ Let $f: \mathbb{T} \to \mathbb{R}$ be a function defined on a topological space 
         If a simplicial filtration $\mathcal{F}$ is obtained from a simplex-wise monotone function or a vertex function $f$, then $\mathcal{F}$ is induced by $f$. If $\mathcal{F}$ is given without any explicit function, we say that $\mathcal{F}$ is induced by the simplex-wise monotone function $f$, where every simplex $\sigma \in (K_{i} \backslash K_{i-1})$ for $K_{i-1} \ne K_{i}$ is given the value $f(\sigma) = i$.
       \end{definition}
 
+Furthermore, a PL-function $f: |K| \to \mathbb{R}$ naturally provides a vertex function $f_{V}: V(K) \to \mathbb{R}$.
+
 \subsection{Persistence}
 In either of the cases, we obtain at the end a homology module:
 \begin{equation*}
@@ -126,3 +128,56 @@ It is good to point out that not all classes born in some $X_{i}$ necessarily di
 \begin{theorem}
   Let $[c] \in H_{p}(X_{j-1})$ be a $p$-th homology class that dies entering $X_{j}$. Then it is born at $X_{i}$ if and only if there exists a sequence $i_{1} \leq i_{2} \leq \ldots \leq i_{k} = i$ for some $k \geq 1$ so that $0 \neq [c_{i_{l}}] \in H_{p}(X_{j-1})$ is born at $X_{i_{l}}$ for every $l \in \{1, \ldots, k\}$ and $[c] = [c_{i_{1}}] + \ldots + [c_{i_{k}}].$
 \end{theorem}
+
+This may be interpreted in the sense that the death of a homological class can be though of as the merging of several classes, the youngest one signaling the birth point. For each $X_{i}, i = 0, \ldots, n,$ there is an association with the value of the function $f$ determining the filtration $\mathcal{F}$. In the case of space filtrations, we have $f(X_{i}) = a_{i}$, where $X_{i} = \mathbb{T}_{a_{i}}$. For simplicial filtrations, $f(X_{i}) = a_{i}$, where $a_{i} = f(\sigma)$ for any $\sigma \in X_{i}$ when $f$ is simplex-wise monotone. If $f$ is a vertex function, we know that it can be extended to a simple-wise monotone function.
+
+\subsection{Persistence diagrams}
+While recording the birth and death times of individual classes is the building block for all subsequent analysis, on its own, it isn't very descriptive or amenable to more precise statistical analysis. Humans are also visual creatures and the ability to represent the homological module graphically would be beneficial. This visual representation is what we call a \textit{persistence diagram}.
+
+We start by considering the extended plane $\bar{\mathbb{R}}^{2} := (\mathbb{R} \cup \{\pm \infty\})^{2}$. A birth at $a_{i}$ is paired with its death at $a_{j}$ as a point $(a_{i}, a_{j})$. For this, we have to define a \textit{persistence pairing function} $\mu^{i,j}_{p}$, where strictly positive values correspond to multiplicities of points in the persistence diagram. We also have to deal with classses that never die. For this case, we extend the module on the right by declaring $H_{p}(X_{n+1}) = 0$.
+
+\begin{definition}
+For $0 < i < j \leq n+1$, define
+  \begin{equation*}
+    \mu^{i,j}_{p} = (\beta^{i, j-1}_{p} - \beta^{i,j}_{p}) - (\beta^{i-1, j-1}_{p} - \beta^{i-1, j}_{p}).
+  \end{equation*}
+\end{definition}
+
+The first term on the right counts the independent classes that are born at or $X_{i}$ and die upon entering $X_{j}$. The second term, on the other hand, counts the number of classes that are born at or before $X_{i-1}$ and die upon entering $X_{j}$. All in all, $\mu^{i,j}_{p}$ counts the number of independent classes that are born at $X_{i}$ and die at $X_{j}$.
+
+When $j = n+1$, $\mu^{i, n+1}_{p}$ counts the classes that remain alive till the end of our filtration, i.e., those that never die. Symbolically, to emphasize it, we equate $n+1$ with $\infty$, take $a_{n+1} = a_{\infty} = \infty$. In some libraries, this can be observed directly, as the $y$-axis will have the infinity symbol attached at the top and the classes that do not die will sit there.
+
+Now we can finally approach one of the most used and well-known methods to represent the results of the filtration - the \textit{persistence diagram}.
+
+\begin{definition}[Class persistence]
+For $\mu^{i,j}_{p} \ne 0$, the persistence Pers([$c$]) of a class $[c]$ that is born at $X_{i}$ and dies at $X_{j}$ is defined as Pers([$c$]) = $a_{j} - a_{i}$. When $j=n+1 = \infty\:$, Pers([$c$]) equals $a_{n+1} - a_{i} = \infty$.
+\end{definition}
+
+\begin{definition}[Persistence diagram]
+  The persistence diagram $\text{Dgm}_{p}(\mathcal{F}_{f})$ (or $\text{Dgm}_{p}f$) of a filtration $\mathcal{F}_{f}$ induced by a function $f$ is obtained by drawing a point $(a_{i}, a_{j})$ with non-zero multiplicity $\mu^{i,j}_{p}$, $i < j$, on the extended plane $\bar{\mathbb{R}}^{2} := (\mathbb{R} \cup \{\pm \infty\})^{2}$ where the points on the diagonal $\Delta: \{(x,x)\}$ are added with infinite multiplicity.
+\end{definition}
+
+As an example, we can examine a similar situation to the one in the previous section: We will consider a randomly sampled set of points from a circle and add to that sample some Gaussian noise, see \ref{fig:noisy_clean_circles}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=9cm, height=8cm]{Circle_clean_noisy.pdf}
+  \caption{A random sample drawn from the unit circle and one drawn from the same circle with additional Gaussian noise.}
+  \label{fig:noisy_clean_circles}
+\end{figure}
+
+To compute the persistence diagrams, we will use the \textit{scikit-tda} \cite{scikittda2019} Python library. It follows the \textit{scikit} API design, making it compatible with libraries such as NumPy \cite{harris2020array}, Matplotlib \cite{Hunter:2007} or other \textit{scikit}-like libraries, for example \textit{scikit-learn} \cite{scikit-learn} (general machine learning algorithms), \textit{scikit-image} \cite{van2014scikit} (image processing algorithms) or \textit{scikit-fda} \cite{ramos-carreno++_2024_scikit-fda} (functional data analysis library). In contrast to other libraries that will be used, \textit{scikit-tda} is more high-level, trying to hide the granular details away from the user. The code for the following example can be found in the file \textit{PersistentHomology01.ipynb}.
+
+\par
+The resulting persistence diagrams can be seen on \ref{fig:clean_noisy_homologies} side by side. In both diagrams, we see a lot of blue dots at the beginning of the filtration, those being the points that quickly merge together into the single connected component -- the boundary of the circle -- and stay this way, its homology class never dying and displayed at the top of the diagram on the infinity line. The first persistent homology groups inform us about the presence of a one-dimensional hole in both diagrams, characterized by the one orange dot near the top.
+
+In the noisy version there appear multiple smaller orange dots near the diagonal at the start; their presence signalling some sort of topological and stochastic noise since those classes die quickly after being born. It is also worthwhile to point out that the significant orange dot appears on different scales for the clean and noisy circle, marking another difference between the two that would be harder to confirm purely through some statistical testing.
+
+\begin{figure}
+    \centering
+    \subfloat[\centering Clean sample]{{\includegraphics[width=8cm]{Clean_homology.pdf}}}
+    \qquad
+    \subfloat[\centering Noisy sample]{{\includegraphics[width=8cm]{Noisy_homology.pdf}}}
+    \caption{Persistence diagrams of the random ``clean'' and noisy circle samples. We can see that the essential features are preserved even in the presence of noise.}
+    \label{fig:clean_noisy_homologies}
+\end{figure}

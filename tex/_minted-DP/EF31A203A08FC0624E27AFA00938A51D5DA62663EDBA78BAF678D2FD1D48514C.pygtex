@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{tadasets}
+  \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{ripser}
+  \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{persim}
+  \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{mpl}
+  \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib.pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+  \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+  \PYG{n}{data\PYGZus{}clean} \PYG{o}{=} \PYG{n}{tadasets}\PYG{o}{.}\PYG{n}{dsphere}\PYG{p}{(}\PYG{n}{d}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{n}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{noise}\PYG{o}{=}\PYG{l+m+mf}{0.0}\PYG{p}{)}
+  \PYG{n}{data\PYGZus{}noisy} \PYG{o}{=} \PYG{n}{tadasets}\PYG{o}{.}\PYG{n}{dsphere}\PYG{p}{(}\PYG{n}{d}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{n}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{noise}\PYG{o}{=}\PYG{l+m+mf}{0.10}\PYG{p}{)}
+\end{Verbatim}

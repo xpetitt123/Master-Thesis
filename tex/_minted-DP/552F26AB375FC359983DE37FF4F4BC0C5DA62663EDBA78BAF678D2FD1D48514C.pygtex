@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PYG{n}{data\PYGZus{}clean} \PYG{o}{=} \PYG{n}{tadasets}\PYG{o}{.}\PYG{n}{dsphere}\PYG{p}{(}\PYG{n}{d}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{n}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{noise}\PYG{o}{=}\PYG{l+m+mf}{0.0}\PYG{p}{)}
+  \PYG{n}{data\PYGZus{}noisy} \PYG{o}{=} \PYG{n}{tadasets}\PYG{o}{.}\PYG{n}{dsphere}\PYG{p}{(}\PYG{n}{d}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{n}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{noise}\PYG{o}{=}\PYG{l+m+mf}{0.10}\PYG{p}{)}
+\end{Verbatim}

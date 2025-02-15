@@ -17,6 +17,12 @@
     "saulnechComplex"
     "linbox"
     "kenzo"
-    "perseus"))
+    "perseus"
+    "scikittda2019"
+    "scikit-learn"
+    "ramos-carreno++_2024_scikit-fda"
+    "van2014scikit"
+    "harris2020array"
+    "Hunter:2007"))
  '(or :bibtex :latex))
 
