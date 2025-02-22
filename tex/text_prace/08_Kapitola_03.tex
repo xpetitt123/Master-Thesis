@@ -169,7 +169,7 @@ As an example, we can examine a similar situation to the one in the previous sec
 To compute the persistence diagrams, we will use the \textit{scikit-tda} \cite{scikittda2019} Python library. It follows the \textit{scikit} API design, making it compatible with libraries such as NumPy \cite{harris2020array}, Matplotlib \cite{Hunter:2007} or other \textit{scikit}-like libraries, for example \textit{scikit-learn} \cite{scikit-learn} (general machine learning algorithms), \textit{scikit-image} \cite{van2014scikit} (image processing algorithms) or \textit{scikit-fda} \cite{ramos-carreno++_2024_scikit-fda} (functional data analysis library). In contrast to other libraries that will be used, \textit{scikit-tda} is more high-level, trying to hide the granular details away from the user. The code for the following example can be found in the file \textit{PersistentHomology01.ipynb}.
 
 \par
-The resulting persistence diagrams can be seen on \ref{fig:clean_noisy_homologies} side by side. In both diagrams, we see a lot of blue dots at the beginning of the filtration, those being the points that quickly merge together into the single connected component -- the boundary of the circle -- and stay this way, its homology class never dying and displayed at the top of the diagram on the infinity line. The first persistent homology groups inform us about the presence of a one-dimensional hole in both diagrams, characterized by the one orange dot near the top.
+The resulting persistence diagrams can be seen on \ref{fig:clean_noisy_homologies} side by side. In both diagrams, we see a lot of blue dots at the beginning of the filtration, those being the points that quickly merge together into the single connected component -- the boundary of the circle -- and stay this way, its homology class never dying and displayed at the top of the diagram on the infinity line. In general, a class born at $a_{i}$ and never dying will be represented as a point $(a_{i}, \infty)$. Some authors call these points \textit{essential persistent points} with \textit{essential homology classes}. The first persistent homology groups inform us about the presence of a one-dimensional hole in both diagrams, characterized by the one orange dot near the top.
 
 In the noisy version there appear multiple smaller orange dots near the diagonal at the start; their presence signalling some sort of topological and stochastic noise since those classes die quickly after being born. It is also worthwhile to point out that the significant orange dot appears on different scales for the clean and noisy circle, marking another difference between the two that would be harder to confirm purely through some statistical testing.
 
@@ -181,3 +181,44 @@ In the noisy version there appear multiple smaller orange dots near the diagonal
     \caption{Persistence diagrams of the random ``clean'' and noisy circle samples. We can see that the essential features are preserved even in the presence of noise.}
     \label{fig:clean_noisy_homologies}
 \end{figure}
+
+The diagonal is purely a technical addition although it highlights the fact that a class cannot die before it is even born. Some packages prefer to plot in the upper triangle, some choose the lower one, so be cautious and look at the axes.
+
+One of the many alternative representations of persistence that we will look at and work with are \textit{persistence barcodes}. Each birth-death pair $(a_{i}, a_{j})$ is represented as a line segment $[a_{i}, a_{j})$ called a bar. One such example can be seen on \ref{fig:barcodes}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=8cm]{Barcodes.pdf}
+  \caption{The corresponding representation of a persistence barcode next to its persistence diagram.}
+  \label{fig:barcodes}
+\end{figure}
+
+Keep in mind that the barcodes do not contain more information than their diagram -- they are equivalent representations of the same fact. They \textit{can} be used in further analysis in different manners, but they do not fundamentally reveal anything new that wasn't already obtained. The space of barcodes doesn't have any particular ordering, but the convention is to sort the bars in order of their birth time.
+
+On a last note, there exists a nice connection between the persistent Betti numbers and persistence diagrams.
+\begin{theorem}
+  For every pair of indices $0 \leq k \leq l \leq n$ and every $p$, the $p$-th persistent Betti number satisfies $\beta_{p}^{k,l} = \sum_{i \leq k}\sum_{j > l}\mu^{i,j}_{p}$.
+\end{theorem}
+
+\subsubsection{Stability of persistence diagrams under perturbation}
+Given a function $f$ that induces the filtration $\mathcal{F}$, a persistence diagram $\text{Dgm}_{p}(\mathcal{F}_{f})$ summarizes topological features of a simplicial complex generated on a point cloud. While this provides a rough idea of what higher-dimensional structures we might be working with, this is hardly enough to be useful. We would like to compare and test diagrams, pass the results into well-known machine learning algorithms and so forth. For that to be feasible, we require persistence diagrams to be stable under perturbations -- in the form of stochastic noise present in measurements but also under slight changes of $f$ itself. The important results are that diagrams are fortunately stable in certain metrics that we will now introduce.
+
+Let $\text{Dgm}_{p}(\mathcal{F}_{f})$ and $\text{Dgm}_{p}(\mathcal{F}_{g})$ be two persistence diagrams for two functions $f$ and $g$. We will consider bijections between the points from the diagram $\text{Dgm}_{p}(\mathcal{F}_{f})$ to $\text{Dgm}_{p}(\mathcal{F}_{g})$. Since the points on the diagonal are all with infinite multiplicity, we can ``borrow'' those points to define the bijections, if needed.
+
+\begin{definition}[Bottleneck distance]
+  Let $\Pi = \{\pi: \text{Dgm}_{p}(\mathcal{F}_{f}) \to \text{Dgm}_{p}(\mathcal{F}_{g})\}$ be the set of all bijections between the persistence diagrams. The bottleneck distance between two diagrams is defined as
+  \begin{equation*}
+    d_{b}(\text{Dgm}_{p}(\mathcal{F}_{f}), \text{Dgm}_{p}(\mathcal{F}_{g})) = \text{inf}_{x \in \Pi} \: \text{sup}_{x \in \text{Dgm}_{p}(\mathcal{F}_{f})} || x - \pi(x)||_{\infty}.
+  \end{equation*}
+The norm considered here is the usual $L^{\infty}$ norm. We additionally define $\infty - \infty = 0$ for computational reasons.
+\end{definition}
+
+It should be noted that $d_{b}$ is only a metric on the space of diagrams, not necessarily on the space of homology modules $H_{p}(\mathcal{F})$ as even the first axiom $d_{b}(X,Y) = 0$ iff $X = Y$ may not hold.
+
+\begin{theorem}
+  Let $f,g: K \to \mathbb{R}$ be two simplex-wise monotone functions giving rise to two simplicial filtrations $\mathcal{F}_{f}$ and $\mathcal{F}_{g}$. Then, for every $p \geq 0$,
+  \begin{equation*}
+    d_{b}(\text{Dgm}_{p}(\mathcal{F}_{f}), \text{Dgm}_{p}(\mathcal{F}_{g})) \leq ||f - g||_{\infty}.
+  \end{equation*}
+
+\end{theorem}
