@@ -193,7 +193,18 @@ One of the many alternative representations of persistence that we will look at 
   \label{fig:barcodes}
 \end{figure}
 
-Keep in mind that the barcodes do not contain more information than their diagram -- they are equivalent representations of the same fact. They \textit{can} be used in further analysis in different manners, but they do not fundamentally reveal anything new that wasn't already obtained. The space of barcodes doesn't have any particular ordering, but the convention is to sort the bars in order of their birth time.
+Keep in mind that the barcodes do not contain more information than their diagram -- they are equivalent representations of the same fact. They \textit{can} be used in further analysis in different manners, but they do not fundamentally reveal anything new that wasn't already obtained. We don't care about any particular ordering of the barcodes, but the convention is to sort the bars in order of their birth time.
+
+If we take a step back and look at the construction of the persistence module in the case of $p = 0$, what we are doing, after some thought, corresponds precisely to single-linkage hierarchical clustering that we know from regular statistical and data mining methods. Indeed, we start with our set of points as the individual cluster centers and gradually increase the ball radius, checking for links between the points, which creates the corresponding clusters. Persistence barcodes encode this information in a 1 to 1 correspondence to a dendrogram, as can be seen in \ref{fig:clustering}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=12cm, height=9cm]{Clustering.pdf}
+  \caption{The computation of persistence barcodes for $p=0$ is equivalent to single-linkage clustering of the data. Looking at the count of bars at each time and the dendrogram heights, we see that they keep track of the same information.}
+  \label{fig:clustering}
+\end{figure}
+
+Dendrograms will add the ``global'' cluster to which all the points will belong after a certain height. This is ignored in the barcodes, since no additional homology classes are either born or die after this points. Thus, in \ref{fig:clustering}, the barcodes end with time 10, corresponding to the height 10 in the dendrogram.
 
 On a last note, there exists a nice connection between the persistent Betti numbers and persistence diagrams.
 \begin{theorem}
@@ -201,7 +212,7 @@ On a last note, there exists a nice connection between the persistent Betti numb
 \end{theorem}
 
 \subsubsection{Stability of persistence diagrams under perturbation}
-Given a function $f$ that induces the filtration $\mathcal{F}$, a persistence diagram $\text{Dgm}_{p}(\mathcal{F}_{f})$ summarizes topological features of a simplicial complex generated on a point cloud. While this provides a rough idea of what higher-dimensional structures we might be working with, this is hardly enough to be useful. We would like to compare and test diagrams, pass the results into well-known machine learning algorithms and so forth. For that to be feasible, we require persistence diagrams to be stable under perturbations -- in the form of stochastic noise present in measurements but also under slight changes of $f$ itself. The important results are that diagrams are fortunately stable in certain metrics that we will now introduce.
+Given a function $f$ that induces the filtration $\mathcal{F}$, a persistence diagram $\text{Dgm}_{p}(\mathcal{F}_{f})$ summarizes topological features of a simplicial complex generated on a point cloud. While this provides a rough idea of what higher-dimensional structures we might be working with, this is hardly enough to be useful. We would like to compare and test diagrams, pass the results into well-known machine learning algorithms and so forth. For that to be feasible, we require persistence diagrams to be stable under perturbations -- in the form of stochastic noise present in measurements but also under slight changes of $f$ itself. This can be achieved because the set of barcodes forms a metric space, allowing us to impose and test various metrics. The important results are that diagrams are fortunately stable in certain metrics that we will now introduce.
 
 Let $\text{Dgm}_{p}(\mathcal{F}_{f})$ and $\text{Dgm}_{p}(\mathcal{F}_{g})$ be two persistence diagrams for two functions $f$ and $g$. We will consider bijections between the points from the diagram $\text{Dgm}_{p}(\mathcal{F}_{f})$ to $\text{Dgm}_{p}(\mathcal{F}_{g})$. Since the points on the diagonal are all with infinite multiplicity, we can ``borrow'' those points to define the bijections, if needed.
 
@@ -220,5 +231,77 @@ It should be noted that $d_{b}$ is only a metric on the space of diagrams, not n
   \begin{equation*}
     d_{b}(\text{Dgm}_{p}(\mathcal{F}_{f}), \text{Dgm}_{p}(\mathcal{F}_{g})) \leq ||f - g||_{\infty}.
   \end{equation*}
-
 \end{theorem}
+
+In the case of space filtrations, since we are dealing with a continuous version of the above, we need to impose another condition on the function $f$. We call a function $f:X \to \mathbb{R}$ \textit{tame}, if the homology groups of the sublevel sets are of finite rank and they change only at finitely many values. We call those values \textit{critical}.
+
+\begin{theorem}
+  Let $X$ be a triangulable space. Let $f,g: X \to \mathbb{R}$ be two tame functions inducing space filtrations $\mathcal{F}_{f}$ and $\mathcal{F}_{g}$, where the values for sublevel sets include critical values. Then, for every $p \geq 0$,
+  \begin{equation*}
+    d_{b}(\text{Dgm}_{p}(\mathcal{F}_{f}), \text{Dgm}_{p}(\mathcal{F}_{g})) \leq ||f - g||_{\infty}.
+  \end{equation*}
+\end{theorem}
+
+Another distance that is worth mentioning is the so called $q$-Wasserstein distance, which compares persistence diagrams.
+
+\begin{definition}[Wasserstein distance]
+  Let $\Pi$ be the set of bijections described in the definition of the Bottleneck metric. For any $p \geq 0, q \geq 1$, the $q$-Wasserstein distance is defined as
+  \begin{equation*}
+    d_{W,q}(\text{Dgm}_{p}(\mathcal{F}_{f}), \text{Dgm}_{p}(\mathcal{F}_{g})) = \text{inf}_{\pi \in \Pi} \left[\sum_{x \in \text{Dmg}_{{p}(\mathcal{F}_{f})}} (||x - \pi(x)||_{q})^{q} \right]^{1/q}.
+  \end{equation*}
+\end{definition}
+
+In comparison to the Bottleneck metric, the Wasserstein metric has a slightly weaker stability property.
+
+\begin{theorem}
+  Let $f,g: X \to \mathbb{R}$ be two Lipschitz functions on a triangulable compact metric space $X$. Then there exist constants $C$ and $k$ depending on $X$ and the Lipschitz constants of $f$ and $g$ so that for every $p \geq 0, q \geq k$,
+  \begin{equation*}
+    d_{W,q}(\text{Dgm}_{p}(\mathcal{F}_{f}), \text{Dgm}_{p}(\mathcal{F}_{g})) \leq C ||f-g||_{\infty}^{1 - k/q}.
+  \end{equation*}
+\end{theorem}
+
+Although we don't have to panic as the situation is improved when we consider the $L^{q}$ metric instead, recently proven in \cite{skraba2020wasserstein}:
+
+\begin{theorem}
+  Let $f,g: K \to \mathbb{R}$ be two simplex-wise monotone functions on a simplicial complex $K$. Then we have
+  \begin{equation*}
+    d_{W,q}(\text{Dgm}_{p}(\mathcal{F}_{f}), \text{Dgm}_{p}(\mathcal{F}_{g})) \leq ||f-g||_{q},
+  \end{equation*}
+  where we define
+  \begin{equation*}
+    ||f-g||_{q} = (\sum_{\sigma \in K} |f(\sigma) - g(\sigma)|^{q})^{1/q},
+  \end{equation*}
+  assuming that both $f$ and $g$ are defined on the same complex $K$.
+\end{theorem}
+
+We won't go into much detail about the actual computation of either the bottleneck or Wasserstein distances. The main takeaway should be that Wasserstein distances are more expensive to compute, since we essentially have to find a minimum weight perfect matching in weighted bipartite graphs. Bottleneck distances, on the other hand, are cheaper since we're only considering perfetch matchings in bipartite graphs.
+
+To demonstrate some of the notions we have introduced, we will look at a couple simulations and compare their persistence diagrams, barcodes and mutual distances.
+
+While persistence diagrams, and by extension persistence barcodes, are stable under perturbations, there is a natural limit to this robustness. For example, outliers are known to generally skew the picture of the dataset and this holds true here as well. A simple example is in \ref{fig:outlier}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=11cm]{Outlier.pdf}
+  \caption{Adding two additional points far away from the rest is correctly represented in the barcodes with three long bars representing three connected components. This fact is not as easily seen in the diagram.}
+  \label{fig:outlier}
+\end{figure}
+
+The typical solution to this problem is to do a lot of preprocessing of the data \textit{before} applying either topological or statistical methods. Exploratory data analysis, different location or qualitative summaries can be used to filter out outliers.
+Similarly, nested sub-structures can be harder to identify, since multiple short bars will be generated in their presence. We can see this in \ref{fig:robust}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=15cm, height=12cm]{Robustness.pdf}
+  \caption{With two disjoint circles slowly approaching each other, we can see how the barcodes evolve. A non-trivial intersection causes a third bar to appear, representing the given loop. Moreover, multiple smaller bars generated by small loop show up the closer the circles are.}
+  \label{fig:robust}
+\end{figure}
+
+Compare this with \ref{fig:robust_diagrams}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=12cm, height=12cm]{Robustness_Diagrams.pdf}
+  \caption{With two disjoint circles slowly approaching each other, we can see how the barcodes evolve. A non-trivial intersection causes a third bar to appear, representing the given loop. Moreover, multiple smaller bars generated by small loop show up the closer the circles are.}
+  \label{fig:robust_diagrams}
+\end{figure}

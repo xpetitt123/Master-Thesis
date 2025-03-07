@@ -23,6 +23,7 @@
     "ramos-carreno++_2024_scikit-fda"
     "van2014scikit"
     "harris2020array"
-    "Hunter:2007"))
+    "Hunter:2007"
+    "skraba2020wasserstein"))
  '(or :bibtex :latex))
 
