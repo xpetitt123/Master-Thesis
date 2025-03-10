@@ -11,6 +11,7 @@
     "fig:clustering"
     "fig:outlier"
     "fig:robust"
-    "fig:robust_diagrams"))
+    "fig:robust_diagrams"
+    "fig:hausdorff"))
  :latex)
 

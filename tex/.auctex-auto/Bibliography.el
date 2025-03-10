@@ -24,6 +24,7 @@
     "van2014scikit"
     "harris2020array"
     "Hunter:2007"
-    "skraba2020wasserstein"))
+    "skraba2020wasserstein"
+    "chazal2009proximity"))
  '(or :bibtex :latex))
 
