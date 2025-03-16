@@ -25,6 +25,10 @@
     "harris2020array"
     "Hunter:2007"
     "skraba2020wasserstein"
-    "chazal2009proximity"))
+    "chazal2009proximity"
+    "mcinnes2020umapuniformmanifoldapproximation"
+    "mcinnes2018umap-software"
+    "10.1371/journal.pone.0090081"
+    "optical_recognition_of_handwritten_digits_80"))
  '(or :bibtex :latex))
 
