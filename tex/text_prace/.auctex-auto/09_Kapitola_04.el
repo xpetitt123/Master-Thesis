@@ -7,6 +7,10 @@
     "tab:penguins"
     "fig:penguins_scatter"
     "fig:penguins_projection"
-    "fig:digits"))
+    "fig:digits"
+    "fig:digits_projection"
+    "fig:fmnist"
+    "fig:fmnist_connectivity"
+    "fig:fmnist_connectivity_hammer"))
  :latex)
 

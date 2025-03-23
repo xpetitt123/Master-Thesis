@@ -83,5 +83,65 @@ For an example with a high number of features, we can consider the known digits 
   \label{fig:digits}
 \end{figure}
 
-The digits dataset contains 1797 bitmaps of hand-written digits in 10 classes -- each class corresponding to its digit. Most digits are somewhat readable but there are few that are simply too blurred to be considered useful. Such bitmaps should be separated into their own cluster of outliers, creating one additional class in the end.
-The usual goal is to classify and cluster each bitmap into its appropriate class. We will see that with UMAP, we obtain satisfying results with a simple application of the algorithm.
+The digits dataset contains 1797 bitmaps of hand-written digits in 10 classes -- each class corresponding to its digit. Most digits are somewhat readable but there are few that are simply too blurred to be considered useful for any further analysis. Such bitmaps should be separated into their own cluster of outliers, creating one additional class in the end.
+The usual goal is to classify and cluster each bitmap into its appropriate class. We will see that with UMAP, we obtain satisfying results with a simple application of the algorithm. We see in \ref{fig:digits_projection} that reducing the dimension with UMAP already gave us a rather solid clustering of the digits with significant clusters. It shouldn't come off as a suprise that fairly distinct digits like 0, 9, 2, 6 or 7 are far away from the rest; whereas digits 1, 8, 3 lie close to each other.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=12cm, height=11cm]{digits_projection.pdf}
+  \caption{Result of UMAP on the digits dataset.}
+  \label{fig:digits_projection}
+\end{figure}
+
+We will look into the digits dataset two more times -- once with Mapper in the next section and the second time using homology groups instead.
+
+\subsection{Fashion and clothes}
+We can look at a much larger dataset to see how UMAP compares. Fashion-MNIST \cite{DBLP:journals/corr/abs-1708-07747} is a dataset consisting of 60,000 examples of Zelando's clothing articles, each article being a 28x28 grayscale image associated to one of 10 classes. The classes go as follow, labelled from 0 to 9 -- T-shirt, Trouser, Pullover, Dress, Coat, Sandal, Shirt, Sneaker, Bag, and Ankle Boot.
+As was the case for the digits dataset, one is typically interested in classifying and clustering the clothing articles while removing the images that are too blurred. Applying UMAP, we can see the resulting projection on \ref{fig:fmnist}. On a more technical note, the MNIST dataset should be ideally replaced with a different one since it is too easy for modern machine learning algorithms, is usually overused and cannot represent modern Computer Vision tasks. But since this text isn't about Computer Vision, we can safely proceed.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=12cm, height=10cm]{fmnist.pdf}
+  \caption{Result of UMAP on the much larger Fashion-MNIST dataset.}
+  \label{fig:fmnist}
+\end{figure}
+
+It intuitively makes sense to see that shoes should be generally projected close to each other, as we see with sneakers, sandals and ankle boots. Trousers are found in the top-left corner, isolated from the rest. In the \textit{UMAP examples} notebook, we also provide an interactive version of the resulting projection on a subset of Fashion-MNIST, allowing the user to see the labels of individual points upon zooming.
+
+An interesting property that UMAP allows us to study is the connectivity of the topological representation of the original high-dimensional data. This can be useful for diagnostic purposes, but in the case of this text, it corresponds to studying the connected components. It should be noted that computing and plotting the connectivity of the dataset can be rather expensive, so it is recommended to check subsamples instead. We can see examples of it on \ref{fig:fmnist_connectivity} and \ref{fig:fmnist_connectivity_hammer}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=12cm, height=10cm]{fmnist_connectivity.pdf}
+  \caption{Points of connectivity of Fashion-MNIST.}
+  \label{fig:fmnist_connectivity}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=12cm, height=10cm]{fmnist_connectivity_hammer.pdf}
+  \caption{A less busy view of connectivity of Fashion-MNIST.}
+  \label{fig:fmnist_connectivity_hammer}
+\end{figure}
+
+\section{Mapper}
+As was mentioned in the beginning of this text, the methods of persistence topology can become computationally infeasible for larger datasets, making it practically unusable for datasets with measurements in the counts of millions and above. This was seen in the fast growing number of simplices in the Vietoris-Rips complex. Furthermore, interpreting the output of persistence homology for high-dimensional data can be difficult to interpret (what does the presence of a 1-dimensional loop in a 50-dimensional space indicate?). One approach to tackle this issue is to combine persistence with clustering, resulting in the Mapper algorithm that we're going to discuss.
+
+We're going to introduce the multiscale clustering method of Singh, Mémoli and Carlsson \cite{singh2007topological}. Let's assume that the data is presented as a finite metric space $(P, d)$. Let us then choose:
+
+\begin{itemize}
+  \item a \textit{filter function} $f: P \to \mathbb{R}^{n}$
+  \item a cover $\mathcal{C} = \{U_{\alpha}\}$ of the range of $f$ in $\mathbb{R}^{n}$
+\end{itemize}
+The cover is typically taken to be a collection of overlapping cubes. In $\mathbb{R}$, we would be looking at a collection of closed intervals. We then proceed with the algorithms as follows:
+
+\begin{enumerate}
+  \item Cluster each inverse image $f^{-1}(U_{\alpha}) \subseteq P$, regarded as a metric subspace of $P$, for all $U_{\alpha} \in \mathcal{C}$. Denote by $C_{\alpha, i}$ the i-th cluster.
+
+  \item Form a graph where the vertices are given by the clusters $C_{\alpha, i}$ as $\alpha$ and $i$ vary and there is an edge between $C_{\alpha, i}$ and $C_{\alpha', j}$ when
+        \begin{equation*}
+          C_{\alpha, i} \cap C_{\alpha', j} \neq \varnothing
+        \end{equation*}
+
+  \item Assign a color to each vertex in the graph corresponding to a particular cluster $C_{\alpha, i}$ according to the average value of $f$ on $x \in C_{\alpha, i}$.
+\end{enumerate}

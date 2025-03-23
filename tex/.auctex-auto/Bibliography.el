@@ -29,6 +29,8 @@
     "mcinnes2020umapuniformmanifoldapproximation"
     "mcinnes2018umap-software"
     "10.1371/journal.pone.0090081"
-    "optical_recognition_of_handwritten_digits_80"))
+    "optical_recognition_of_handwritten_digits_80"
+    "DBLP:journals/corr/abs-1708-07747"
+    "singh2007topological"))
  '(or :bibtex :latex))
 

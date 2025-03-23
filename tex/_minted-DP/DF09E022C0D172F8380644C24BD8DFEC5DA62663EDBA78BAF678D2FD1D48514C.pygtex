@@ -1,5 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYGZbs{}\PYG{n}{centering}
-  \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{boring}\PYG{p}{(}\PYG{n}{args} \PYG{o}{=} \PYG{k+kc}{None}\PYG{p}{):}
-  \PYG{k}{pass}
-\end{Verbatim}
