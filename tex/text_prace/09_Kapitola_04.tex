@@ -125,7 +125,7 @@ An interesting property that UMAP allows us to study is the connectivity of the 
 \end{figure}
 
 \section{Mapper}
-As was mentioned in the beginning of this text, the methods of persistence topology can become computationally infeasible for larger datasets, making it practically unusable for datasets with measurements in the counts of millions and above. This was seen in the fast growing number of simplices in the Vietoris-Rips complex. Furthermore, interpreting the output of persistence homology for high-dimensional data can be difficult to interpret (what does the presence of a 1-dimensional loop in a 50-dimensional space indicate?). One approach to tackle this issue is to combine persistence with clustering, resulting in the Mapper algorithm that we're going to discuss.
+As was mentioned in the beginning of this text, the methods of persistence topology can become computationally infeasible for larger datasets, making them practically unusable for datasets with measurements in the counts of millions and above. This was seen in the rapidly-growing number of simplices in the Vietoris-Rips complex. Furthermore, interpreting the output of persistence homology for high-dimensional data can be difficult to interpret (what does the presence of a 1-dimensional loop in a 50-dimensional space indicate?). One approach to tackle this issue is to combine persistence with clustering, resulting in the Mapper algorithm that we're going to discuss.
 
 We're going to introduce the multiscale clustering method of Singh, Mémoli and Carlsson \cite{singh2007topological}. Let's assume that the data is presented as a finite metric space $(P, d)$. Let us then choose:
 
@@ -133,10 +133,10 @@ We're going to introduce the multiscale clustering method of Singh, Mémoli and 
   \item a \textit{filter function} $f: P \to \mathbb{R}^{n}$
   \item a cover $\mathcal{C} = \{U_{\alpha}\}$ of the range of $f$ in $\mathbb{R}^{n}$
 \end{itemize}
-The cover is typically taken to be a collection of overlapping cubes. In $\mathbb{R}$, we would be looking at a collection of closed intervals. We then proceed with the algorithms as follows:
+The cover is typically taken to be a collection of overlapping cubes. In $\mathbb{R}$, we would be looking at a collection of closed intervals. Software packages will want you to specify the number of covering intervals and the percentage of overlap you allow. We then proceed with the algorithms as follows:
 
 \begin{enumerate}
-  \item Cluster each inverse image $f^{-1}(U_{\alpha}) \subseteq P$, regarded as a metric subspace of $P$, for all $U_{\alpha} \in \mathcal{C}$. Denote by $C_{\alpha, i}$ the i-th cluster.
+  \item Cluster each inverse image $f^{-1}(U_{\alpha}) \subseteq P$, regarded as a metric subspace of $P$, for all $U_{\alpha} \in \mathcal{C}$. Denote by $C_{\alpha, i}$ the i-th cluster. Here, a point can appear in multiple nodes due to the overlap.
 
   \item Form a graph where the vertices are given by the clusters $C_{\alpha, i}$ as $\alpha$ and $i$ vary and there is an edge between $C_{\alpha, i}$ and $C_{\alpha', j}$ when
         \begin{equation*}
@@ -145,3 +145,87 @@ The cover is typically taken to be a collection of overlapping cubes. In $\mathb
 
   \item Assign a color to each vertex in the graph corresponding to a particular cluster $C_{\alpha, i}$ according to the average value of $f$ on $x \in C_{\alpha, i}$.
 \end{enumerate}
+
+Mapper's strength lies in the flexibility of choices we can make during the creation of the graph. For the projection, we can take any projection method from mathematics, statistics, machine learning or  econometrics -- PCA, t-SNE, UMAP, even something as simple as projecting on the $x-$axis.
+
+The same applies for the choice of clustering algorithms. We can pick any method -- hierarchical, density-based and any distance metric. The distance metric does not need to satisfy the triangle inequality, giving us the option to choose from the wider range of similarity metrics like the Kullback-Leibler divergence and so on.
+
+Because Mapper is primarily a visual tool, most software packages include additional tooling to improve upon the basic algorithm and help with further exploration. That may involve a combination of the following:
+
+\begin{itemize}
+  \item Size the nodes by a function of interest (number of members inside the cluster, etc.)
+  \item Color the nodes by a function of interest (average spendings, number of purchases, etc.)
+  \item Shape the nodes given some condition (circles for group 1, squares for group 2, etc.)
+  \item Size the graph edges by a function of interest (number of overlapping cluster members, etc.)
+  \item Color the graph edges by a function of interest (average color of connected nodes, etc.)
+  \item Shape the graph edges given a condition (dotted lines for group 1, solid line elsewhere, etc.)
+  \item Descriptive statistics on the nodes and the graph
+\end{itemize}
+
+All in all, this makes Mapper one of the most flexible approaches to dataset visualizations, giving the user the option the construct the final graph exactly the way they intended. For the Mapper examples, we will make use of the Python libraries \textit{scikit-tda} \cite{scikittda2019} and \textit{giotto-tda} \cite{tauzin2020giottotda}.
+
+We can start with simple, synthetic examples before moving onto real data to see what the results of Mapper are and how they differ when we change the parameters or used methods.
+
+\subsection{Toy examples}
+We will start by generating 5000 points sampled from two nested circles in the plane with some added Gaussian noise. We can see the plotted dataset in \ref{fig:mapper_circles}. In our first attempt, we will project our data onto the $x-$ and $y-$axes, choose 10 covering intervals with a 30\% overlap and use the DBSCAN clustering algorithm.
+
+In figure \ref{fig:mapper_circles_graph} we can see that Mapper succesfuly captured the salient features - those being the two holes in the nested circles. The coloring of the node used the default settings of \textit{giotto-tda} -- coloring the nodes by the average row index of the data in the cluster; with 5000 generated points, we thus have 5000 rows. The node size here is given by the number of data points in the node.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{mapper_circles.pdf}
+  \caption{Our toy example for now - two nested circles.}
+  \label{fig:mapper_circles}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{mapper_circles_graph.pdf}
+  \caption{First result of applying Mapper.}
+  \label{fig:mapper_circles_graph}
+\end{figure}
+
+The coloring or the size do not convey any particularly interesting information in this case; here we were more interested to recover the presence of the two underlying holes. On the other hand, coloring by the average value of the $x-$ or $y-$coordinates would be more instructive, as revealed on \ref{fig:mapper_circles_coordinates}. Here we see that the $x-$coordinates of the inner circle, closer to the origin, are colored in such a way that lies near the $0$ point of the spectrum. We would see a similar, but flipped, version of the coloring had we used the $y$-coordinates instead.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{mapper_circles_coordinates.pdf}
+  \caption{Nodes colored by the average $x$-coordinate.}
+  \label{fig:mapper_circles_coordinates}
+\end{figure}
+
+We can, if we want to, color by something like the first principal component of PCA, as seen in \ref{fig:mapper_circles_pca}. In this context, it doesn't reveal anything particularly interesting but it may be more useful in applications where PCA is actively used.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{mapper_circles_pca.pdf}
+  \caption{Nodes colored by the average first PCA component.}
+  \label{fig:mapper_circles_pca}
+\end{figure}
+
+As mentioned above, we can colord by proportions of some categorical variable -- one that is either already present or one that we create. Let us try to separate the inner and outer circle more cleanly. We can add a categorical column to the dataframe, with a value of ``A'' for the outer circle and ``B'' for the inner circle, where the testing criterium is whether
+\begin{equation*}
+  x^{2} + y^{2} < \frac{1}{4}.
+\end{equation*}
+
+The result of this can be seen on \ref{fig:mapper_circles_groups}, where the inner and outer circle are now exactly separated. As with the coordinates, we would see a flipped version of this graph for group ``B''. It should also be noted that the color spectrum only attains two values -- $\{0, 1\}$.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{mapper_circles_groups.pdf}
+  \caption{Nodes colored by categorical variables.}
+  \label{fig:mapper_circles_groups}
+\end{figure}
+
+Finally, we can take a look and compare what happens when we use a different filtration function on the dataset. For example, we could project by taking the sum of the $(x,y)$ coordinates. This results in \ref{fig:mapper_circles_sum}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=12cm, height=10cm]{mapper_circles_sum.pdf}
+  \caption{The effect of a different filtration function; in this case, the sum of the individual coordinates.}
+  \label{fig:mapper_circles_sum}
+\end{figure}
+
+The presence of the two loops was still properly encoded, although this time we don't have the same level of separation as we did by projecting on the individual coordinates.
+
+\subsection{Stock market data}

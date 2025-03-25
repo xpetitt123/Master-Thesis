@@ -11,6 +11,12 @@
     "fig:digits_projection"
     "fig:fmnist"
     "fig:fmnist_connectivity"
-    "fig:fmnist_connectivity_hammer"))
+    "fig:fmnist_connectivity_hammer"
+    "fig:mapper_circles"
+    "fig:mapper_circles_graph"
+    "fig:mapper_circles_coordinates"
+    "fig:mapper_circles_pca"
+    "fig:mapper_circles_groups"
+    "fig:mapper_circles_sum"))
  :latex)
 

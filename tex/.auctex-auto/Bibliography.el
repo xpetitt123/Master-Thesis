@@ -31,6 +31,7 @@
     "10.1371/journal.pone.0090081"
     "optical_recognition_of_handwritten_digits_80"
     "DBLP:journals/corr/abs-1708-07747"
-    "singh2007topological"))
+    "singh2007topological"
+    "tauzin2020giottotda"))
  '(or :bibtex :latex))
 
