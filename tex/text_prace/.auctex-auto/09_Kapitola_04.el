@@ -17,6 +17,11 @@
     "fig:mapper_circles_coordinates"
     "fig:mapper_circles_pca"
     "fig:mapper_circles_groups"
-    "fig:mapper_circles_sum"))
+    "fig:mapper_circles_sum"
+    "fig:mapper_log_return"
+    "fig:mapper_volatility"
+    "fig:mapper_volatility_low"
+    "fig:mapper_volatility_high"
+    "fig:mapper_volatility_hpq"))
  :latex)
 

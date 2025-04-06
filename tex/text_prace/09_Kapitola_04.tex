@@ -229,3 +229,57 @@ Finally, we can take a look and compare what happens when we use a different fil
 The presence of the two loops was still properly encoded, although this time we don't have the same level of separation as we did by projecting on the individual coordinates.
 
 \subsection{Stock market data}
+We can now take a look at how one could potentially use Mapper to improve your analysis of stock market data. Specifically, we will look at the closing prices of the SP500 index companies, starting from 01.01.2024 up to 01.01.2025. The choice of date is arbitrary and one could easily choose a much larger time interval to consider, but for the sake of this example, one year will suffice. The data was fetched from Yahoo Finance through their API and stored in a dataframe. A simple indicator of interest when dealing with stock market data is the log-return of the stock price. As such, our first filtration function will be the log-percent return after the data is normalized.
+
+Our goal here will be to cluster the company tickers in a way that similar behaviour of the stock value is represented in similar tickers sharing the same cluster. We could take the transpose of our dataset instead and try to cluster the 252 trading days of the year. This could perhaps be useful if we wanted to analyze which days or periods of the year showed significant drops or increase in the SP500 index. We could then correlate the clusters with geopolitical events such as the US presidential election, which brought an increase in stock prices for large tech companies, for example.
+
+After normalizing the dataset, we first reduced the dimension to 150 via the Isomap algorithm before using UMAP to reduce it to 2. Our clustering algorithm of choice here was DBSCAN with the cosine metric. Using \textit{scikit-tda}, the result is stored in a \textit{html} file that you can open in your web browser. All the files for this section can be located in the \textit{figures/} folder. Our first view can be seen on \ref{fig:mapper_log_return}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=15cm, height=12cm]{Mapper_log_return_example.pdf}
+  \caption{View of the Mapper clustering summary with \textit{scikit-tda}.}
+  \label{fig:mapper_log_return}
+\end{figure}
+
+We interpret the results as follows -- given that our color function is the log-percent return of the individual tickers, the clusters correspond to tickers who share a similar trading profile between each other. That is, underperformers would have darker colors, while companies that performed exceptionally well would be on the brighter end of the spectrum. In the graph \ref{fig:mapper_log_return}, we added multiple cluster coloring rules to compare. As mentioned previously, the default strategy is to color the final cluster by the average of the nodes inside. Here, we can also color by the average, maximum, minimum, the sum of the standard deviation. The only interesting results are when we look at the minimum and maximum log-percent returns of the clusters. While we have some stocks that performed better than the rest, most companies had a similar run during that one year. One could anticipate greater differences had we considered the closing prices over multiple years instead.
+
+We could also choose a different color function, such as the volatility of the underlying stock. The notion of volatility we will look at is quite crude -- we simply take the standard deviation of the stock prices over the 252 days. Stock traders and market specialists would throttle us for this gross simplification, which is why we ignore their opinions and continue. The different color function drastically changes the resulting graph, as seen in \ref{fig:mapper_volatility}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=15cm, height=12cm]{Mapper_volatility.pdf}
+  \caption{Mapper graph of the SP500 data with the color function being the volatility of the stock.}
+  \label{fig:mapper_volatility}
+\end{figure}
+
+Here we use the maximum of the volatility to color the resulting clusters, looking for stocks with an unusually high variance in the closing prices. Already, we can see that we have more outliers on both ends of the color spectrum, compared to the log-percent return. The benefit of the Mapper implementation in \textit{scikit-tda} is that it allows us to see directly which SP500 tickers are in the clusters by simply hovering over them. It also gives us the cluster ID, allowing us to plot the cluster data separatly from the rest. This way, we can plot the dark purple cluster, suggesting the lowest maximal volatility of closing prices in \ref{fig:mapper_volatility_low}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=14cm, height=10cm]{mapper_volatility_low_projection=UMAP_n_cubes=10_perc_overlap=0.1_clusterer=DBSCAN_scaler=MinMaxScaler.pdf}
+  \caption{Cluster of tickers with the lowest maximal volatility.}
+  \label{fig:mapper_volatility_low}
+\end{figure}
+
+We can contrast it with the bright yellow clusters, the ones with the highest maximal volatility, in \ref{fig:mapper_volatility_high}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=14cm, height=10cm]{mapper_volatility_high_projection=UMAP_n_cubes=10_perc_overlap=0.1_clusterer=DBSCAN_scaler=MinMaxScaler.pdf}
+  \caption{Cluster of tickers with the highest maximal volatility.}
+  \label{fig:mapper_volatility_high}
+\end{figure}
+
+On first glance, the closing prices of the bottom four tickers do not seem highly volatile due to the wide price range we are plotting them against. Zooming on one of them, for example HPQ -- the ticker of the HP company known for printers -- reveals a more interesting structure in \ref{fig:mapper_volatility_hpq}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=14cm, height=10cm]{mapper_volatility_HPQ_projection=UMAP_n_cubes=10_perc_overlap=0.1_clusterer=DBSCAN_scaler=MinMaxScaler.pdf}
+  \caption{Stock prices of the company HP during 2024-2025.}
+  \label{fig:mapper_volatility_hpq}
+\end{figure}
+
+One could then continue with a more refined and detailed analysis of the clusters we obtained, looking into the differences and common points between them. Different coloring functions and rules could also be used, alongside other projection and clustering algorithms. All this is to show that Mapper is a powerful tool in the hands of someone with industry and theoretical knowledge of the data they have to work with, allowing them to carefully choose which algorithms, metrics and coloring functions they believe to be of importance.
+
+\subsection{Digits dataset, revisited}
