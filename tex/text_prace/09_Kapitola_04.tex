@@ -229,9 +229,9 @@ Finally, we can take a look and compare what happens when we use a different fil
 The presence of the two loops was still properly encoded, although this time we don't have the same level of separation as we did by projecting on the individual coordinates.
 
 \subsection{Stock market data}
-We can now take a look at how one could potentially use Mapper to improve your analysis of stock market data. Specifically, we will look at the closing prices of the SP500 index companies, starting from 01.01.2024 up to 01.01.2025. The choice of date is arbitrary and one could easily choose a much larger time interval to consider, but for the sake of this example, one year will suffice. The data was fetched from Yahoo Finance through their API and stored in a dataframe. A simple indicator of interest when dealing with stock market data is the log-return of the stock price. As such, our first filtration function will be the log-percent return after the data is normalized.
+We can now take a look at how one could potentially use Mapper to improve your analysis of stock market data. Specifically, we will look at the closing prices of the SP500 index companies, starting from 01.01.2024 up to 01.01.2025. The choice of date is arbitrary, and one could easily choose a much larger time interval to consider, but for the sake of this example, one year will suffice. The data was fetched from Yahoo Finance through their API and stored in a data frame. A simple indicator of interest when dealing with stock market data is the log-return of the stock price. As such, our first filtration function will be the log-percent return after the data is normalized.
 
-Our goal here will be to cluster the company tickers in a way that similar behaviour of the stock value is represented in similar tickers sharing the same cluster. We could take the transpose of our dataset instead and try to cluster the 252 trading days of the year. This could perhaps be useful if we wanted to analyze which days or periods of the year showed significant drops or increase in the SP500 index. We could then correlate the clusters with geopolitical events such as the US presidential election, which brought an increase in stock prices for large tech companies, for example.
+Our goal here will be to cluster the company tickers in a way that similar behaviour of the stock value is represented in similar tickers sharing the same cluster. We could take the transpose of our dataset instead and try to cluster the 252 trading days of the year. This could perhaps be useful if we wanted to analyze which days or periods of the year showed significant drops or increases in the SP500 index. We could then correlate the clusters with geopolitical events such as the US presidential election, which brought an increase in stock prices for large tech companies, for example.
 
 After normalizing the dataset, we first reduced the dimension to 150 via the Isomap algorithm before using UMAP to reduce it to 2. Our clustering algorithm of choice here was DBSCAN with the cosine metric. Using \textit{scikit-tda}, the result is stored in a \textit{html} file that you can open in your web browser. All the files for this section can be located in the \textit{figures/} folder. Our first view can be seen on \ref{fig:mapper_log_return}.
 
@@ -242,7 +242,7 @@ After normalizing the dataset, we first reduced the dimension to 150 via the Iso
   \label{fig:mapper_log_return}
 \end{figure}
 
-We interpret the results as follows -- given that our color function is the log-percent return of the individual tickers, the clusters correspond to tickers who share a similar trading profile between each other. That is, underperformers would have darker colors, while companies that performed exceptionally well would be on the brighter end of the spectrum. In the graph \ref{fig:mapper_log_return}, we added multiple cluster coloring rules to compare. As mentioned previously, the default strategy is to color the final cluster by the average of the nodes inside. Here, we can also color by the average, maximum, minimum, the sum of the standard deviation. The only interesting results are when we look at the minimum and maximum log-percent returns of the clusters. While we have some stocks that performed better than the rest, most companies had a similar run during that one year. One could anticipate greater differences had we considered the closing prices over multiple years instead.
+We interpret the results as follows -- given that our color function is the log-percent return of the individual tickers, the clusters correspond to tickers who share a similar trading profile between each other. That is, underperformers would have darker colors, while companies that performed exceptionally well would be on the brighter end of the spectrum. In the graph \ref{fig:mapper_log_return}, we added multiple cluster coloring rules to compare. As mentioned previously, the default strategy is to color the final cluster by the average of the nodes inside. Here, we can also color by the average, maximum, minimum, the sum or the standard deviation. The only interesting results are when we look at the minimum and maximum log-percent returns of the clusters. While we have some stocks that performed better than the rest, most companies had a similar run during that one year. One could anticipate greater differences had we considered the closing prices over multiple years instead.
 
 We could also choose a different color function, such as the volatility of the underlying stock. The notion of volatility we will look at is quite crude -- we simply take the standard deviation of the stock prices over the 252 days. Stock traders and market specialists would throttle us for this gross simplification, which is why we ignore their opinions and continue. The different color function drastically changes the resulting graph, as seen in \ref{fig:mapper_volatility}.
 
@@ -271,7 +271,7 @@ We can contrast it with the bright yellow clusters, the ones with the highest ma
   \label{fig:mapper_volatility_high}
 \end{figure}
 
-On first glance, the closing prices of the bottom four tickers do not seem highly volatile due to the wide price range we are plotting them against. Zooming on one of them, for example HPQ -- the ticker of the HP company known for printers -- reveals a more interesting structure in \ref{fig:mapper_volatility_hpq}.
+At first glance, the closing prices of the bottom four tickers do not seem highly volatile due to the wide price range we are plotting them against. Zooming on one of them, for example, HPQ -- the ticker of the HP company known for printers -- reveals a more interesting structure in \ref{fig:mapper_volatility_hpq}.
 
 \begin{figure}[h!]
   \centering
@@ -283,3 +283,80 @@ On first glance, the closing prices of the bottom four tickers do not seem highl
 One could then continue with a more refined and detailed analysis of the clusters we obtained, looking into the differences and common points between them. Different coloring functions and rules could also be used, alongside other projection and clustering algorithms. All this is to show that Mapper is a powerful tool in the hands of someone with industry and theoretical knowledge of the data they have to work with, allowing them to carefully choose which algorithms, metrics and coloring functions they believe to be of importance.
 
 \subsection{Digits dataset, revisited}
+
+We can take a look at the digits dataset again, this time using Mapper instead of UMAP on its own. This example should highlight the fact that we can customize the resulting graph as much as we want to. In this case, we will customize the tooltips that show whenever we hover over one of the clusters. In \ref{fig:mapper_digits_custom}, we have chosen our custom tooltip function to be the images themselves, giving us the ability to directly compare the different clusters. For the projection function, we have used the t-SNE algorithm, followed by DBSCAN to do the clustering. The color function here is the label of the digit, and we kept the default rule of assigning the mean color to the cluster. This gives us a nice separation of the digits, all differentiated by a different color value. In the top right corner, we can see a cluster with multiple colors where different digits were blurred enough for DBSCAN to consider them as equal. Our custom tooltip can immediately show us which digits we are looking at.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=14cm, height=10cm]{Mapper_digits_custom.pdf}
+  \caption{Mapper graph of the digits dataset with a custom tooltip function.}
+  \label{fig:mapper_digits_custom}
+\end{figure}
+
+We can compare this with the Mapper graph where our tooltip function is the label of the digit, as seen in \ref{fig:mapper_digits_labels}. This won't reveal any new information but it could be useful to compare the label of the digit with the image when the blur makes the digit illegible. The \textit{html} files for the two graphs can be located in the \textit{figures/} folder.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=14cm, height=10cm]{Mapper_digits_labels.pdf}
+  \caption{Mapper graph of the digits dataset with labels.}
+  \label{fig:mapper_digits_labels}
+\end{figure}
+
+\section{Persistent homology in practice}
+At last, we can start with example where we will compute homology groups of the datasets at hand. The key takeaway here should be that persistent homology alone usually doesn't reveal all the information that we would need. Instead, we use it to extract topological features from a dataset, vectorize them and send them into a machine learning pipeline as additional training data. If used correctly, topological features can improve the performance and precision of your model, leading to superior results. The downside is the high computational cost of the procedure, making this approach not viable for datasets in the order of millions of rows and above.
+
+\subsection{Digits, one the last time}
+We will revisit the digits dataset again, this time using persistent homology to build a \textit{scikit} classifier. As we will see in the examples to follow, persistent homology is usually used to extract topological features that can be later used in standard machine learning algorithms or statistical analysis. We have 70,000 images, each having 784 features representing a pixel intensity. The first task is to reshape the vectors into arrays of dimension 28x28. To save computational time, we will work with a smaller subset again. We split the full dataset into a training a testing dataset of sizes 60 and 10, respectively.
+
+Because images are made of pixels and are not point clouds, we use filtrations of cubical complexes instead of simplicial ones. Ignoring technical details, all that this does is replace simplices with little cubes. The homology groups carry the same meaning as before. It simply turns out that when working with images, using cubes is more natural than using a simplicial object. To use cubical complexes, the filtrations are built from binary images, forcing us to convert the greyscale image to binary by applying a treshold on the pixel values. In this example here, we used a treshold of 0.4.
+
+Given a binary image $\mathcal{B}$ of some digit, we will use the \textit{radial filtration} $\mathcal{R}$, which assigns to each pixel $p$ a value corresponding to the distance from some predefined center $c$ of the image
+
+\begin{equation*}
+  \mathcal{R}(p) =
+  \left\{
+    \begin{array}{ll}
+      ||c-p||_{2} & \mbox{if } \mathcal{B}(p) = 1 \\
+      \mathcal{R}_{\infty} & \mbox{if } \mathcal{B}(p) = 0
+    \end{array}
+  \right.
+\end{equation*}
+where $\mathcal{R}_{\infty}$ is the distance of the pixel that is the furthest from $c$. To reproduce the filtered images from the original article, we have chosen $c$ to be the point $c = (20, 6)$. Applying the radial filtration $\mathcal{R}$, we effectively transform the binary image into a greyscale one with pixel values increasing as you move further away from the point $c$. These pixel values can be used to define a filtration of cubical complexes $\{K_{i}\}$, where $K_{i}$ contains all pixels with value less than the $i-$th smallest pixel value in the greyscale image. In later examples, we will see that this is what we call the sublevel set filtration of the image's cubical complex.
+
+Once we have created our filtration, computing the persistent homology of it is straightforward. For example, if we take an image corresponding to the digit 8, its homology groups are found in \ref{fig:img8_cubical}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=11cm, height=10cm]{img8_cubical.pdf}
+  \caption{Cubical persistence homology of the digit 8.}
+  \label{fig:img8_cubical}
+\end{figure}
+
+Our sanity check works -- we see two $H_{1}$ generators corresponding to the two loops in the digit 8 and a single $H_{0}$ for the single connected component. Most methods require some sort of scaling for better results, which we can do with the persistence diagram as well, see \ref{fig:img8_cubical_scaled}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=11cm, height=10cm]{img8_cubical_scaled.pdf}
+  \caption{Scaled cubical persistence homology of the digit 8.}
+  \label{fig:img8_cubical_scaled}
+\end{figure}
+
+The final step is to vectorize our persistence diagrams, since most machine learning pipelines only accept an array of vectors. This can be achieved in multiple ways. For our single image of the digit 8, we used a Gaussian kernel and convolved the diagram with it. From this, we managed to extract a vector of amplitudes. While this was done for a single image, we may want to extract a variety of features over the whole training dataset.
+
+To do this, we can augment our radial filtration with a \textit{height filtration} $\mathcal{H}$, which is defined by choosing a vector $v \in \mathbb{R}^{2}$ representing a direction and by assigning values $\mathcal{H}(p) = \langle p, v \rangle$ based on the distance of $p$ to the hyperplane defined by $v$. We will pick a uniform set of directions and centers for our filtrations, as we lack any prior information that could guide our investigation. Our method of generating features from the persistence diagrams will be what we call \textit{persistence entropy}. This is simply the entropy of the points of the diagram. More specifically, the persistence entropy of a diagram $D$ is defined by
+\begin{equation*}
+  E(D) = -\sum_{i \in I}p_{i}\:\log(p_{i}),
+\end{equation*}
+where
+\begin{equation*}
+  p_{i} = \frac{d_{i}-b_{i}}{L_{D}} \quad \text{and} \quad L_{D} = \sum_{i \in I}(d_{i}-b_{i}),
+\end{equation*}
+where $d_{i}$ and $b_{i}$ are the death and birth times of the equivalence classes.
+
+Doing all of this, we managed to extract 476 topological features per image. Some of the features will be highly correlated and normally you would want to filter those out. Despite all of that, we can now happily send them into a Random Forest classifier and test our accuracy. In this example, we managed to achieve an accuracy of 80\% on our small dataset, using nothing but topological features. A better result would be achieved by applying a feature selection strategy and using the original data in the classifier as well.
+
+As a little sidenote, we may think of the choice of direction and center as hyperparameters. We can then proceed with a greedy hyperparameter search over a grid to see what is the direction, homology direction and number of trees that give us the best accuracy. Running the search, we found that the optiomal number of trees is 500, the optimal homology dimension is $H_{0}$ and the optimal filtration direction is the vector $[1, 0]$. This intuitively makes sense when we compare the digits 6 and 9 with each other.
+
+The notebook with the entire pipeline can be found in the \textit{scripts/} directory under the name \textit{Digits\_classification.ipynb}.
+
+\subsection{Sublevelset filtration in general}

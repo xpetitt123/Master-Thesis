@@ -22,6 +22,10 @@
     "fig:mapper_volatility"
     "fig:mapper_volatility_low"
     "fig:mapper_volatility_high"
-    "fig:mapper_volatility_hpq"))
+    "fig:mapper_volatility_hpq"
+    "fig:mapper_digits_custom"
+    "fig:mapper_digits_labels"
+    "fig:img8_cubical"
+    "fig:img8_cubical_scaled"))
  :latex)
 
