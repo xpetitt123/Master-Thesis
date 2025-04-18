@@ -20,8 +20,8 @@ The idea is to translate this rate of survival on the level of points to the sur
 
 It should be noted that there are two different scenarios where persistence takes place. One is where our function is defined on a topological space, which would require the use of singular homology; previously established to be computationally intractable. The other, the one we are interested in, is the case where the function is defined on a simplicial complex. The sequence of sublevel sets there is simply the nested sequence of subcomplexes, usually referred to as a \textit{filtration}. Naturally, here we will be working with simplicial homology, which we know how to efficiently compute.
 
-\subsection{Filtration and persistence}
-\subsubsection{Space filtration of topological spaces}
+\section{Filtration and persistence}
+\subsection{Space filtration of topological spaces}
 
 Let $f: \mathbb{T} \to \mathbb{R}$ be a function defined on a topological space $\mathbb{T}$. If we denote $\mathbb{T}_{a} = f^{-1}(-\infty, a]$, the sublevel set of the function $f$ for the value $a$, then certainly this inclusion holds:
   \begin{equation*}
@@ -57,7 +57,7 @@ Let $f: \mathbb{T} \to \mathbb{R}$ be a function defined on a topological space 
 
   To put it back into perspective, the homomorphism $h_{p}^{i,j}$ sends the homology classes of $\mathbb{T}_{a_{i}}$ to those of $\mathbb{T}_{a_{j}}$. Those that die are precisely the ones that become trivial, while others may survive. This is the information contained in $\text{Im}\:h_{p}^{i,j}$.
 
-  \subsubsection{Simplicial filtration of simplicial complexes}
+  \subsection{Simplicial filtration of simplicial complexes}
   To avoid the computation of singular homology groups for each of the sublevel sets, we accept the loss of information that comes with using a discrete model to replace a continuous one. We first replace the topological space with a generated simplicial complex on top of the sampled points. From there, the singular homology groups are naturally replaced with simplicial homology groups. For point cloud data, we replace the continuous union of balls with either their nerve, Čech or Vietoris-Rips complex. With other types of data, the first step is to usually use some transformation to convert the samples into a point cloud of data. We'll see a couple of methods while working with time series or signals, for example.
 
   The discrete analogue of what we described above goes as follows: a filtration $\mathcal{F} = \mathcal{F}(K)$ of a simplicial complex $K$ is a sequence of nested subcomplexes
@@ -99,7 +99,7 @@ Let $f: \mathbb{T} \to \mathbb{R}$ be a function defined on a topological space 
 
 Furthermore, a PL-function $f: |K| \to \mathbb{R}$ naturally provides a vertex function $f_{V}: V(K) \to \mathbb{R}$.
 
-\subsection{Persistence}
+\section{Persistence}
 In either of the cases, we obtain at the end a homology module:
 \begin{equation*}
 H_{p}\mathcal{F}:0 = H_{p}(X_{0}) \to H_{p}(X_{1}) \to \ldots \to H_{p}(X_{n}) = H_{p}(X)
@@ -131,7 +131,7 @@ It is good to point out that not all classes born in some $X_{i}$ necessarily di
 
 This may be interpreted in the sense that the death of a homological class can be though of as the merging of several classes, the youngest one signaling the birth point. For each $X_{i}, i = 0, \ldots, n,$ there is an association with the value of the function $f$ determining the filtration $\mathcal{F}$. In the case of space filtrations, we have $f(X_{i}) = a_{i}$, where $X_{i} = \mathbb{T}_{a_{i}}$. For simplicial filtrations, $f(X_{i}) = a_{i}$, where $a_{i} = f(\sigma)$ for any $\sigma \in X_{i}$ when $f$ is simplex-wise monotone. If $f$ is a vertex function, we know that it can be extended to a simple-wise monotone function.
 
-\subsection{Persistence diagrams}
+\section{Persistence diagrams}
 While recording the birth and death times of individual classes is the building block for all subsequent analysis, on its own, it isn't very descriptive or amenable to more precise statistical analysis. Humans are also visual creatures and the ability to represent the homological module graphically would be beneficial. This visual representation is what we call a \textit{persistence diagram}.
 
 We start by considering the extended plane $\bar{\mathbb{R}}^{2} := (\mathbb{R} \cup \{\pm \infty\})^{2}$. A birth at $a_{i}$ is paired with its death at $a_{j}$ as a point $(a_{i}, a_{j})$. For this, we have to define a \textit{persistence pairing function} $\mu^{i,j}_{p}$, where strictly positive values correspond to multiplicities of points in the persistence diagram. We also have to deal with classses that never die. For this case, we extend the module on the right by declaring $H_{p}(X_{n+1}) = 0$.
@@ -211,7 +211,7 @@ On a last note, there exists a nice connection between the persistent Betti numb
   For every pair of indices $0 \leq k \leq l \leq n$ and every $p$, the $p$-th persistent Betti number satisfies $\beta_{p}^{k,l} = \sum_{i \leq k}\sum_{j > l}\mu^{i,j}_{p}$.
 \end{theorem}
 
-\subsubsection{Stability of persistence diagrams under perturbation}
+\subsection{Stability of persistence diagrams under perturbation}
 Given a function $f$ that induces the filtration $\mathcal{F}$, a persistence diagram $\text{Dgm}_{p}(\mathcal{F}_{f})$ summarizes topological features of a simplicial complex generated on a point cloud. While this provides a rough idea of what higher-dimensional structures we might be working with, this is hardly enough to be useful. We would like to compare and test diagrams, pass the results into well-known machine learning algorithms and so forth. For that to be feasible, we require persistence diagrams to be stable under perturbations -- in the form of stochastic noise present in measurements but also under slight changes of $f$ itself. This can be achieved because the set of barcodes forms a metric space, allowing us to impose and test various metrics. The important results are that diagrams are fortunately stable in certain metrics that we will now introduce.
 
 Let $\text{Dgm}_{p}(\mathcal{F}_{f})$ and $\text{Dgm}_{p}(\mathcal{F}_{g})$ be two persistence diagrams for two functions $f$ and $g$. We will consider bijections between the points from the diagram $\text{Dgm}_{p}(\mathcal{F}_{f})$ to $\text{Dgm}_{p}(\mathcal{F}_{g})$. Since the points on the diagonal are all with infinite multiplicity, we can ``borrow'' those points to define the bijections, if needed.
