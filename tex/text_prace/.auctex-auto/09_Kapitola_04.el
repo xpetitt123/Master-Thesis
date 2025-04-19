@@ -26,6 +26,16 @@
     "fig:mapper_digits_custom"
     "fig:mapper_digits_labels"
     "fig:img8_cubical"
-    "fig:img8_cubical_scaled"))
+    "fig:img8_cubical_scaled"
+    "fig:cosine_period"
+    "fig:cosine_filtration"
+    "fig:blobs_example"
+    "fig:blobs_diagram"
+    "fig:cells"
+    "fig:cells_diagram1"
+    "fig:cells_smoothed"
+    "fig:cells_diagram2"
+    "fig:cells_filled"
+    "fig:black_hole"))
  :latex)
 

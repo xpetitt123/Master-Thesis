@@ -360,3 +360,101 @@ As a little sidenote, we may think of the choice of direction and center as hype
 The notebook with the entire pipeline can be found in the \textit{scripts/} directory under the name \textit{Digits\_classification.ipynb}.
 
 \subsection{Sublevelset filtration in general}
+In this section, we will construct our filtrations ourselves, specifically the sublevelset filtration (sometimes also called the lower star filtration) of some topological space. It is a stable way of describing and looking for critical points -- local minima and maxima. This will be immediately clear when we start working with time series or signals but the approach will be demonstrated on data like images as well.
+
+Intuitively, we compute the null homological group $H_{0}$ of the connected components that are constructed when a ``rising pools of water'' slowly fill out the space. When a new pool is formed at a local minimum, a class is born; when two pools merge together at a local maximum, the class dies.
+
+\subsubsection{Time Series}
+We will start with a simple example of a periodic time series where the local minima and maxima are visible. The function we will work with can be seen on \ref{fig:cosine_period}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=12cm, height=10cm]{Cosine_period.pdf}
+  \caption{The periodic signal $\cos(2\pi t) + t$.}
+  \label{fig:cosine_period}
+\end{figure}
+
+The next step is to construct a sparse distance matrix to perform the sublevelset filtration. This has the added benefit of decreased computational cost due to the sparsity and a more fine-grained control of how we build the complex. For each point of the time series there is a vertex, which is born at the height of the point in the time series. This represents the initial state of the filtration. Since we are interested in the sublevelset filtration, we will add edges at a height equal to the larger of the two heights of the vertices they connect. The edges naturally connect adjacent points in the time series since, usually, we measure the signal in time and time only goes from left to right.
+
+In more practical terms, we add the vertex birth times along the diagonal of the distance matrix. Once we have our distance matrix, we can directly pass it as input for the computation of the persistence diagram. With some minor graphical touches, we can plot the results side-by-side in \ref{fig:cosine_filtration}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=15cm, height=10cm]{sublevelset_cosine.pdf}
+  \caption{The sublevelset filtration of the signal.}
+  \label{fig:cosine_filtration}
+\end{figure}
+
+We see that the birth times of the individual homology classes here nicely map to the local minima of the signal, while the death times map to the local maxima in a 1-to-1 correspondence. We could do the opposite, filling the ``pools of water'' from the top instead and this would give us the superlevelset filtration of the time series. Of course, this amounts to calculating the sublevelset filtration of the same function but with a flipped sign in front.
+
+\subsubsection{Image Filtrations}
+
+Sublevelset filtration of images works in the exact same manner, allowing us to explore local minima as birth times and saddle points as death times while looking at the zero-dimensional homology groups. The definition of the function that provides the filtration is in the same spirit as with the time series -- we construct a sparse distance matrix in which every pixel in the image is a vertex. Every vertex is connected to its 8 neighbors (or fewer, if it is a boundary pixel). The function value on the edge is taken to be the maximum of the two pixel values it connects. We can start with a simple image containing some Gaussian blobs, see \ref{fig:blobs_example}. There are three negative Gaussians present; one reaching its minimum at -3, the other at -2 and the last at -1.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=13cm, height=10cm]{sublevelset_img.pdf}
+  \caption{Image containing some Guassian blobs.}
+  \label{fig:blobs_example}
+\end{figure}
+
+For images, there already exists a pre-built function that we can use instead of writing it ourselves. Computing the persistence diagram of this image gives us \ref{fig:blobs_diagram}. Just like with the time series example, the three dots correspond to each of the 3 Gaussians, each of which is born at the respective local minimum. Two of them die around 0 and the third is born at -3, absorbing all classes into itself and never dying.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=15cm, height=10cm]{sublevelset_img_diagram.pdf}
+  \caption{The result of taking the sublevelset filtration of the Gaussian blobs.}
+  \label{fig:blobs_diagram}
+\end{figure}
+
+Let us look at a slightly more exciting example in \ref{fig:cells}. Here we have a zoomed up image of some wood cells. The first step is to convert this image to a grayscale one. Doing so, we see that the interiors of the cells have high values. They also meet a saddle point somewhere on their boundary with a value close to 0. We want to ideally identify the interiors of the cells in an automated fashion. Since this is our goal, we are interested in a local maximum of large persistence within each cell; that is, we want to perform superlevelset filtration of the image.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{sublevelset_cells.pdf}
+  \caption{Example image of wood cells.}
+  \label{fig:cells}
+\end{figure}
+
+But as mentioned above, we don't need to hack a suboptimal solution; we can simply pass the negative of the image and compute its sublevelset filtration instead. The result of this we can see in \ref{fig:cells_diagram1}. While the diagram is a useful first step, we need to extract the cell interior in some way out of this. We can do this by selecting a persistence treshold, above which we will consider a dot to be associated to a cell.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{sublevelset_cells_diagram1.pdf}
+  \caption{Persistence diagram of the grayscale image of the cells.}
+  \label{fig:cells_diagram1}
+\end{figure}
+
+We can add some white noise to the pixels and apply a uniform filter to add a small amount of blur to the image. This would ideally increase the chance of the maximum to be closer to the center of the cell; the result of which is seen in \ref{fig:cells_smoothed}. If we compute the persistence diagram of the smoothed image, the difference is visible in \ref{fig:cells_diagram2}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{sublevelset_cells_smoothed.pdf}
+  \caption{Smoothed out version of the grayscale image of the cells.}
+  \label{fig:cells_smoothed}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{sublevelset_cells_diagram2.pdf}
+  \caption{Persistence diagram of the smoothed out image.}
+  \label{fig:cells_diagram2}
+\end{figure}
+
+We choose a cutoff of all points with a lifetime greater than 70 in this example. Extracting the pixel representatives satisfying this condition and plotting them in the original image results in \ref{fig:cells_filled}. Using a naive approach to the problem, we obtained reasonable results. There are cells with duplicates and some have no points at all, but most have only one. Tuning the threshold and the amount of noise added could further improve this procedure without relying on advanced algorithms from image processing.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{cells_filled.pdf}
+  \caption{Filled out image of cells.}
+  \label{fig:cells_filled}
+\end{figure}
+
+On an ending note, we can give a formal proof of the fact that a black hole really has a hole inside, using the famous image and computing its sublevelset filtration as we did above.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=14cm, height=7cm]{blackhole_diagram.pdf}
+  \caption{Persistence diagram of a black hole.}
+  \label{fig:black_hole}
+\end{figure}
