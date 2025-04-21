@@ -32,6 +32,23 @@
     "optical_recognition_of_handwritten_digits_80"
     "DBLP:journals/corr/abs-1708-07747"
     "singh2007topological"
-    "tauzin2020giottotda"))
+    "tauzin2020giottotda"
+    "wei2025short"
+    "ali2025leveraging"
+    "jing2025topology"
+    "jetomo2025filipino"
+    "wiseman2025persistent"
+    "arun2025topo"
+    "mototaketopological"
+    "pedersen2024active"
+    "luchinsky2024tdavec"
+    "hernandez2024topological"
+    "cuerno2025topological"
+    "arfi2024promises"
+    "dos2025topological"
+    "selicato2025topological"
+    "boyd2024big"
+    "madukpe2025comprehensive"
+    "AATRN"))
  '(or :bibtex :latex))
 

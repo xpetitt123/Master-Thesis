@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 (TeX-add-style-hook
  "03_Kapitola_01"
  (lambda ()
