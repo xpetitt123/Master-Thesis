@@ -36,6 +36,12 @@
     "fig:cells_smoothed"
     "fig:cells_diagram2"
     "fig:cells_filled"
-    "fig:black_hole"))
+    "fig:black_hole"
+    "fig:cosine_embedding"
+    "fig:nonperiodic_embedding"
+    "fig:embedding_diagrams"
+    "fig:embedding_automatic"
+    "fig:embedding_automatic_diagrams"
+    "fig:embedding_noise"))
  :latex)
 

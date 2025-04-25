@@ -458,3 +458,100 @@ On an ending note, we can give a formal proof of the fact that a black hole real
   \caption{Persistence diagram of a black hole.}
   \label{fig:black_hole}
 \end{figure}
+
+\subsection{Sliding Windows}
+
+The second approach when working with time series or signals is to make use of Taken's embedding theorem and sliding windows. \cite{takens2006detecting}. A delay embedding theorem gives us condition under which we can reconstruct a chaotic dynamical system from a sequence of observations. Taken's theorem specifically gives us condition under which we can reconstruct the attractors of the dynamical system.
+
+Using Taken's theorem, we can transform the signal into a point cloud, allowing us to directly compute its persistent homology groups without further transformations. Formally, given a time series $f(t)$, we extract vectors of the form
+\begin{equation*}
+f_{i} = [f(t_{i}), f(t_{i} + \tau), f(t_{i} + 2\tau), \ldots, f(t_{i} + (d-1)\tau)] \in \mathbb{R}^{d},
+\end{equation*}
+where $d$ is the dimension of the embedding and $\tau$ is the time delay parameter. Typically, we call the quantity $(d-1)\tau$ the \textit{window size} and the difference $t_{i+1} - t_{i}$ the \textit{stride}. The underlying idea here is, as long as $f$ has a non-trivial recurrent structure, to use Taken's theorem to construct an embedding of the signal that preserves the topological qualities and then compute its persistent homology.
+
+We may start with a simple cosine wave. The choice of stride and window size is the hardest problem when using a sliding window technique, as it is not exactly obvious which values will give us an ``optimal'' embedding. Later we'll see that we can search for them in a automatic fashion but for now, let us choose $d=3$, $\tau=8$ and a stride of 10. With this choice of parameters, the resulting embedding in $\mathbb{R}^{3}$ is shown in \ref{fig:cosine_embedding}.
+
+\begin{figure}[h!]
+    \centering
+    \subfloat[\centering The signal]{{\includegraphics[width=7cm]{cosine.pdf} }}%
+    \qquad
+    \subfloat[\centering Its embedding in $\mathbb{R}^{3}$]{{\includegraphics[width=7cm]{point_cloud1.pdf} }}%
+    \caption{Ordinary cosine wave}%
+    \label{fig:cosine_embedding}%
+\end{figure}
+
+We can compare this with a quasi-periodic signal of the form
+\begin{equation*}
+  f(t) = cos(t) + cos(\pi t),
+\end{equation*}
+as seen in \ref{fig:nonperiodic_embedding}, where we used $d=3$, $\tau=16$ and a stride of 3. The difference in the geometry of the embedding should be immediately clear, as in the case of the cosine wave, we have recovered a perfect elipse capturing the clean, periodic behaviour of the signal.
+
+\begin{figure}[h!]
+    \centering
+    \subfloat[\centering The signal]{{\includegraphics[width=7cm]{nonperiodic_signal.pdf} }}%
+    \qquad
+    \subfloat[\centering Its embedding in $\mathbb{R}^{3}$]{{\includegraphics[width=7cm]{point_cloud2.pdf} }}%
+    \caption{Quasi-periodic wave}%
+    \label{fig:nonperiodic_embedding}%
+\end{figure}
+
+We can confirm this by looking at the persistence diagrams that we compute from the embeddings in \ref{fig:embedding_diagrams}. In the first diagram, we see a single point associated with the $1-$dimensional persistent homology. This represents the single loop found in the embedding and is a direct consequence of the periodic nature of the signal.
+
+\begin{figure}[h!]
+    \centering
+    \subfloat[\centering Diagram for the periodic wave]{{\includegraphics[width=7cm]{periodic_diagram.pdf} }}%
+    \qquad
+    \subfloat[\centering Diagram for the quasi-periodic wave]{{\includegraphics[width=7cm]{nonperiodic_diagram.pdf} }}%
+    \caption{The corresponding persistence diagrams}%
+    \label{fig:embedding_diagrams}%
+\end{figure}
+
+Instead of manually picking the values for the embedding, we can use the following two techniques to search for them automatically:
+\begin{itemize}
+  \item Mutual information for $\tau$
+  \item False nearest neighbours for $\d$
+\end{itemize}
+
+To determine an optimal $\tau$, we first calculate the maximum $x_{\text{max}}$ and minimum $x_{\text{min}}$ values of the time series, dividing the interval between them into a large number of bins. Let $p_{k}$ be the probability that an element of the time series is in the $k$th bin and let $p_{j,k}$ be the probability that $x_{i}$ is in the $j$th bin while $x_{i+\tau}$ is in the $k$th bin. Then we define the mutual information as:
+
+\begin{equation*}
+  I(\tau) = -\sum_{j=1}^{n}\sum_{k=1}^{n}p_{j,k}(\tau)\log\left(\frac{p_{j,k}(\tau)}{p_{j}p_{k}}\right),
+\end{equation*}
+where $n$ is the number of bins on the interval $[x_{\text{min}}, x_{\text{max}}]$. The first minimum of this expression gives us the optimal time delay.
+
+The false nearest neighbours algorithm assumes that points which are close in one embedding dimension should be close in a higher one. More precisely, if $p_{i}$ and $p_{j}$ are neighbours, we compute their normalised distance $R_{i}$ and check if is greater than some threshold $R_{\text{th}}$ in the next dimension:
+\begin{equation*}
+  R_{i} = \frac{|x_{i+m\tau}-x_{j+m\tau}|}{||p_{i}-p_{j}||} > R_{\text{th}}.
+\end{equation*}
+If this inequality holds, then we have a false nearest neighbour and we get the optimal embedding dimension $d$ by minimising the number of such neighbours.
+
+We have to choose an upper bound for both $d$ and $\tau$ for the search to have a limit. We have chosen $d=30$ and a $\tau=30$ with a stride of 5. Once the search was finished, we have obtained optimal parameters $(d, \tau) = (6, 29)$. Due to the higher dimension, we used PCA to visualize the results in $\mathbb{R}^{3}$, as seen in \ref{fig:embedding_automatic}.
+
+\begin{figure}[h!]
+    \centering
+    \subfloat[\centering For the periodic wave]{{\includegraphics[width=7cm]{point_cloud_automatic1.pdf} }}%
+    \qquad
+    \subfloat[\centering For the quasi-periodic wave]{{\includegraphics[width=7cm]{point_cloud_automatic2.pdf} }}%
+    \caption{Optimal embeddings, after a reduction with PCA}%
+    \label{fig:embedding_automatic}%
+\end{figure}
+
+Just as before, we can then compute their persistence diagrams, seen in \ref{fig:embedding_automatic_diagrams}. For the periodic signal, it is essentially the same. In the case of the quasi-periodic wave, there is less noise on the diagonal. Most importantly, we see two prominent $H_{1}$ points and one $H_{2}$ point, which corresponds to the signature of a hypertorus.
+
+\begin{figure}[h!]
+    \centering
+    \subfloat[\centering For the periodic wave]{{\includegraphics[width=7cm]{periodic_automatic_diagram.pdf} }}%
+    \qquad
+    \subfloat[\centering For the quasi-periodic wave]{{\includegraphics[width=7cm]{nonperiodic_automatic_diagram.pdf} }}%
+    \caption{Persistence diagrams of the optimal embeddings}%
+    \label{fig:embedding_automatic_diagrams}%
+\end{figure}
+
+Using sliding windows and Taken's embedding gives us tools to help us classify or cluster time series based on the topology of their embeddings. The notebook for the examples above can be found in \textit{src/Sliding Windows 1.ipynb}. In the notebook \textit{src/Sliding Windows 2.ipynb}, we provide further examples and simulations of sliding window embeddings, allowing the reader to play around with the parameters and see how the change in parameters affects the change in geometry and in the resulting persistence diagrams in a more interactive fashion. For example, we can see how the embedding is progressively more chaotic the more stochastic noise we add into the original signal, and how noisy the persistence diagram becomes in \ref{fig:embedding_noise}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=15cm]{embedding_with_noise.pdf}
+  \caption{The noisier our signal is, the less informative the geometry of its embedding and the persistence diagram becomes.}
+  \label{fig:embedding_noise}
+\end{figure}

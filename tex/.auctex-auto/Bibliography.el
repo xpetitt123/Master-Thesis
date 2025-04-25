@@ -49,6 +49,7 @@
     "selicato2025topological"
     "boyd2024big"
     "madukpe2025comprehensive"
-    "AATRN"))
+    "AATRN"
+    "takens2006detecting"))
  '(or :bibtex :latex))
 
