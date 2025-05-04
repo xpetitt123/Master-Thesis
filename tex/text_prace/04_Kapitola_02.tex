@@ -9,15 +9,16 @@
 \newtheorem{example}{Example}[section]
 \newtheorem*{remark}{Remark}
 
-The goal of this and the following chapters is to establish and set up the pipeline for extracting the algebraic invariants of our data. Usually, we can only work with sampled and discrete data coming from some set of measurements. As such, we can't directly use methods of algebraic topology, since we won't typically be working with discrete topological spaces and to properly use these methods, we would need an uncountable amount of data; something that isn't feasible from a computational point of view.
+The goal of this and the following chapters is to establish and set up the pipeline for extracting the algebraic invariants of our data. Usually, we can only work with sampled and discrete data coming from some set of measurements. As such, we can't directly use methods of algebraic topology since we won't typically be working with discrete topological, spaces and to properly use these methods, we would need an uncountable amount of data -- something that isn't feasible from a computational point of view.
 \par
-This forces us to use different methods to somehow approximate and recover the topology of the ambient space given only a finite set of points. Secondly, we also need to consider the \textit{scale} of the data -- some interesting properties may be more apparent only after we ``zoom'' in closely on them, some may not become apparent at all. All in all, we will construct the following pipeline:
+This forces us to use different methods to somehow approximate and recover the topology of the ambient space given only a finite set of points. Secondly, we also need to consider the \textit{scale} of the data -- some interesting properties may be more apparent only after we ``zoom'' in closely on them; some may not become apparent at all. All in all, we will construct the following pipeline:
 
 \begin{center}
   \smartdiagram[sequence diagram]{
     Discrete data, Simplicial complex, Algebraic invariants}
 \end{center}
 
+\noindent
 and repeat this step for all scales at once, effectively measuring the evolution of the algebraic invariants through the changes in the feature scale.
 
 \section{Simplicial complexes}
@@ -37,8 +38,8 @@ Typically, we refer to a $0$-simplex as a \textit{vertex}, a $1$-simplex as an \
 \begin{definition}[Geometric simplicial complex]
   A \textit{geometric simplicial complex} $K$ is a set with finitely many simplices that satisfy the following:
   \begin{itemize}
-  \item $K$ contains every face of each simplex in $K$.
-  \item For any two simplices $\sigma, \tau \in K$, their intersection $\sigma \cap \tau$ is either empty or a face or both $\sigma$ and $\tau$.
+    \item $K$ contains every face of each simplex in $K$.
+    \item For any two simplices $\sigma, \tau \in K$, their intersection $\sigma \cap \tau$ is either empty or a face or both $\sigma$ and $\tau$.
   \end{itemize}
 \end{definition}
 
@@ -59,6 +60,7 @@ This is also known as a \textit{triangulation}, where the \textit{dimension} $k$
   \label{fig:simplex_2}
 \end{figure}
 
+\noindent
 A geometric simplicial complex $K$ in $\mathbb{R}^{n}$ is called a \textit{geometric realization} of an abstract simplicial complex $K'$, if and only if there is an embedding $e: V(K') \to \mathbb{R}^{n}$, that takes every $k$-simplex $\{v_{0}, \ldots, v_{k}\}$ in $K'$ to a $k$-simplex in $K$ that is the convex hull of $e(v_{0}), \ldots, e(v_{k})$. An example is shown in \ref{fig:simplex_2} as this is the geometric realization of the abstract complex with vertices $A,B,C,D,$ edges $\{A,B\}, \{A,C\}$,
 $\{B,C\}, \{C,D\}$ and 1 triangle $\{A,B,C\}$.
 
@@ -87,7 +89,8 @@ Given any open cover of a topological space, we are able to construct a simplici
   \label{fig:nerve_1}
 \end{figure}
 
-The following important theorem about nerves tells us when are the nerves ``equivalent'' to the original space. There are various formulation of this statement but since we are working primarily with finite metric spaces, we'll adopt the appropriate version for it.
+\noindent
+The following important theorem tells us when the nerves are ``equivalent'' to the original space. There are various formulations of this statement, but since we are working primarily with finite metric spaces, we'll adopt the appropriate version for it.
 
 \begin{theorem}[Nerve theorem]
   Given a finite cover $\mathfrak{U}$ (open or closed) of a metric space $M$, the underlying space $|N(\mathfrak{U})|$ is homotopy equivalent to $M$, if every non-empty intersection $\cap_{i=0}^{k}U_{\alpha_{i}}$ of cover elements is homotopy equivalent to a point, i.e., contractible.
@@ -97,7 +100,7 @@ The following important theorem about nerves tells us when are the nerves ``equi
 For those interested in a proof of this statement, see \cite{Borsuk1948OnTI} for example. From this we can see, that the nerve is homotopy equivalent to $M$ in \ref{fig:nerve_1}. Now we can finally present the first construction of an abstract simplicial complex using the concept of a nerve, given a finite subset $P$ of a metric space $(M,d)$.
 
 \begin{definition}[Čech complex]
-  Let $(M,d)$ be a metric space and $P$ a finite subset of it. Given a real $\varepsilon > 0$, the Čech complex $\mathbb{C}^{\varepsilon}(P)$ is defined to be the nerve of the set $\{B(p_{i},\varepsilon)\}$, where
+  Let $(M,d)$ be a metric space and $P$ a finite subset of it. Given a real $\varepsilon > 0$, the Čech complex $\mathbb{C}^{\varepsilon}(P)$ is defined to be the nerve of the set $\{B(p_{i},\varepsilon)\}$, where for all $p_{i} \in P$
   \begin{equation*}
     B(p_{i},\varepsilon) = \{x \in M \: \vert \: d(p_{i},x) \leq \varepsilon \}.
   \end{equation*}
@@ -116,7 +119,8 @@ One can easily deduce that if $M$ happens to be a Euclidean metric space, accord
   \label{fig:CechVR}
 \end{figure}
 
-A simple example, where we can see the difference between the Čech and VR complex can be seen on \ref{fig:CechVR}. For an interactive visualization of the two, the reader may want to access the following sites - \cite{smajhiVietorisx2013RipsComplex} and \cite{saulnechComplex}. With the movement of the sliders there, the reader is introduced to another important concept that we will make use of - changing the radius $r$ and constructing a growing sequence of either Čech or VR complexes.
+\noindent
+A simple example where we can see the difference between the Čech and VR complex can be seen on \ref{fig:CechVR}. For an interactive visualization of the two, the reader may want to access the following sites - \cite{smajhiVietorisx2013RipsComplex} and \cite{saulnechComplex}. With the movement of the sliders there, the reader is introduced to another important concept that we will make use of - changing the radius $r$ and constructing a growing sequence of either Čech or VR complexes.
 
 Nevertheless, we don't have to worry too much about the differences between the two, given the following result.
 
@@ -129,7 +133,7 @@ Nevertheless, we don't have to worry too much about the differences between the 
 
 \section{Sparse complexes}
 
-While the VR complex is the one you will usually encounter in most talks about TDA, it has a size problem. More often than not, both the Čech and VR complexes grow too large, even in low dimensions. A VR complex constructed out of a few thousand points can easily have millions of triangles. A short example of this behaviour can be seen in \ref{fig:sizeofVR}. As such, sometimes it is computationally less expensive to use more sparse alternatives instead. \footnote{Technically, the graph is based on the Rips filtration, a term we'll see in the future although it doesn't change the point presented here.}
+While the VR complex is the one you will usually encounter in most talks about TDA, it has a size problem. More often than not, both the Čech and VR complexes grow too large, even in low dimensions. A VR complex constructed out of a few thousand points can easily have millions of triangles. A short example of this behaviour can be seen in \ref{fig:sizeofVR}. As such, sometimes it is computationally less expensive to use more sparse alternatives instead. \footnote{Technically, the graph is based on the Rips filtration, a term we'll see in the future, although it doesn't change the point presented here.}
 
 \begin{figure}[h!]
   \centering
@@ -143,16 +147,19 @@ While the VR complex is the one you will usually encounter in most talks about T
 This complex is usually used in various applications, such as mesh generation or 3D triangulation (for example, see \href{https://doc.cgal.org/latest/Manual/packages.html#PartTriangulationsAndDelaunayTriangulations}{the following}). However, it remains computationally expensive in dimensions greater than 3, and other complexes are preferred instead.
 
 \begin{definition}[Delaunay complex]
-  Let $P$ be a finite point set in $R^{n}$. A $k$-simplex $\sigma$ is called \textit{Delaunay}, if its vertices are in P and there is an open $n$-ball whose boundary contains the boundary of this ball. A \textit{Delaunay complex} of $P$, denoted by Del $P$, is the simplicial complex with vertices in $P$, in which every simplex is Delaunay and $\vert$ Del $P \vert$ coincides with the convex hull of $P$.
+  Let $P$ be a finite point set in $R^{n}$. A $k$-simplex $\sigma$ is called \textit{Delaunay}, if its vertices are in $P$ and there is an open $n$-ball whose boundary contains its vertices and is empty, containing no point in $P$. A \textit{Delaunay complex} of $P$, denoted by Del $P$, is the geometric simplicial complex with vertices in $P$, in which every simplex is Delaunay and the underlying space $\vert$ Del $P \vert$ coincides with the convex hull of $P$.
 \end{definition}
+
+In $\mathbb{R}^{2}$, a Delaunay complex is made out of Delaunay triangles and all of their lower-dimensional faces. In $\mathbb{R}^{3}$, a Delaunay complex is made out of Delaunay tetrahedra and all of their lower-dimensional faces and so forth.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=10cm, height=8cm]{Delaunay.pdf}
-  \caption{Delaunay complex on a sample of randomly generated points.}
+  \caption{Delaunay complex on a sample of randomly generated points in $\mathbb{R}^2$.}
   \label{fig:Delaunay}
 \end{figure}
 
+\noindent
 An example of a Delaunay complex can be seen on \ref{fig:Delaunay}. The Delaunay complex is dual to another construction that you may or may not encounter in the wild - the Voronoi diagram.
 
 \begin{definition}[Voronoi diagram]
@@ -181,9 +188,9 @@ The reasons why Delaunay complexes are popular in dimensions $<3$ are the follow
 \begin{theorem}
   A triangulation of a point set $P \subset \mathbb{R}^{n}$ is a geometric simplicial complex whose vertex set is $P$ and whose simplices tessellate the convex hull of $P$. Among all triangulations of a point set $P \subset \mathbb{R}^{n}$, Del($P$) achieves the following:
   \begin{enumerate}
-  \item In $\mathbb{R}^{2}$, Del($P$) maximizes the minimum angle of triangles in the complex.
-  \item In $\mathbb{R}^{2}$, Del($P$) minimizes the largest circumcircle for triangles in the complex.
-  \item For a simplex in Del($P$), let its min-ball be the smallest ball that contains the simplex in it. In all dimensions, Del($P$) minimizes the largest min-ball.
+    \item In $\mathbb{R}^{2}$, Del($P$) maximizes the minimum angle of triangles in the complex.
+    \item In $\mathbb{R}^{2}$, Del($P$) minimizes the largest circumcircle for triangles in the complex.
+    \item For a simplex in Del($P$), let its min-ball be the smallest ball that contains the simplex in it. In all dimensions, Del($P$) minimizes the largest min-ball.
   \end{enumerate}
 \end{theorem}
 Unfortunately, the size of a Delaunay complex is $O(n^{\lceil d/2 \rceil})$, with the same cost in computation (see \cite{chazelle1993optimal}).
@@ -197,7 +204,7 @@ Then the alpha complex $\text{Del}^{\alpha}(P)$ is the nerve of the closed sets 
 We can use the duality of the Delaunay complex to introduce a third definition - an alpha complex contains a $k$-simplex $\sigma = \{p_{0}, \ldots, p_{k}\}$, if and only if $\bigcup_{p \in P}B(p,\alpha)$ meets the intersection of Voronoi cells $V_{p_{0}} \cup \ldots \cup V_{p_{k}}$.
 
 \subsection{Graph induced complex}
-Lastly, we present here another sparse complex that instead uses subsampling to tackle the size problem that the VR or Čech complexes have, while capturing the topology and even the geometry of the point cloud more efficiently. This construction was introduced in \cite{dey2013graphinducedcomplexpoint}.
+Lastly, we present here another sparse complex that instead uses subsampling to tackle the size problem that the VR or Čech complexes have while capturing the topology and even the geometry of the point cloud more efficiently. This construction was introduced in \cite{dey2013graphinducedcomplexpoint}.
 
 \begin{definition}[Graph induced complex]
   Let $(P,d)$ be a metric space, where $P$ is a finite set and $G(P)$ be a graph with vertices in $P$. Let $Q \subseteq P$ and let $\nu : P \to Q$ the mapping that sets $\nu(p)$ to be any point in argmin $d(p,Q)$. The \textit{graph induced complex} (GIC) $\mathbb{G}(G(P),Q,d)$ is the simplicial complex containing a $k$-simplex $\sigma=\{q_{1}, \ldots, q_{k+1}\}$, $q_{i} \in Q$, if and only if there exists a $(k+1)$-clique in $G(P)$ spanned by vertices $\{p_{1}, \ldots, p_{k+1}\} \subseteq P$ so that $q_{i} \in \nu(p_{i})$ for each $i \in \{1,2, \ldots, k+1\}$.
@@ -210,17 +217,17 @@ In the following, the quality of the sampled space after subsampling with $Q$ wi
 \begin{definition}
   A subset $Q \subseteq P$ is called a $\delta$-sample of a metric space $(P,d)$, if the following condition holds:
   \begin{itemize}
-  \item $\forall p \in P$, there exists a $q \in Q$, so that $d(p,q) \leq \delta$.
+    \item $\forall p \in P$, there exists a $q \in Q$, so that $d(p,q) \leq \delta$.
   \end{itemize}
   It is called $\delta$-sparse, if the previous and next condition hold together:
   \begin{itemize}
-  \item $\forall (q,r) \in Q \times Q$ with $q \neq r$, $d(q,r) \geq \delta$.
+    \item $\forall (q,r) \in Q \times Q$ with $q \neq r$, $d(q,r) \geq \delta$.
   \end{itemize}
 \end{definition}
-The metric itself is usually taken to be either the Euclidean metric or the graph metric $d_{G}$ derived from the input graph $G(P)$. In those two cases we have several existence and inference results involving the GIC; see \cite{dey2013graphinducedcomplexpoint} again for that. The paper also includes an empirical comparison of the GIC with the VR complex together with another sparse complex, the Witness complex, which we won't discuss in this thesis. The simulations show that the GIC can have a size similar to the Witness complex (which is usually smaller but also fails to capture the topology more because of it) and maintains the accuracy of the Rips complex.
+The metric itself is usually taken to be either the Euclidean metric or the graph metric $d_{G}$ derived from the input graph $G(P)$. In those two cases, we have several existence and inference results involving the GIC; see \cite{dey2013graphinducedcomplexpoint} again for that. The paper also includes an empirical comparison of the GIC with the VR complex together with another sparse complex, the Witness complex, which we won't discuss in this thesis. The simulations show that the GIC can have a size similar to the Witness complex (which is usually smaller but also fails to capture the topology more because of it) and maintain the accuracy of the Rips complex.
 
 \section{Chains, cycles and homology}
-We make the daring assumption that the reader has some knowledge of algebra, group theory and topology in order to understand the next part. If not, maybe an appendix will be written in the future, who knows?
+We make the daring assumption that the reader has some knowledge of algebra, group theory, and topology in order to understand the next part. If not, maybe an appendix will be written in the future \footnote{It turns out that this was a goal too ambitious for the author to undertake.}; who knows?
 
 \subsection{Chains}
 If $K$ is a simplicial $k$-complex with a $m_{p}$ number of $p$-simplices, then a $p$-chain $c$ in $K$ is simply the formal sum of $p$-simplices multiplied by some coefficients from a ring $R$. Addition of $p$-chains is defined in the following natural way: if $c = \sum \alpha_{i}\sigma_{i}$ and $c' = \sum \alpha_{i}'\sigma_{i},$ then
@@ -229,46 +236,38 @@ If $K$ is a simplicial $k$-complex with a $m_{p}$ number of $p$-simplices, then 
   c + c' = \sum_{i=1}^{m_{p}} (\alpha_{i} + \alpha_{i}')\sigma_{i}.
 \end{equation*}
 
-Generally speaking, the multiplication by coefficients from $R$ turn chains into an $R$-module. In the context of this work, we will only consider coefficients coming from some field $\boldsymbol{k},$ more specifically from $\boldsymbol{k} = \mathbb{Z}_{2}$. This is computationally convenient because it turns chain addition into, for example in the case of 1-chains,
+Generally speaking, the multiplication by coefficients from $R$ turn chains into an $R$-module. In the context of this work and most textbooks, we will mainly consider coefficients coming from some field $\boldsymbol{k},$ more specifically from $\boldsymbol{k} = \mathbb{Z}$. This means that, for example, adding two $1-$chains works in the following natural manner:
+
+\begin{equation*}
+  (2e_{1} + 3e_{2} + 9e_{4}) + (e_{1} + 10e_{2} + 6e_{5}) = 3e_{1} + 13e_{2} + 9e_{4} + 6e_{5},
+\end{equation*}
+where the simplices with zero coefficients are ignored.
+
+It should be noted that most software packages will work with coefficients in the field $\mathbb{Z}_{2}$, even allowing the user in some cases to provide their own field of choice, if needed. This is computationally convenient because it turns chain addition into, for example, in the case of 1-chains,
 
 \begin{equation*}
   (e_{1} + e_{2} + e_{3}) + (e_{1} + e_{2} + e_{4}) = e_{3} + e_{4},
 \end{equation*}
+\noindent
+since in $\mathbb{Z}_{2}$ we have that $0 + 0 = 0, 0 + 1 = 1$ and $1+1 = 0$.
 
-since in $\mathbb{Z}_{2}$ we have that $0 + 0 = 0, 0 + 1 = 1$ and $1+1 = 0$. This also implies that
-
-\begin{equation*}
-  c + c = \sum_{i=1}^{m_{p}} = (\alpha_{i} + \alpha_{i})\sigma_{i} = 0\sigma_{i} = 0,
-\end{equation*}
-
-i.e., $p$-chains with $\mathbb{Z}_{2}$ addition form a group, the identity here is the chain $0 = \sum_{i=1}^{m_{p}}0\sigma_{i}$, and the inverse of $c$ is $c$ itself due to the above. We call this group the \textit{$p$-th chain group} $C_{p}(K)$.
+$p$-chains additionally form a group, a free abelian group to be precise, that we call the \textit{$p$-th chain group} $C_{p}(K)$.
 
 \subsection{Boundary operator and cycles}
-Since our goal is to study the changes in topology across different scales, we need a way to connect higher dimensional chains with lower dimensional ones. For that, we introduce the boundary operator: Given a $p$-simplex $\sigma = \{v_{0}, \ldots, v_{p}\}$, let
+Since our goal is to study the changes in topology across different scales, we need a way to connect higher-dimensional chains with lower-dimensional ones. For that, we introduce the boundary operator: Given a $p$-simplex $\sigma = (v_{0}, \ldots, v_{p})$, let
 
 \begin{equation*}
-  \partial_{p}\sigma = \sum_{i=0}^{p}\{v_{0}, \ldots, \hat{v}_{i}, \ldots, v_{p}\},
+  \partial_{p}\sigma = \sum_{i=0}^{p}(-1)^{i}(v_{0}, \ldots, \hat{v}_{i}, \ldots, v_{p}),
 \end{equation*}
-where $\hat{v}_{i}$ means that this vertex is omitted. Extending this definition to a $p$-chain, we get the boundary operator homomorphism $\partial_{p}: C_{p} \to C_{p-1}$ that returns a $(p-1)$-chain when given a $p$-chain in the following manner
+
+\noindent
+where $\hat{v}_{i}$ means that this vertex is omitted. Extending this definition to a $p$-chain, we get the boundary operator homomorphism $\partial_{p}: C_{p} \to C_{p-1}$ that returns a $(p-1)$-chain when given a $p$-chain in the following manner:
 
 \begin{equation*}
-  \partial_{p}c = \sum_{i=1}^{m_{p}}\alpha_{i}(\partial_{p}\sigma_{i}), \: \text{for} \: c = \sum_{i=1}^{m_{p}}\alpha_{i}\sigma_{i} \in C_{p}.
+  \partial_{p}c = \sum_{i=1}^{m_{p}}\alpha_{i}(\partial_{p}\sigma_{i}), \quad \text{for} \: c = \sum_{i=1}^{m_{p}}\alpha_{i}\sigma_{i} \in C_{p}.
 \end{equation*}
 
-A couple edge cases have to be considered. For $p = 0$, we get that $\partial_{0}c = \emptyset$. The chain group $C_{-1}$ has only one element $0$. And if $K$ is a $k$-complex, then $C_{p} = 0$ for $p>k$. In general, most textbooks and articles will present the form of the boundary operator as follows:
-
-\begin{equation*}
-  \partial_{p}\sigma = \sum_{i=0}^{p}(-1)^{i} \{v_{0}, \ldots, \hat{v}_{i}, \ldots, v_{p}\},
-\end{equation*}
-
-which differs from our choice by the factor of $(-1)^{i}$. But remember that we're working in $\mathbb{Z}_{2}$, where the multiplicative factor becomes unnecessary due to the addition laws. As such, the boundary operator applied to the $2$-chain $\{a,b,c\}$ gives us
-
-\begin{equation*}
-  \partial_{2}(abc) = ab + bc + ca,
-\end{equation*}
-instead of $ab - bc + ca$ as you may encounter in other texts.
-
-Applying the boundary operator twice in a row turns out to produce the empty chain.
+A couple special cases have to be considered. For $p = 0$, we get that $\partial_{0}c = \emptyset$. The chain group $C_{-1}$ has only one element $0$. And if $K$ is a $k$-complex, then $C_{p} = 0$ for $p>k$. Applying the boundary operator twice in a row turns out to produce the empty chain.
 
 \begin{lemma}
   For $p>0$ and any $p$-chain $c$, $\partial_{p-1}\circ\partial_{p}(c) = 0$.
@@ -285,77 +284,75 @@ By extending the boundary operator now to chain groups, we can construct a seque
     0 = C_{k+1} \arrow[r, "\partial_{k+1}"] & C_{k} \arrow[r, "\partial_{k}"] & \cdots \arrow[r] & \cdots \arrow[r] & C_{1} \arrow[r, "\partial_{1}"] & C_{0} \arrow[r, "\partial_{0}"] & C_{-1}=0.
   \end{tikzcd}
 \end{figure}
-It can be worthwhile to mention that for $p \geq -1$, each of the $C_{p}$ is a vector space.
 
 \subsection{Cycle and boundary groups}
 Just like with the chain groups, we can identify two other natural groups of interests - the \textit{cycle} and \textit{boundary} groups. We start by defining what a cycle is - a $p$-chain $c$ is a $p$-cycle if $\partial c = 0$, i.e., a chain with an empty boundary.
 
 The $p$-cycles form the \textit{$p$-th cycle group} $Z_{p}$ with the same chain addition operation inherited from chain groups. From the above, we can see that ker $\partial_{p} = Z_{p}$.
 
-We saw that after applying the boundary operator to the $2$-chain $\{a,b,c\}$, the result was
+We see that after applying the boundary operator to the $2$-chain $(a,b,c)$, the result is
 
 \begin{equation*}
-  \partial_2(abc) = ab + bc + ca.
+  \partial_2(abc) = bc - ac + ab.
 \end{equation*}
 This $1$-chain is a $1$-cycle since
 \begin{equation*}
-  \partial_{1}(ab + bc + ca) = (a+b) + (b+c) + (c+a) = 0.
+  \partial_{1}(bc - ac + ab) = (c-b) - (c-a) + (b-a) = 0.
 \end{equation*}
 
-It's not difficult to conclude from this that the boundary of a $p$-chain is a $(p-1)$-cycle. This begs the question - which $(p-1)$-chains can be obtained this way? We call the set of all $(p-1)$-chains that are the result of an application of the boundary operator $\partial_{p}$ on $p$-chains the \textit{$(p-1)$-th boundary group} $B_{p-1} = \partial_{p}(C_{p})$. This is equivalent to saying that $B_{p-1} = \text{im} \: \partial_{p}$. It is left as an exercise for the reader to check that $\partial_{p-1}B_{p-1} = 0$ for all $p>0$, which implies that $B_{p-1} \subseteq Z_{p-1}$.
+It's not difficult to conclude from this that the boundary of a $p$-chain is a $(p-1)$-cycle. This begs the question - which $(p-1)$-chains can be obtained this way? We call the set of all $(p-1)$-chains that are the result of an application of the boundary operator $\partial_{p}$ on $p$-chains the \textit{$(p-1)$-st boundary group} $B_{p-1} = \partial_{p}(C_{p})$. This is equivalent to saying that $B_{p-1} = \text{im} \: \partial_{p}$. It is straightforward to see that $\partial_{p-1}B_{p-1} = 0$ for all $p>0$, which implies that $B_{p-1} \subseteq Z_{p-1}$.
 
 \begin{theorem}
   For a simplicial $k$-complex,
   \begin{itemize}
-  \item $C_{0} = Z_{0}$ and $B_{k} = 0$.
-  \item For $p \geq 0$, $B_{p} \subseteq Z_{p} \subseteq C_{p}$.
-  \item Both $B_{p}$ and $Z_{p}$ are vector spaces.
+    \item $C_{0} = Z_{0}$ and $B_{k} = 0$.
+    \item For $p \geq 0$, $B_{p} \subseteq Z_{p} \subseteq C_{p}$.
+    \item Both $B_{p}$ and $Z_{p}$ are vector spaces.
   \end{itemize}
 \end{theorem}
 
 \subsection{Homology}
-
 We can finally define the most important notion in this work - homology. Homology is primarily used to quantify and measure the failure of a cycle to be a boundary by putting cycles that differ by a boundary in the same equivalence class.
 
 \begin{definition}[Homology group]
-  For $p \geq 0$, the \textit{$p$-th homology group} is the quotient group $H_{p} = Z_{p} / B_{p}$. Since we're using $\mathbb{Z}_{2}$ as our coefficient field, $H_{p}$ is a vector space, where we call its dimension the $p$-th Betti number
+  For $p \geq 0$, the \textit{$p$-th homology group} is the quotient group $H_{p} = Z_{p} / B_{p}$. We call its rank the $p$-th Betti number
   \begin{equation*}
-    \beta_{p} := \text{dim} \: H_{p}.
+    \beta_{p} := \text{rank} \: H_{p}.
   \end{equation*}
 \end{definition}
 
-The equivalence classes are called \textit{homology classes} in this context. Two cycles $c, c' \in Z_{p}$ are in the same homology class, iff $c \in c' + B_{p}$, which under $\mathbb{Z}_{2}$ coefficients translates to $c + c' \in B_{p}$.
+The equivalence classes are called \textit{homology classes} in this context. Two cycles $c, c' \in Z_{p}$ are in the same homology class, iff $c \in c' + B_{p}$.
 
 We have the following useful statements with our choice of field coefficients:
 
 \begin{theorem}
   For $p \geq 0$,
   \begin{itemize}
-  \item $H_{P}$ is a vector space when defined over $\mathbb{Z}_{2}$.
-  \item The Betti number, $\beta_{p} = \text{dim}\:H_{p}$, is given by $\beta_{p} = \text{dim}\:Z_{p} - \text{dim}\:B_{p}$.
-  \item There are exactly $2^{\beta_{p}}$ homology classes in $H_{p}$ when defined over $\mathbb{Z}_{2}$.
+    \item $H_{p}$ is a vector space when defined over $\mathbb{Z}_{2}$.
+    \item The Betti number, $\beta_{p} = \text{rank}\:H_{p}$, is given by $\beta_{p} = \text{rank}\:Z_{p} - \text{rank}\:B_{p}$.
+    \item There are exactly $2^{\beta_{p}}$ homology classes in $H_{p}$ when defined over $\mathbb{Z}_{2}$.
   \end{itemize}
 \end{theorem}
 
-Generally speaking, $H_{p}$ isn't always a vector space over $\mathbb{Z}$ as there might be torsion subgroups.
+The reader should be made aware of the fact that when we talk about homology, we are actually talking about a \textit{homology theory}. The most familiar usage of it is for the homology of a topological space. In its generality, homology is a sequence of functors satisfying a collection of axioms.\footnote{The interested reader might want to search for \textit{Eilenberg-Steenrod axioms}.} The important property is that any homology theory satisfying these axioms will yield the same homology groups. This makes it that we usually don't specify which homology theory we have used, unless needed. In our case, the two theories we will work with -- simplicial homology and its general version, singular homology -- are equivalent, for all our purposes.
 
-Now what is homology useful for, in the context of statistics and data analysis? The homology group $H_{n}(X)$ of some topological space, more specifically its Betti number, tells us the number of ``holes'' with a $n$-dimensional boundary in our data. For example, a $0$-dimensional hole is merely the gap between any two components. It implies then that $H_{0}(X)$ desribes the path-connected components in $X$. This turns out to be an strong, invariant characteristic of the dataset that we work with and allows us to discover high-dimensional structures that normally we wouldn't be able to notice.
+Now, what is homology useful for, in the context of statistics and data analysis? The homology group $H_{n}(X)$ of some topological space, more specifically its Betti number, tells us the number of ``holes'' with a $n$-dimensional boundary in our data. For example, a $0$-dimensional hole is merely the gap between any two components. It implies then that $H_{0}(X)$ describes the path-connected components in $X$. This turns out to be an strong, invariant characteristic of the dataset that we work with and allows us to discover high-dimensional structures that normally we wouldn't be able to notice.
 
-A few informal examples may be useful to the reader; the proofs of which use more complicated techniques such as the Mayer-Vietoris sequence and so they will be omitted since this isn't an algebraic topology textbook. It isn't hard to see that $S^{1}$, the one-dimensional sphere, has only 1 path-connected component and 1 one-dimensional hole in the middle. We can then describe its homology groups as
+A few informal examples may be useful to the reader, the proofs of which use more complicated techniques such as the Mayer-Vietoris sequence and so they will be omitted since this isn't an algebraic topology textbook. It isn't hard to see that $S^{1}$, the one-dimensional sphere, has only 1 path-connected component and 1 one-dimensional hole in the middle. We can then describe its singular homology groups as
 
 \begin{equation*}
   H_{k}(S^{1}) = \begin{cases}
     \mathbb{Z} \qquad k = 0,1 \\
-    \{0\} \quad \text{otherwise}
+    \{0\} \quad \text{otherwise}.
   \end{cases}
 \end{equation*}
 
-The corresponding Betti numbers here would be $\beta_{0} = \beta_{1} = 1$ and $\beta_{k} = 0, \forall k > 1$. This aligns with our intuition that a circle has a hole in the middle, one boundary line trapping said hole and no other high-dimensional structure. The argument can be extended for the general $n$-sphere to produce
+The corresponding Betti numbers here would be $\beta_{0} = \beta_{1} = 1$ and $\beta_{k} = 0, \forall k > 1$. This aligns with our intuition that a circle has a hole in the middle, one boundary line trapping said hole, and no other high-dimensional structure. If we wanted to compute its simplicial homology, we would replace the sphere $\mathbb{S}^{1}$ with a triangle, approximating the continuous structure with a discrete approximation. The argument can be extended for the general $n$-sphere to produce
 
 \begin{equation*}
   H_{k}(S^{n}) = \begin{cases}
     \mathbb{Z} \qquad k = 0,n \\
-    \{0\} \quad \text{otherwise}
+    \{0\} \quad \text{otherwise}.
   \end{cases}
 \end{equation*}
 
@@ -365,21 +362,24 @@ With a little more effort and imagination, it isn't hard to see that the homolog
   H_{k}(T^{2}) = \begin{cases}
     \mathbb{Z} \qquad \qquad k = 0,2 \\
     \mathbb{Z} \times \mathbb{Z} \qquad k = 1 \\
-    \{0\} \qquad \text{otherwise}
+    \{0\} \qquad \text{otherwise},
   \end{cases}
 \end{equation*}
 
+\noindent
 where the two 1-dimensional holes describe the circles around the width and length of the torus. Once again, in general the situation is
 
 \begin{equation*}
   H_{k}(T^{n}) = \begin{cases}
     \mathbb{Z}^{\binom{n}{k}} \qquad 0 \leq k \leq n  \\
-    \{0\} \qquad \text{otherwise}
+    \{0\} \qquad \text{otherwise}.
   \end{cases}
 \end{equation*}
 
+Since computers can only ever approximate a continuous medium with a discrete version, all software packages and computations are done using simplicial homology. As mentioned above, this isn't a loss due to the axiomatic nature of homology.
+
 \subsection{Induced homology}
-To have a better understanding of homology, we have to know how it behaves if we move from one topological space to another. In our case, we will look into simplicial complexes and simplicial maps between them since we can only ever approximate a continuous space. Simplicial maps take cycles to cycles and boundaries to boundaries, which suggests the following definition.
+To have a better understanding of homology, we have to know how it behaves if we move from one topological space to another. Simplicial maps take cycles to cycles and boundaries to boundaries, which suggests the following definition.
 
 \begin{definition}[Chain map]
   Let $f:K_{1} \to K_{2}$ be a simplicial map. The chain map $f_{\#}: C_{p}(K_{1}) \to C_{p}(K_{2})$ corresponding to $f$ is defined as follows. If $c = \sum \alpha_{i}\sigma_{i}$ is a $p$-chain, then $f_{\#}(c) = \sum \alpha_{i} \tau_{i}$, where
@@ -407,7 +407,7 @@ This result can be better expressed via the commutativity of the diagram below:
   \end{tikzcd}
 \end{figure}
 
-Essentially, if we start from the top left, the path that we choose doesn't matter because we'll reach the same chain in the end. From the above, since $B_{p}(K_{1}) \subseteq Z_{p}(K_{1})$, we see that $f_{\#}(B_{p}(K_{1})) \subseteq f_{\#}(Z_{p}(K_{1}))$, which allows us to have a well defined induced map in the quotient space
+Essentially, if we start from the top left, the path that we choose doesn't matter because we'll reach the same chain in the end. From the above, since $B_{p}(K_{1}) \subseteq Z_{p}(K_{1})$, we see that $f_{\#}(B_{p}(K_{1})) \subseteq f_{\#}(Z_{p}(K_{1}))$, which allows us to have a well-defined induced map in the quotient space
 
 \begin{equation*}
   f_{*}(Z_{p}(K_{1})/B_{p}(K_{1})) := f_{\#}(Z_{p}(K_{1})) / f_{\#}(B_{p}(K_{1})).
@@ -421,32 +421,33 @@ From the commutativity of the diagram, $f_{\#}(Z_{p}(K_{1})) \subseteq Z_{p}(K_{
 or $f_{*}: H_{p}(K_{1}) \to H_{p}(K_{2})$. We can now state the desired result.
 
 \begin{lemma}
-  For two contiguous maps $f_{1}: K_{1} \to K_{2}$ and $f_{2}: K_{1} \to K_{2}$, the induced maps $f_{1_{*}}: H_{p}(K_{1}) \to H_{p}(K_{2})$ and $f_{2_{*}}: H_{p}(K_{1}) \to H_{p}(K_{2})$ are equal.
+  For two contiguous maps $f_{1}: K_{1} \to K_{2}$ and $f_{2}: K_{1} \to K_{2}$, the induced maps $f_{1_{*}}: H_{p}(K_{1}) \to H_{p}(K_{2})$ and $f_{2_{*}}: H_{p}(K_{1}) \to H_{p}(K_{2})$ are equal, where two simplicial maps $f_{1}:K_{1} \to K_{2}, f_{2}:K_{1} \to K_{2}$ are contiguous if for every simplex $\sigma \in K_{1}, f_{1}(\sigma) \cup f_{2}(\sigma)$ is a simplex in $K_{2}$.
 \end{lemma}
 
 \subsection{Cohomology}
-Cohomology is the dual concept of homology. While in general cohomology has a richer structure and is a finer invariant than homology, in our case we won't explore the differences between the two as most of the popular software uses homology for their calculations. As usual, we will work with coefficients in $\mathbb{Z}_{2}$.
+Cohomology is the dual concept of homology. While in general cohomology has a richer structure and is a finer invariant than homology, in our case we won't explore the differences between the two as most of the popular libraries use homology groups for their calculations.
 
-A $p$-cochain is a homomorphism $\phi: C_{p} \to \mathbb{Z}_{2}$ from the chain group to the coefficient ring $\mathbb{Z}_{2}$. The cochain is determined by its values on every $p$-simplex $\sigma \in K$, i.e., a $p$-chain $c = \sum_{i=1}^{m_{p}}\alpha_{i}\sigma_{i}$ assigns a value
+A $p$-cochain is a homomorphism $\phi: C_{p} \to \mathbb{Z}$ from the chain group to the coefficient ring $\mathbb{Z}$. The cochain is determined by its values on every $p$-simplex $\sigma \in K$, i.e., a $p$-chain $c = \sum_{i=1}^{m_{p}}\alpha_{i}\sigma_{i}$ assigns a value
 
 \begin{equation*}
-  \phi(c) = \alpha_{1}\phi(\sigma_{1}) + \ldots + \alpha_{m_{p}}\phi(\sigma_{m_{p}})
+  \phi(c) = \alpha_{1}\phi(\sigma_{1}) + \ldots + \alpha_{m_{p}}\phi(\sigma_{m_{p}}).
 \end{equation*}
 
-that is either $0$ or $1$. It isn't hard to verify that $\phi(c + c') = \phi(c) + \phi(c')$. The cochain that gives the value $1$ to a simplex is called its dual cochain $c^{*}$. $p$-cochains form the cochain group $C^{p}$ dual to $C_{p}$ with addition defined by $(\phi + \phi')(c) = \phi(c) + \phi'(c)$ and scalar multiplication $(\alpha \phi)(c) = \alpha \phi(c)$, where we used $\mathbb{Z}_{2}$ addition and multiplication. Hence, $C^{p}$ is a vector space.
-
-Similarly to chain boundaries, there is the notion of a cochain coboundary $\delta_{p}: C^{p} \to C^{p+1}$. For a $p$-cochain $\phi$, its $(p+1)$-coboundary is given by the homomorphism $\delta \phi: C^{p+1} \to \mathbb{Z}_{2}$ defined as $\delta \phi(c) = \phi(\partial c)$ for any $(p+1)$-chain $c$. Repeated iteration of the $\delta$ operator gives us the sequence
+Similarly to chain boundaries, there is the notion of a cochain coboundary $\delta_{p}: C^{p} \to C^{p+1}$. For a $p$-cochain $\phi$, its $(p+1)$-coboundary is given by the homomorphism $\delta \phi: C^{p+1} \to \mathbb{Z}$ defined as $\delta \phi(c) = \phi(\partial c)$ for any $(p+1)$-chain $c$. Repeated iteration of the $\delta$ operator gives us the sequence in \ref{fig:cohomology}.
 
 \begin{figure}[h]
   \centering
   \begin{tikzcd}
     0 = C^{-1} \arrow[r, "\delta_{-1}"] & C^{0} \arrow[r, "\delta_{0}"] & \ldots \arrow[r, "\delta_{k-1}"] & C^{k} \arrow[r, "\delta_{k}"] & C^{k+1} = 0.
   \end{tikzcd}
+  \caption{Cochain complex.}
+  \label{fig:cohomology}
 \end{figure}
 
-$p$-coboundaries form the coboundary group and vector space $B^{p}$ with addition and scalar multiplication being the same as in $C^{p}$. Finally, we only need cocycles to define what the cohomology group is. A $p$-cochain $\phi$ is called a $p$-cocycle if its coboundary $\delta \phi$ is a zero homomorphism. The set of $p$-cocycles forms the group and vector space $Z^{p}$ with the operations induced by $C^{p}$ once again.
+\noindent
+$p$-coboundaries form the coboundary group $B^{p}$ with addition and scalar multiplication being the same as in $C^{p}$. Finally, we only need cocycles to define what the cohomology group is. A $p$-cochain $\phi$ is called a $p$-cocycle if its coboundary $\delta \phi$ is a zero homomorphism. The set of $p$-cocycles forms the group $Z^{p}$ with the operations induced by $C^{p}$ once again.
 
-The coboundary operator $\delta$ also satisfies the same property as the boundary $\partial$.
+The coboundary operator $\delta$ also satisfies the same property as the boundary $\partial$, that is, $\delta \phi \circ \delta \phi = 0$.
 
 \begin{lemma}
   For $p >0$, $\delta_{p} \circ \delta_{p-1} = 0$, which implies $B^{p} \subseteq Z^{p}$.
@@ -479,23 +480,25 @@ We can start by constructing a simplicial complex homeomorphic to the $2-$sphere
   \end{tikzcd}
 \end{figure}
 
-In this relatively simple example, its chain complex is characterized by
+In this relatively simple example, its chain complex can be described, for example, by \ref{fig:chain_complex}.
 
 \begin{figure}[h]
   \centering
   \begin{tikzcd}
     \cdots \arrow[r] & 0 \arrow[r, "\partial_{3}"] & {\langle A,B \rangle} \arrow[r, "\partial_{2}"] & {\langle a,b,c \rangle} \arrow[r, "\partial_{1}"] & {\langle x,y,z \rangle} \arrow[r, "\partial_{0}"] & 0
   \end{tikzcd}
+  \caption{Chain complex example}
+  \label{fig:chain_complex}
 \end{figure}
 
-Our goal will be to compure the homology group $H_{0}$ of this simplicial complex, and by extension, of $S^{2}$. We already know that $\text{ker}\:\partial_{0}\langle x,y,z \rangle$ is $\langle x,y,z \rangle$ itself. Now we need to figure out what $\text{Im}\:\partial_{1}$ is. For that, the behaviour of $\partial_{1}$ on any $1-$chain $la + mb + nc$ is needed.
+Our goal will be to compure the simplicial homology group $H_{0}$ of this simplicial complex, and due to the equivalence of the homology theories we are working with, of $S^{2}$. We already know that $\text{ker}\:\partial_{0}\langle x,y,z \rangle$ is $\langle x,y,z \rangle$ itself. Now we need to figure out what $\text{Im}\:\partial_{1}$ is. For that, the behaviour of $\partial_{1}$ on any $1-$chain $la + mb + nc$ is needed.
 
-Following the properties of the maps $\partial_{i}$, we have that
+Following the properties of the maps $\partial_{1}$, we have that
 
 \begin{align*}
   \partial_{1}(la + mb + nc) &= l\partial_{1}(a) + m\partial_{1}(b) + n\partial_{1}(c) \\
-  &= l(y-x) + m(z-y) + n(z-x) \\
-  &= (-l-n)x + (l-m)y + (m+n)z.
+                             &= l(y-x) + m(z-y) + n(z-x) \\
+                             &= (-l-n)x + (l-m)y + (m+n)z.
 \end{align*}
 
 We can represent this chain with a $3-$tuple $[l,m,n]^{T} \in \mathbb{Z}^{3}$ since this is a finitely generated abelian group of rank $3$. Writing the equation above as a tranformation
@@ -503,7 +506,7 @@ We can represent this chain with a $3-$tuple $[l,m,n]^{T} \in \mathbb{Z}^{3}$ si
 \begin{equation*}
   [l,m,n]^{T} \to [-l-n,l-m,m+n]^{T},
 \end{equation*}
-
+\noindent
 allows us to represent the effect of $\partial_{1}$ as a matrix
 
 \begin{equation*}
@@ -540,17 +543,17 @@ We can identify $(y-x)$ and $(z-y)$, which forces the quotient homomorphism $q: 
   q(z-y) &= q(z) - q(y) = 0 \Longrightarrow q(z) = q(y)
 \end{align*}
 
-To obtain the quotient, we first swap $y$ by $x$:
+To obtain the quotient, we first replace $y$ by $x$:
 \begin{equation*}
   H_{0} = \langle x,x,z \rangle / \langle 0, z-x \rangle = \langle x,z \rangle / \langle z-x \rangle
 \end{equation*}
 
-Then we swap $z$ with $y$:
+Then we replace $z$ with $y$:
 \begin{equation*}
   H_{0} = \langle x,x \rangle / 0 = \langle x \rangle
 \end{equation*}
 
-Therefore $H_{0} \cong Z$ and the $2-$sphere $S^{2}$ has only one connected component - itself. The essence of this example lies in reducing the calculation of homology groups to matrix manipulations. Typically, a homology solver will make use of the Smith normal form of a matrix.
+Therefore $H_{0} \cong \mathbb{Z}$ and the $2-$sphere $S^{2}$ has only one connected component - itself. The essence of this example lies in reducing the calculation of homology groups to matrix manipulations. Typically, a homology solver will make use of the Smith normal form of a matrix.
 
 \begin{definition}[Smith normal form]
   For any $m \times n$ matrix $A$, there exists an invertible $n \times n$ matrix $U$ and an invertible $m \times m$ matrix $V$ such that $UAV$ is equal to a matrix of the form
@@ -561,9 +564,9 @@ Therefore $H_{0} \cong Z$ and the $2-$sphere $S^{2}$ has only one connected comp
       0 & \alpha_2 & 0 & & & 0\\
       0 & 0 & \ddots \\
       \vdots & & & \alpha_r \\
-      & & & & 0\\
+               & & & & 0\\
       0 & & & & & \ddots \\
-      & & & & & & 0
+               & & & & & & 0
     \end{bmatrix}
   \end{equation*}
 
@@ -580,11 +583,11 @@ For the computation of the homology groups, we use the following theorem that we
   where $r = rank(A), s = rank(B)$ and $\alpha_{1}, \ldots, \alpha_{r}$ are the non-zero elements on the diagonal of the Smith normal form of $A$.
 \end{theorem}
 
-Most homology solvers make use of additional optimization steps before resorting to matrix algebra. Libraries such as Linbox \cite{linbox} (written in C++) can be used to compute the Smith normal form. The library Perseus \cite{perseus} (written in C++) computes both ``standard'' and persistent homology, which we will discuss in later chapters. Kenzo \cite{kenzo} (written in Common Lisp) can additionaly give presentations of homology groups, implementing methods of so-called \textit{Constructive Algebraic Topology}. Gmsh \cite{gmsh} provides homology solvers for finite element meshes. There are many more open-source libraries in the wild, some of which we'll use in our applied examples.
+Most homology solvers make use of additional optimization steps before resorting to matrix algebra. Libraries such as Linbox \cite{linbox} (written in C++) can be used to compute the Smith normal form. The library Perseus \cite{perseus} (written in C++) computes both ``standard'' and persistent homology, which we will discuss in later chapters. Kenzo \cite{kenzo} (written in Common Lisp) can additionally give presentations of homology groups, implementing methods of so-called \textit{Constructive Algebraic Topology}. Gmsh \cite{gmsh} provides homology solvers for finite element meshes. There are many more open-source libraries in the wild, some of which we'll use in our applied examples.
 
-But what about the stability and precision of this process? In the example we presented, there wasn't anything to worry about. On the other hand, what we will usually end up working with are simplicial complexes generated from sample data; the Čech and Vietoris-Rips complex, for example. Not only do we have to deal with errors of measurements and noise in our data but also the failure of our generated complex to match the ``true'' topological space where our data lives. The more precise formulation of this problem can be stated as: Let $(P, d)$ be a finite metric space of samples from a topological space $A$. When is $|\mathbb{VR}^{\varepsilon}(P, d)|$ or $|\mathbb{C}^{\varepsilon}(P, d)|$ homotopy equivalent to $A$?
+But what about the stability and precision of this process? In the example we presented, there wasn't anything to worry about. On the other hand, what we will usually end up working with are simplicial complexes generated from sample data; the Čech and Vietoris-Rips complex, for example. Not only do we have to deal with errors of measurements and noise in our data, but also the failure of our generated complex to match the ``true'' topological space where our data live. The more precise formulation of this problem can be stated as: Let $(P, d)$ be a finite metric space of samples from a topological space $A$. When is $|\mathbb{VR}^{\varepsilon}(P, d)|$ or $|\mathbb{C}^{\varepsilon}(P, d)|$ homotopy equivalent to $A$?
 
-We will attack the idea of \textit{geometric sampling} in later chapters as well, specifically, when we will introduce the idea of statistical testing and estimation while working with homology groups. For now, we can settle on a basic, minimal guarantee result known as the \textit{Niyogi-Smale-Weinberger theorem}. The idea of the theorem is that if we have sufficiently many points sample uniformly from a compact Riemannian manifold $M \subset \mathbb{R}^{n}$, there exists an isomorphism
+We will attack the idea of \textit{geometric sampling} in later chapters as well, specifically when we will introduce the idea of statistical testing and estimation while working with homology groups. For now, we can settle on a basic, minimal guarantee result known as the \textit{Niyogi-Smale-Weinberger theorem}. The idea of the theorem is that if we have sufficiently many points sampled uniformly from a compact Riemannian manifold $M \subset \mathbb{R}^{n}$, there exists an isomorphism
 
 \begin{equation*}
   H_{*}\left(\bigcup_{x \in M} B_{\varepsilon}(x) \right) \cong H_{*}(M)

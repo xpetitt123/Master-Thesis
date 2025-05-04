@@ -50,6 +50,8 @@
     "boyd2024big"
     "madukpe2025comprehensive"
     "AATRN"
-    "takens2006detecting"))
+    "takens2006detecting"
+    "kennel1992determining"
+    "rhodes1997false"))
  '(or :bibtex :latex))
 

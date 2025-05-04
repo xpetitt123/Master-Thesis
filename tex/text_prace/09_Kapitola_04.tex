@@ -1,58 +1,57 @@
 \chapter{Applications of TDA}
 \graphicspath{ {/home/tomasp/Dokumenty/Master_Thesis/figures/} }
 
-In this section, we will go over some of the more popular methods, techniques and algorithms that are used within Topological Data Analysis. The most theoretically demanding one is Persistent Homology that we worked on introducing in the previous chapters in the most basic and stripped down manner to not overwhelm the reader. We will look at the popular clustering and dimensionality reducing algorithms such as UMAP and Mapper, both closely related to each other. In the direction of homology, we will look at other equivalent and potentially more useful representations such as persistence images, landscapes and entropy. We will demonstrate them on the classical setting of point clouds but also time series and graphs.
+In this section, we will go over some of the popular methods, techniques, and algorithms that are used within Topological Data Analysis. The most theoretically demanding one is Persistent Homology which we worked on introducing in the previous chapters in the most basic and stripped-down manner to not overwhelm the reader. We will look at the popular clustering and dimensionality-reducing algorithms such as UMAP and Mapper, both closely related to each other. In the direction of homology, we will look at other equivalent and potentially more useful representations such as persistence images and entropy. We will demonstrate them in the classical setting of point clouds but also in time series and graphs.
 
-All methods will be accompanied by examples, both toy examples to better understand and real-life data to show one can use the methods to obtain new information. It is hopelessly naive to believe that we can summarize all the ways TDA and its surrounding methods have been and can be used to. As such, the reader will be pointed to different articles that cover more intricate applications that go beyond the scope of this work.
+All methods will be accompanied by examples, both toy examples to better understand and real-life data to show one can use the methods to obtain new information. It is hopelessly naive to believe that we can summarize all the ways TDA and its surrounding methods have been and can be used too. As such, the reader will be pointed to different articles that cover more intricate applications that go beyond the scope of this work.
 
 \section{UMAP}
-UMAP, short for \textit{Uniform Manifold Approximation and Projection for Dimension Reduction}, is a dimension reduction technique, similar to something like t-SNE, that is commonly used for dataset visualization, clustering, filtering or embedding within neural networks. UMAP and Mapper complement each other and are usually used together, hence why we talk about UMAP first.
+UMAP, short for \textit{Uniform Manifold Approximation and Projection for Dimension Reduction}, is a dimension reduction technique similar to something like t-SNE, that is commonly used for dataset visualization, clustering, filtering, or embedding within neural networks. UMAP and Mapper complement each other and are usually used together, hence why we talk about UMAP first.
 
-UMAP is built on three, relatively reasonable, assumptions about your dataset:
-\begin{itemize}
-  \item The data is uniformly distributed on a Riemannian manifold.
-  \item The Riemannian metric is locally constant or can be approximated as such.
-  \item The Riemannian manifold is locally connected.
-\end{itemize}
+We will briefly explain and summarize the workings of the algorithm, although it is recommended to read the original article \cite{mcinnes2020umapuniformmanifoldapproximation} for a more detailed explanation.
 
-If the assumptions are satisfied, it is then possible to model the ambient manifold with what we call a \textit{fuzzy} topological structure. We will briefly explain and summarize the workings of the algorithm, although it is recommended to read the original article \cite{mcinnes2020umapuniformmanifoldapproximation} for a more detailed explanation.
+Let the input be $X = \{X_{1}, \ldots, X_{N}\}$. The first step is to approximate the manifold the data supposedly lies on. Assuming that the manifold isn't known in advance (perhaps from some theoretical description of the model), we need to approximate the geodesic distance. It is beneficial to assume that the data is uniformly distributed on the manifold, with results being only valid in the limit of infinite data if the assumption isn't made. If we assume that the manifold has a Riemannian metric not inherited from its ambient space, we can always find a metric for which the data is approximately uniformly distributed with regard to it. The next steps are only possible due to the following theoretical result:
 
-The first step is to approximate the manifold the data supposedly lies on. Assuming that the manifold isn't known in advance (perhaps from some theoretical description of the model), we need to approximate the geodesic distance. It simplifies the problem to assume that the data is uniformly distributed on the manifold. Given this, we can center balls of an appropriate radius around each point to obtain a crude approximation of the manifold. We can then approximate geodesic distances from each ball to its neighbour.
+\begin{lemma}
+  Let $(\mathcal{M}, g)$ be a Riemannian manifold in an ambient $\mathbb{R}^{n}$, and let $p \in \mathcal{M}$ be a point. If $g$ is locally constant about $p$ in an open neighbourhood $U$ such that $g$ is a constant diagonal matrix in ambient coordinates, then in a ball $B \subseteq U$ centered at $p$ with volume $\frac{\pi^{n\/2}}{\Gamma(n\/2 + 1)}$ with respect to $g$, the geodesic distance from $p$ to any point $q \in B$ is $\frac{1}{r}d_{\mathbb{R}^{n}}(p,q)$, where $r$ is the radius of the ball in the ambient space and $d_{\mathbb{R}^{n}}$ is the existing metric on the ambient space.
+\end{lemma}
 
-Unfortunately, this means that we have independent notions of distances that may or may not be compatible. To merge all the local metric spaces into one compatible global structure, we utilize fuzzy simplicial sets, where a fuzzy set is characterized by a carrier set $A$ and a map $\mu: A \to [0,1]$ we call the membership function. This turns membership from a property attaining two values -- true or false -- into a property taking values in the unit interval. Each metric space is translated into a fuzzy simplicial set via a categorical construction (the fuzzy singular set functor).
+The proof of this can be found in \cite{mcinnes2020umapuniformmanifoldapproximation}, Appendix A. Assuming uniform distribution, any ball of fixed volume will contain roughly the same number of points of $X$, regardless of the position of the center of the ball. Conversely, any ball centered at $X_{i}$ containing exactly the $k-$nearest neighbours of $X_{i}$ should roughly have the same fixed volume, regardless of $X_{i} \in X$. Thanks to the lemma above, we can approximate the geodesic distance from $X_{i}$ to its neighbours by normalising distances with respect to the distance to the $k^{\text{th}}$ nearest neighbor of $X_{i}$.
 
-The goal, once we have constructed our fuzzy simplicial set, is to find a low-dimensional representation of our data that closely matches the topological structure. This optimal embedding is found after minimizing the error between the two representations with respect to cross entropy of the fuzzy sets. From a purely computational perspective, UMAP can be described in terms of weighted graphs; placing UMAP in the class of graph learning algorithms such as Isomap, the above-mentioned t-SNE and Laplacian Eigenmaps.
+Unfortunately, this means that we have independent notions of distances that may or may not be compatible. To merge all the local metric spaces into one compatible global structure, we utilize fuzzy simplicial sets, where a fuzzy set is characterized by a carrier set $A$ and a map $\mu: A \to [0,1]$ we call the membership function. This turns membership from a property attaining two values -- true or false -- into a property taking values in the unit interval. Each metric space is translated into a fuzzy simplicial set via a categorical \footnote{Categorical in this case means as in terms of category theory.} construction (the fuzzy singular set functor).
+
+The goal, once we have constructed our fuzzy simplicial set, is to find a low-dimensional representation of our data that closely matches the topological structure. This optimal embedding is found after minimizing the error between the two representations with respect to the cross-entropy of the fuzzy sets. From a purely computational perspective, UMAP can be described in terms of weighted graphs, placing UMAP in the class of graph learning algorithms such as Isomap, the above-mentioned t-SNE and Laplacian Eigenmaps.
 
 We will go over some examples of UMAP on well-known datasets and later compare the obtained results with the one we will see with Mapper in the next section.
 
 \subsection{Penguin dataset}
 We will start with a simple example using the known Penguin dataset \cite{10.1371/journal.pone.0090081}. The simplicity of the dataset will make it easier to highlight and interpret the results from UMAP. The dataset has few features, as seen in \ref{tab:penguins}, with some data missing and replaced with NaNs. While it would be recommended to use some form of imputation to replace them in a proper study, we will simply drop the missing values in this example without worrying too much.
 
-The dataset itself contains measurements about bill dimensions and flipper lengths, alongside metadata regarding the penguin's body mass and sex. The values we will focus on are the first four, ignoring the species and island variables. There are a total of 333 penguins in this dataset, and we can start with a simple pairwise scatter plot matrix to get a rough idea of what we're dealing with, seen in \ref{fig:penguins_scatter}
+The dataset itself contains measurements about bill dimensions and flipper lengths, alongside metadata regarding the penguin's body mass and sex. The values we will focus on are the first four, ignoring the species and island variables. There are a total of 333 penguins in this dataset, and we can start with a simple pairwise scatter plot matrix \footnote{A pairwise scatter plot consists of plotting the Cartesian product of all variables against each other. When plotting one variable against itself, it instead produces a density approximation.} to get a rough idea of what we're dealing with, seen in \ref{fig:penguins_scatter}
 
 \begin{table}[]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-\hline
- &
-  \textbf{species} &
-  \textbf{island} &
-  \textbf{bill\_length\_mm} &
-  \textbf{bill\_depth\_mm} &
-  \textbf{flipper\_length\_mm} &
-  \textbf{body\_mass\_g} &
-  \textbf{sex} &
-  \textbf{year} \\ \hline
-0 & Adelie & Torgersen & 39.1 & 18.7 & 181.0 & 3750.0 & male   & 2007 \\ \hline
-1 & Adelie & Torgersen & 39.5 & 17.4 & 186.0 & 3800.0 & female & 2007 \\ \hline
-2 & Adelie & Torgersen & 40.3 & 18.0 & 195.0 & 3250.0 & female & 2007 \\ \hline
-3 & Adelie & Torgersen & NaN  & NaN  & NaN   & NaN    & NaN    & 2007 \\ \hline
-4 & Adelie & Torgersen & 36.7 & 19.3 & 193.0 & 3450.0 & female & 2007 \\ \hline
-\end{tabular}%
-}
-\caption{First five rows of the Penguin dataset.}
-\label{tab:penguins}
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+      \hline
+      &
+        \textbf{species} &
+                           \textbf{island} &
+                                             \textbf{bill\_length\_mm} &
+                                                                         \textbf{bill\_depth\_mm} &
+                                                                                                    \textbf{flipper\_length\_mm} &
+                                                                                                                                   \textbf{body\_mass\_g} &
+                                                                                                                                                            \textbf{sex} &
+                                                                                                                                                                           \textbf{year} \\ \hline
+      0 & Adelie & Torgersen & 39.1 & 18.7 & 181.0 & 3750.0 & male   & 2007 \\ \hline
+      1 & Adelie & Torgersen & 39.5 & 17.4 & 186.0 & 3800.0 & female & 2007 \\ \hline
+      2 & Adelie & Torgersen & 40.3 & 18.0 & 195.0 & 3250.0 & female & 2007 \\ \hline
+      3 & Adelie & Torgersen & NaN  & NaN  & NaN   & NaN    & NaN    & 2007 \\ \hline
+      4 & Adelie & Torgersen & 36.7 & 19.3 & 193.0 & 3450.0 & female & 2007 \\ \hline
+    \end{tabular}%
+  }
+  \caption{First five rows of the Penguin dataset.}
+  \label{tab:penguins}
 \end{table}
 
 \begin{figure}[h!]
@@ -83,8 +82,8 @@ For an example with a high number of features, we can consider the known digits 
   \label{fig:digits}
 \end{figure}
 
-The digits dataset contains 1797 bitmaps of hand-written digits in 10 classes -- each class corresponding to its digit. Most digits are somewhat readable but there are few that are simply too blurred to be considered useful for any further analysis. Such bitmaps should be separated into their own cluster of outliers, creating one additional class in the end.
-The usual goal is to classify and cluster each bitmap into its appropriate class. We will see that with UMAP, we obtain satisfying results with a simple application of the algorithm. We see in \ref{fig:digits_projection} that reducing the dimension with UMAP already gave us a rather solid clustering of the digits with significant clusters. It shouldn't come off as a suprise that fairly distinct digits like 0, 9, 2, 6 or 7 are far away from the rest; whereas digits 1, 8, 3 lie close to each other.
+The digits dataset contains 1797 bitmaps of handwritten digits in 10 classes -- each class corresponding to its digit. Most digits are somewhat readable but there are few that are simply too blurred to be considered useful for any further analysis. Such bitmaps should be separated into their own cluster of outliers, creating one additional class in the end.
+The usual goal is to classify and cluster each bitmap into its appropriate class. We will see that with UMAP, we obtain satisfying results with a simple application of the algorithm. We see in \ref{fig:digits_projection} that reducing the dimension with UMAP already gave us a rather solid clustering of the digits with significant clusters. It shouldn't come off as a suprise that fairly distinct digits like 0, 9, 2, 6, or 7 are far away from the rest, whereas digits 1, 8 and 3 lie close to each other.
 
 \begin{figure}[h!]
   \centering
@@ -96,8 +95,8 @@ The usual goal is to classify and cluster each bitmap into its appropriate class
 We will look into the digits dataset two more times -- once with Mapper in the next section and the second time using homology groups instead.
 
 \subsection{Fashion and clothes}
-We can look at a much larger dataset to see how UMAP compares. Fashion-MNIST \cite{DBLP:journals/corr/abs-1708-07747} is a dataset consisting of 60,000 examples of Zelando's clothing articles, each article being a 28x28 grayscale image associated to one of 10 classes. The classes go as follow, labelled from 0 to 9 -- T-shirt, Trouser, Pullover, Dress, Coat, Sandal, Shirt, Sneaker, Bag, and Ankle Boot.
-As was the case for the digits dataset, one is typically interested in classifying and clustering the clothing articles while removing the images that are too blurred. Applying UMAP, we can see the resulting projection on \ref{fig:fmnist}. On a more technical note, the MNIST dataset should be ideally replaced with a different one since it is too easy for modern machine learning algorithms, is usually overused and cannot represent modern Computer Vision tasks. But since this text isn't about Computer Vision, we can safely proceed.
+We can look at a much larger dataset to see how UMAP compares. Fashion-MNIST \cite{DBLP:journals/corr/abs-1708-07747} is a dataset consisting of 60,000 examples of Zelando's clothing articles, each article being a 28x28 grayscale image associated to one of 10 classes. The classes go as follows, labeled from 0 to 9 -- T-shirt, Trouser, Pullover, Dress, Coat, Sandal, Shirt, Sneaker, Bag, and Ankle Boot.
+As was the case for the digits dataset, one is typically interested in classifying and clustering the clothing articles while removing the images that are too blurred. Applying UMAP, we can see the resulting projection on \ref{fig:fmnist}. On a more technical note, the MNIST dataset should be ideally replaced with a different one since it is too easy for modern machine learning algorithms, is usually overused, and cannot represent modern Computer Vision tasks. But since this text isn't about Computer Vision, we can safely proceed.
 
 \begin{figure}[h!]
   \centering
@@ -106,7 +105,7 @@ As was the case for the digits dataset, one is typically interested in classifyi
   \label{fig:fmnist}
 \end{figure}
 
-It intuitively makes sense to see that shoes should be generally projected close to each other, as we see with sneakers, sandals and ankle boots. Trousers are found in the top-left corner, isolated from the rest. In the \textit{UMAP examples} notebook, we also provide an interactive version of the resulting projection on a subset of Fashion-MNIST, allowing the user to see the labels of individual points upon zooming.
+It intuitively makes sense to see that shoes should be generally projected close to each other, as we see with sneakers, sandals, and ankle boots. Trousers are found in the top-left corner, isolated from the rest. In the \textit{UMAP examples} notebook, we also provide an interactive version of the resulting projection on a subset of Fashion-MNIST, allowing the user to see the labels of individual points upon zooming.
 
 An interesting property that UMAP allows us to study is the connectivity of the topological representation of the original high-dimensional data. This can be useful for diagnostic purposes, but in the case of this text, it corresponds to studying the connected components. It should be noted that computing and plotting the connectivity of the dataset can be rather expensive, so it is recommended to check subsamples instead. We can see examples of it on \ref{fig:fmnist_connectivity} and \ref{fig:fmnist_connectivity_hammer}.
 
@@ -148,7 +147,7 @@ The cover is typically taken to be a collection of overlapping cubes. In $\mathb
 
 Mapper's strength lies in the flexibility of choices we can make during the creation of the graph. For the projection, we can take any projection method from mathematics, statistics, machine learning or  econometrics -- PCA, t-SNE, UMAP, even something as simple as projecting on the $x-$axis.
 
-The same applies for the choice of clustering algorithms. We can pick any method -- hierarchical, density-based and any distance metric. The distance metric does not need to satisfy the triangle inequality, giving us the option to choose from the wider range of similarity metrics like the Kullback-Leibler divergence and so on.
+The same applies for the choice of clustering algorithms. We can pick any method -- hierarchical, density-based, and any distance metric. The distance metric does not need to satisfy the triangle inequality, giving us the option to choose from the wider range of similarity metrics like the Kullback-Leibler divergence and so on.
 
 Because Mapper is primarily a visual tool, most software packages include additional tooling to improve upon the basic algorithm and help with further exploration. That may involve a combination of the following:
 
@@ -162,14 +161,14 @@ Because Mapper is primarily a visual tool, most software packages include additi
   \item Descriptive statistics on the nodes and the graph
 \end{itemize}
 
-All in all, this makes Mapper one of the most flexible approaches to dataset visualizations, giving the user the option the construct the final graph exactly the way they intended. For the Mapper examples, we will make use of the Python libraries \textit{scikit-tda} \cite{scikittda2019} and \textit{giotto-tda} \cite{tauzin2020giottotda}.
+All in all, this makes Mapper one of the most flexible approaches to dataset visualizations, giving the user the option to construct the final graph exactly the way they intended. For the Mapper examples, we will make use of the Python libraries \textit{scikit-tda} \cite{scikittda2019} and \textit{giotto-tda} \cite{tauzin2020giottotda}.
 
 We can start with simple, synthetic examples before moving onto real data to see what the results of Mapper are and how they differ when we change the parameters or used methods.
 
 \subsection{Toy examples}
-We will start by generating 5000 points sampled from two nested circles in the plane with some added Gaussian noise. We can see the plotted dataset in \ref{fig:mapper_circles}. In our first attempt, we will project our data onto the $x-$ and $y-$axes, choose 10 covering intervals with a 30\% overlap and use the DBSCAN clustering algorithm.
+We will start by generating 5000 points sampled from two nested circles in the plane with some added Gaussian noise. We can see the plotted dataset in \ref{fig:mapper_circles}. In our first attempt, we will project our data onto the $x-$ and $y-$axes, choose 10 covering intervals with a 30\% overlap, and use the DBSCAN clustering algorithm.
 
-In figure \ref{fig:mapper_circles_graph} we can see that Mapper succesfuly captured the salient features - those being the two holes in the nested circles. The coloring of the node used the default settings of \textit{giotto-tda} -- coloring the nodes by the average row index of the data in the cluster; with 5000 generated points, we thus have 5000 rows. The node size here is given by the number of data points in the node.
+In figure \ref{fig:mapper_circles_graph} we can see that Mapper succesfully captured the salient features - those being the two holes in the nested circles. The coloring of the node used the default settings of \textit{giotto-tda} -- coloring the nodes by the average row index of the data in the cluster; with 5000 generated points, we thus have 5000 rows. The node size here is given by the number of data points in the node.
 
 \begin{figure}[h!]
   \centering
@@ -203,7 +202,7 @@ We can, if we want to, color by something like the first principal component of 
   \label{fig:mapper_circles_pca}
 \end{figure}
 
-As mentioned above, we can colord by proportions of some categorical variable -- one that is either already present or one that we create. Let us try to separate the inner and outer circle more cleanly. We can add a categorical column to the dataframe, with a value of ``A'' for the outer circle and ``B'' for the inner circle, where the testing criterium is whether
+As mentioned above, we can color by proportions of some categorical variable -- one that is either already present or one that we create. Let us try to separate the inner and outer circle more cleanly. We can add a categorical column to the dataframe, with a value of ``A'' for the outer circle and ``B'' for the inner circle, where the testing criterium is whether
 \begin{equation*}
   x^{2} + y^{2} < \frac{1}{4}.
 \end{equation*}
@@ -253,7 +252,7 @@ We could also choose a different color function, such as the volatility of the u
   \label{fig:mapper_volatility}
 \end{figure}
 
-Here we use the maximum of the volatility to color the resulting clusters, looking for stocks with an unusually high variance in the closing prices. Already, we can see that we have more outliers on both ends of the color spectrum, compared to the log-percent return. The benefit of the Mapper implementation in \textit{scikit-tda} is that it allows us to see directly which SP500 tickers are in the clusters by simply hovering over them. It also gives us the cluster ID, allowing us to plot the cluster data separatly from the rest. This way, we can plot the dark purple cluster, suggesting the lowest maximal volatility of closing prices in \ref{fig:mapper_volatility_low}.
+Here we use the maximum of the volatility to color the resulting clusters, looking for stocks with an unusually high variance in the closing prices. Already, we can see that we have more outliers on both ends of the color spectrum, compared to the log-percent return. The benefit of the Mapper implementation in \textit{scikit-tda} is that it allows us to see directly which SP500 tickers are in the clusters by simply hovering over them. It also gives us the cluster ID, allowing us to plot the cluster data separately from the rest. This way, we can plot the dark purple cluster, suggesting the lowest maximal volatility of closing prices in \ref{fig:mapper_volatility_low}.
 
 \begin{figure}[h!]
   \centering
@@ -280,7 +279,7 @@ At first glance, the closing prices of the bottom four tickers do not seem highl
   \label{fig:mapper_volatility_hpq}
 \end{figure}
 
-One could then continue with a more refined and detailed analysis of the clusters we obtained, looking into the differences and common points between them. Different coloring functions and rules could also be used, alongside other projection and clustering algorithms. All this is to show that Mapper is a powerful tool in the hands of someone with industry and theoretical knowledge of the data they have to work with, allowing them to carefully choose which algorithms, metrics and coloring functions they believe to be of importance.
+One could then continue with a more refined and detailed analysis of the clusters we obtained, looking into the differences and common points between them. Different coloring functions and rules could also be used, alongside other projection and clustering algorithms. All this is to show that Mapper is a powerful tool in the hands of someone with industry and theoretical knowledge of the data they have to work with, allowing them to carefully choose which algorithms, metrics, and coloring functions they believe to be of importance.
 
 \subsection{Digits dataset, revisited}
 
@@ -303,12 +302,12 @@ We can compare this with the Mapper graph, where our tooltip function is the lab
 \end{figure}
 
 \section{Persistent homology in practice}
-At last, we can start with an example where we will compute homology groups of the datasets at hand. The key takeaway here should be that persistent homology alone usually doesn't reveal all the information that we would need. Instead, we use it to extract topological features from a dataset, vectorize them and send them into a machine learning pipeline as additional training data. If used correctly, topological features can improve the performance and precision of your model, leading to superior results. The downside is the high computational cost of the procedure, making this approach not viable for datasets in the order of millions of rows and above.
+At last, we can start with an example where we will compute homology groups of the datasets at hand. The key takeaway here should be that persistent homology alone usually doesn't reveal all the information that we would need. Instead, we use it to extract topological features from a dataset, vectorize them, and send them into a machine learning pipeline as additional training data. If used correctly, topological features can improve the performance and precision of your model, leading to superior results. The downside is the high computational cost of the procedure, making this approach not viable for datasets in the order of millions of rows and above.
 
 \subsection{Digits, one the last time}
 We will revisit the digits dataset again, this time using persistent homology to build a \textit{scikit} classifier. As we will see in the examples to follow, persistent homology is usually used to extract topological features that can be later used in standard machine learning algorithms or statistical analysis. We have 70,000 images, each having 784 features representing a pixel intensity. The first task is to reshape the vectors into arrays of dimension 28x28. To save computational time, we will work with a smaller subset again. We split the full dataset into a training and testing dataset of sizes 60 and 10, respectively.
 
-Because images are made of pixels and are not point clouds, we use filtrations of cubical complexes instead of simplicial ones. Ignoring technical details, all that this does is replace simplices with little cubes. The homology groups carry the same meaning as before. It simply turns out that when working with images, using cubes is more natural than using a simplicial object. To use cubical complexes, the filtrations are built from binary images, forcing us to convert the grayscale image to binary by applying a threshold to the pixel values. In this example here, we used a threshold of 0.4.
+Because images are made of pixels and are not point clouds, we use filtrations of cubical complexes instead of simplicial ones. Ignoring technical details, all that this does is replace simplices with little cubes. The homology groups will be the same, as per the axiomatic nature of homology theories. It simply turns out that when working with images, using cubes is more natural than using a simplicial object. To use cubical complexes, the filtrations are built from binary images, forcing us to convert the grayscale image to binary by applying a threshold to the pixel values. In this example here, we used a threshold of 0.4.
 
 Given a binary image $\mathcal{B}$ of some digit, we will use the \textit{radial filtration} $\mathcal{R}$, which assigns to each pixel $p$ a value corresponding to the distance from some predefined center $c$ of the image
 
@@ -355,7 +354,7 @@ where $d_{i}$ and $b_{i}$ are the death and birth times of the equivalence class
 
 Doing all of this, we managed to extract 476 topological features per image. Some of the features will be highly correlated, and normally you would want to filter those out. Despite all of that, we can now happily send them into a Random Forest classifier and test our accuracy. In this example, we managed to achieve an accuracy of 80\% on our small dataset, using nothing but topological features. A better result would be achieved by applying a feature selection strategy and using the original data in the classifier as well.
 
-As a little sidenote, we may think of the choice of direction and center as hyperparameters. We can then proceed with a greedy hyperparameter search over a grid to see what the direction, homology direction and number of trees give us the best accuracy. Running the search, we found that the optimal number of trees is 500, the optimal homology dimension is $H_{0}$ and the optimal filtration direction is the vector $[1, 0]$. This intuitively makes sense when we compare the digits 6 and 9 with each other.
+As a little sidenote, we may think of the choice of direction and center as hyperparameters. We can then proceed with a greedy hyperparameter search over a grid to see what the direction, homology direction, and number of trees give us the best accuracy. Running the search, we found that the optimal number of trees is 500, the optimal homology dimension is $H_{0}$ and the optimal filtration direction is the vector $[1, 0]$. This intuitively makes sense when we compare the digits 6 and 9 with each other.
 
 The notebook with the entire pipeline can be found in the \textit{scripts/} directory under the name \textit{Digits\_classification.ipynb}.
 
@@ -374,9 +373,9 @@ We will start with a simple example of a periodic time series where the local mi
   \label{fig:cosine_period}
 \end{figure}
 
-The next step is to construct a sparse distance matrix to perform the sublevelset filtration. This has the added benefit of decreased computational cost due to the sparsity and a more fine-grained control of how we build the complex. For each point of the time series there is a vertex, which is born at the height of the point in the time series. This represents the initial state of the filtration. Since we are interested in the sublevelset filtration, we will add edges at a height equal to the larger of the two heights of the vertices they connect. The edges naturally connect adjacent points in the time series since, usually, we measure the signal in time and time only goes from left to right.
+The next step is to construct a sparse distance matrix to perform the sublevelset filtration. This has the added benefit of decreased computational cost due to the sparsity and a more fine-grained control of how we build the complex. For each point in the time series, there is a vertex, which is born at the height of the point in the time series. This represents the initial state of the filtration. Since we are interested in the sublevelset filtration, we will add edges at a height equal to the larger of the two heights of the vertices they connect. The edges naturally connect adjacent points in the time series since, usually, we measure the signal in time and time only goes from left to right.
 
-In more practical terms, we add the vertex birth times along the diagonal of the distance matrix. Once we have our distance matrix, we can directly pass it as input for the computation of the persistence diagram. With some minor graphical touches, we can plot the results side-by-side in \ref{fig:cosine_filtration}.
+In more practical terms, we add the vertex birth times along the diagonal of the distance matrix. Once we have our distance matrix, we can directly pass it as input for the computation of the persistence diagram. With some minor graphical touches, we can plot the results next to one another in \ref{fig:cosine_filtration}.
 
 \begin{figure}[h!]
   \centering
@@ -385,11 +384,11 @@ In more practical terms, we add the vertex birth times along the diagonal of the
   \label{fig:cosine_filtration}
 \end{figure}
 
-We see that the birth times of the individual homology classes here nicely map to the local minima of the signal, while the death times map to the local maxima in a 1-to-1 correspondence. We could do the opposite, filling the ``pools of water'' from the top instead and this would give us the superlevelset filtration of the time series. Of course, this amounts to calculating the sublevelset filtration of the same function but with a flipped sign in front.
+We see that the birth times of the individual homology classes here nicely map to the local minima of the signal, while the death times map to the local maxima in a 1-to-1 correspondence. We could do the opposite, filling the ``pools of water'' from the top instead, and this would give us the superlevelset filtration of the time series. Of course, this amounts to calculating the sublevelset filtration of the same function but with a flipped sign in front.
 
 \subsubsection{Image Filtrations}
 
-Sublevelset filtration of images works in the exact same manner, allowing us to explore local minima as birth times and saddle points as death times while looking at the zero-dimensional homology groups. The definition of the function that provides the filtration is in the same spirit as with the time series -- we construct a sparse distance matrix in which every pixel in the image is a vertex. Every vertex is connected to its 8 neighbors (or fewer, if it is a boundary pixel). The function value on the edge is taken to be the maximum of the two pixel values it connects. We can start with a simple image containing some Gaussian blobs, see \ref{fig:blobs_example}. There are three negative Gaussians present; one reaching its minimum at -3, the other at -2 and the last at -1.
+Sublevelset filtration of images works in the exact same manner, allowing us to explore local minima as birth times and saddle points as death times while looking at the zero-dimensional homology groups. The definition of the function that provides the filtration is in the same spirit as with the time series -- we construct a sparse distance matrix in which every pixel in the image is a vertex. Every vertex is connected to its 8 neighbors (or fewer, if it is a boundary pixel). The function value on the edge is taken to be the maximum of the two pixel values it connects. We can start with a simple image containing some Gaussian blobs, see \ref{fig:blobs_example}. There are three negative Gaussians present, one reaching its minimum at -3, the other at -2, and the last at -1.
 
 \begin{figure}[h!]
   \centering
@@ -398,7 +397,7 @@ Sublevelset filtration of images works in the exact same manner, allowing us to 
   \label{fig:blobs_example}
 \end{figure}
 
-For images, there already exists a pre-built function that we can use instead of writing it ourselves. Computing the persistence diagram of this image gives us \ref{fig:blobs_diagram}. Just like with the time series example, the three dots correspond to each of the 3 Gaussians, each of which is born at the respective local minimum. Two of them die around 0 and the third is born at -3, absorbing all classes into itself and never dying.
+For images, there already exists a pre-built function that we can use instead of writing it ourselves. Computing the persistence diagram of this image gives us \ref{fig:blobs_diagram}. Just like with the time series example, the three dots correspond to each of the 3 Gaussians, each of which is born at the respective local minimum. Two of them die around 0, and the third is born at -3, absorbing all classes into itself and never dying.
 
 \begin{figure}[h!]
   \centering
@@ -407,7 +406,7 @@ For images, there already exists a pre-built function that we can use instead of
   \label{fig:blobs_diagram}
 \end{figure}
 
-Let us look at a slightly more exciting example in \ref{fig:cells}. Here we have a zoomed up image of some wood cells. The first step is to convert this image to a grayscale one. Doing so, we see that the interiors of the cells have high values. They also meet a saddle point somewhere on their boundary with a value close to 0. We want to ideally identify the interiors of the cells in an automated fashion. Since this is our goal, we are interested in a local maximum of large persistence within each cell; that is, we want to perform superlevelset filtration of the image.
+Let us look at a slightly more exciting example in \ref{fig:cells}. Here we have a zoomed-up image of some wood cells. The first step is to convert this image to a grayscale one. Doing so, we see that the interiors of the cells have high values. They also meet a saddle point somewhere on their boundary with a value close to 0. We want to ideally identify the interiors of the cells in an automated fashion. Since this is our goal, we are interested in a local maximum of large persistence within each cell; that is, we want to perform superlevelset filtration of the image.
 
 \begin{figure}[h!]
   \centering
@@ -416,7 +415,7 @@ Let us look at a slightly more exciting example in \ref{fig:cells}. Here we have
   \label{fig:cells}
 \end{figure}
 
-But as mentioned above, we don't need to hack a suboptimal solution; we can simply pass the negative of the image and compute its sublevelset filtration instead. The result of this we can see in \ref{fig:cells_diagram1}. While the diagram is a useful first step, we need to extract the cell interior in some way out of this. We can do this by selecting a persistence treshold, above which we will consider a dot to be associated to a cell.
+But as mentioned above, we don't need to hack a suboptimal solution; we can simply pass the negative of the image and compute its sublevelset filtration instead. The result of this we can see in \ref{fig:cells_diagram1}. While the diagram is a useful first step, we need to extract the cell interior in some way out of this. We can do this by selecting a persistence threshold, above which we will consider a dot to be associated with a cell.
 
 \begin{figure}[h!]
   \centering
@@ -425,7 +424,7 @@ But as mentioned above, we don't need to hack a suboptimal solution; we can simp
   \label{fig:cells_diagram1}
 \end{figure}
 
-We can add some white noise to the pixels and apply a uniform filter to add a small amount of blur to the image. This would ideally increase the chance of the maximum to be closer to the center of the cell; the result of which is seen in \ref{fig:cells_smoothed}. If we compute the persistence diagram of the smoothed image, the difference is visible in \ref{fig:cells_diagram2}.
+We can add some white noise to the pixels and apply a uniform filter to add a small amount of blur to the image. This would ideally increase the chance of the maximum to being closer to the center of the cell, the result of which is seen in \ref{fig:cells_smoothed}. If we compute the persistence diagram of the smoothed image, the difference is visible in \ref{fig:cells_diagram2}.
 
 \begin{figure}[h!]
   \centering
@@ -441,7 +440,7 @@ We can add some white noise to the pixels and apply a uniform filter to add a sm
   \label{fig:cells_diagram2}
 \end{figure}
 
-We choose a cutoff of all points with a lifetime greater than 70 in this example. Extracting the pixel representatives satisfying this condition and plotting them in the original image results in \ref{fig:cells_filled}. Using a naive approach to the problem, we obtained reasonable results. There are cells with duplicates and some have no points at all, but most have only one. Tuning the threshold and the amount of noise added could further improve this procedure without relying on advanced algorithms from image processing.
+We choose a cutoff of all points with a lifetime greater than 70 in this example. Extracting the pixel representatives satisfying this condition and plotting them in the original image results in \ref{fig:cells_filled}. Using a naive approach to the problem, we obtained reasonable results. There are cells with duplicates, and some have no points at all, but most have only one. Tuning the threshold and the amount of noise added could further improve this procedure without relying on advanced algorithms from image processing.
 
 \begin{figure}[h!]
   \centering
@@ -465,19 +464,19 @@ The second approach when working with time series or signals is to make use of T
 
 Using Taken's theorem, we can transform the signal into a point cloud, allowing us to directly compute its persistent homology groups without further transformations. Formally, given a time series $f(t)$, we extract vectors of the form
 \begin{equation*}
-f_{i} = [f(t_{i}), f(t_{i} + \tau), f(t_{i} + 2\tau), \ldots, f(t_{i} + (d-1)\tau)] \in \mathbb{R}^{d},
+  f_{i} = [f(t_{i}), f(t_{i} + \tau), f(t_{i} + 2\tau), \ldots, f(t_{i} + (d-1)\tau)] \in \mathbb{R}^{d},
 \end{equation*}
 where $d$ is the dimension of the embedding and $\tau$ is the time delay parameter. Typically, we call the quantity $(d-1)\tau$ the \textit{window size} and the difference $t_{i+1} - t_{i}$ the \textit{stride}. The underlying idea here is, as long as $f$ has a non-trivial recurrent structure, to use Taken's theorem to construct an embedding of the signal that preserves the topological qualities and then compute its persistent homology.
 
-We may start with a simple cosine wave. The choice of stride and window size is the hardest problem when using a sliding window technique, as it is not exactly obvious which values will give us an ``optimal'' embedding. Later we'll see that we can search for them in an automatic fashion, but for now, let us choose $d=3$, $\tau=8$ and a stride of 10. With this choice of parameters, the resulting embedding in $\mathbb{R}^{3}$ is shown in \ref{fig:cosine_embedding}.
+We may start with a simple cosine wave. The choice of stride and window size is the hardest problem when using a sliding window technique, as it is not exactly obvious which values will give us an ``optimal'' embedding. Later we'll see that we can search for them automatically, but for now, let us choose $d=3$, $\tau=8$ and a stride of 10. With this choice of parameters, the resulting embedding in $\mathbb{R}^{3}$ is shown in \ref{fig:cosine_embedding}.
 
 \begin{figure}[h!]
-    \centering
-    \subfloat[\centering The signal]{{\includegraphics[width=7cm]{cosine.pdf} }}%
-    \qquad
-    \subfloat[\centering Its embedding in $\mathbb{R}^{3}$]{{\includegraphics[width=7cm]{point_cloud1.pdf} }}%
-    \caption{Ordinary cosine wave}%
-    \label{fig:cosine_embedding}%
+  \centering
+  \subfloat[\centering The signal]{{\includegraphics[width=7cm]{cosine.pdf} }}%
+  \qquad
+  \subfloat[\centering Its embedding in $\mathbb{R}^{3}$]{{\includegraphics[width=7cm]{point_cloud1.pdf} }}%
+  \caption{Ordinary cosine wave}%
+  \label{fig:cosine_embedding}%
 \end{figure}
 
 We can compare this with a quasi-periodic signal of the form
@@ -487,29 +486,29 @@ We can compare this with a quasi-periodic signal of the form
 as seen in \ref{fig:nonperiodic_embedding}, where we used $d=3$, $\tau=16$ and a stride of 3. The difference in the geometry of the embedding should be immediately clear, as in the case of the cosine wave, we have recovered a perfect ellipse capturing the clean, periodic behaviour of the signal.
 
 \begin{figure}[h!]
-    \centering
-    \subfloat[\centering The signal]{{\includegraphics[width=7cm]{nonperiodic_signal.pdf} }}%
-    \qquad
-    \subfloat[\centering Its embedding in $\mathbb{R}^{3}$]{{\includegraphics[width=7cm]{point_cloud2.pdf} }}%
-    \caption{Quasi-periodic wave}%
-    \label{fig:nonperiodic_embedding}%
+  \centering
+  \subfloat[\centering The signal]{{\includegraphics[width=7cm]{nonperiodic_signal.pdf} }}%
+  \qquad
+  \subfloat[\centering Its embedding in $\mathbb{R}^{3}$]{{\includegraphics[width=7cm]{point_cloud2.pdf} }}%
+  \caption{Quasi-periodic wave}%
+  \label{fig:nonperiodic_embedding}%
 \end{figure}
 
 We can confirm this by looking at the persistence diagrams that we compute from the embeddings in \ref{fig:embedding_diagrams}. In the first diagram, we see a single point associated with the $1-$dimensional persistent homology. This represents the single loop found in the embedding and is a direct consequence of the periodic nature of the signal.
 
 \begin{figure}[h!]
-    \centering
-    \subfloat[\centering Diagram for the periodic wave]{{\includegraphics[width=7cm]{periodic_diagram.pdf} }}%
-    \qquad
-    \subfloat[\centering Diagram for the quasi-periodic wave]{{\includegraphics[width=7cm]{nonperiodic_diagram.pdf} }}%
-    \caption{The corresponding persistence diagrams}%
-    \label{fig:embedding_diagrams}%
+  \centering
+  \subfloat[\centering Diagram for the periodic wave]{{\includegraphics[width=7cm]{periodic_diagram.pdf} }}%
+  \qquad
+  \subfloat[\centering Diagram for the quasi-periodic wave]{{\includegraphics[width=7cm]{nonperiodic_diagram.pdf} }}%
+  \caption{The corresponding persistence diagrams}%
+  \label{fig:embedding_diagrams}%
 \end{figure}
 
 Instead of manually picking the values for the embedding, we can use the following two techniques to search for them automatically:
 \begin{itemize}
   \item Mutual information for $\tau$
-  \item False nearest neighbours for $\d$
+  \item False nearest neighbours for $d$
 \end{itemize}
 
 To determine an optimal $\tau$, we first calculate the maximum $x_{\text{max}}$ and minimum $x_{\text{min}}$ values of the time series, dividing the interval between them into a large number of bins. Let $p_{k}$ be the probability that an element of the time series is in the $k$th bin and let $p_{j,k}$ be the probability that $x_{i}$ is in the $j$th bin while $x_{i+\tau}$ is in the $k$th bin. Then we define the mutual information as:
@@ -519,35 +518,41 @@ To determine an optimal $\tau$, we first calculate the maximum $x_{\text{max}}$ 
 \end{equation*}
 where $n$ is the number of bins on the interval $[x_{\text{min}}, x_{\text{max}}]$. The first minimum of this expression gives us the optimal time delay.
 
-The false nearest neighbours algorithm assumes that points which are close in one embedding dimension should be close in a higher one. More precisely, if $p_{i}$ and $p_{j}$ are neighbours, we compute their normalised distance $R_{i}$ and check if is greater than some threshold $R_{\text{th}}$ in the next dimension:
+The false nearest neighbours algorithm, first published in \cite{kennel1992determining} with an overview in \cite{rhodes1997false}, serves to identify the optimal embedding dimension of a dynamical system in order to unfold the attractor of the underlying system. An attractor is often a compact object in the phase space, thus acquiring neighbours. If our embedding dimension is too small to unfold the attractor, not all the points that lie close to each other will be neighbours, simply appearing as such due to a projection to a lower-dimensional space. We are thus interested in the change of distance between the embedded vector and its nearest neighbour when we go from a dimension $d$ to $d+1$. More precisely, if we denote $y(n) = (x(n), x(n+\tau), \ldots, x(n + (d-1)\tau))$, its $r$th nearest neighbour by $y(n)^{(r)}$, then the square of Euclidean distance between the two is
+
 \begin{equation*}
-  R_{i} = \frac{|x_{i+m\tau}-x_{j+m\tau}|}{||p_{i}-p_{j}||} > R_{\text{th}}.
+  R^{2}_{d}(n, r) = \sum_{k=0}^{d-1}[x(n + k\tau) - x^{(r)}(n + k\tau)]^{2}.
 \end{equation*}
-If this inequality holds, then we have a false nearest neighbour and we get the optimal embedding dimension $d$ by minimising the number of such neighbours.
+The natural criterion for catching the correct dimension is that the increase if distance between $y(n)$ and $y^{(r)}(n)$ will be large when going from $d$ to $d+1$, that is
+
+\begin{equation*}
+  \frac{|x(n+\tau d) - x^{(r)}(n + \tau d)|}{R_{d}(n,r)} > R_{\text{tol}},
+\end{equation*}
+where $R_{\text{tol}}$ is some treshold. Any neighbour for which the inequality above is true is designated to be a false neighbour. It turns out that $R_{\text{tol}} \geq 10$ clearly identifies false neighbours and it is sufficient to consider only the nearest neighbours, $r=1$, hence the name.
 
 We have to choose an upper bound for both $d$ and $\tau$ for the search to have a limit. We have chosen $d=30$ and a $\tau=30$ with a stride of 5. Once the search was finished, we have obtained optimal parameters $(d, \tau) = (6, 29)$. Due to the higher dimension, we used PCA to visualize the results in $\mathbb{R}^{3}$, as seen in \ref{fig:embedding_automatic}.
 
 \begin{figure}[h!]
-    \centering
-    \subfloat[\centering For the periodic wave]{{\includegraphics[width=7cm]{point_cloud_automatic1.pdf} }}%
-    \qquad
-    \subfloat[\centering For the quasi-periodic wave]{{\includegraphics[width=7cm]{point_cloud_automatic2.pdf} }}%
-    \caption{Optimal embeddings, after a reduction with PCA}%
-    \label{fig:embedding_automatic}%
+  \centering
+  \subfloat[\centering For the periodic wave]{{\includegraphics[width=7cm]{point_cloud_automatic1.pdf} }}%
+  \qquad
+  \subfloat[\centering For the quasi-periodic wave]{{\includegraphics[width=7cm]{point_cloud_automatic2.pdf} }}%
+  \caption{Optimal embeddings, after a reduction with PCA}%
+  \label{fig:embedding_automatic}%
 \end{figure}
 
 Just as before, we can then compute their persistence diagrams, seen in \ref{fig:embedding_automatic_diagrams}. For the periodic signal, it is essentially the same. In the case of the quasi-periodic wave, there is less noise on the diagonal. Most importantly, we see two prominent $H_{1}$ points and one $H_{2}$ point, which corresponds to the signature of a hypertorus.
 
 \begin{figure}[h!]
-    \centering
-    \subfloat[\centering For the periodic wave]{{\includegraphics[width=7cm]{periodic_automatic_diagram.pdf} }}%
-    \qquad
-    \subfloat[\centering For the quasi-periodic wave]{{\includegraphics[width=7cm]{nonperiodic_automatic_diagram.pdf} }}%
-    \caption{Persistence diagrams of the optimal embeddings}%
-    \label{fig:embedding_automatic_diagrams}%
+  \centering
+  \subfloat[\centering For the periodic wave]{{\includegraphics[width=7cm]{periodic_automatic_diagram.pdf} }}%
+  \qquad
+  \subfloat[\centering For the quasi-periodic wave]{{\includegraphics[width=7cm]{nonperiodic_automatic_diagram.pdf} }}%
+  \caption{Persistence diagrams of the optimal embeddings}%
+  \label{fig:embedding_automatic_diagrams}%
 \end{figure}
 
-Using sliding windows and Taken's embedding gives us tools to help us classify or, cluster time series based on the topology of their embeddings. The notebook for the examples above can be found in \textit{src/Sliding Windows 1.ipynb}. In the notebook \textit{src/Sliding Windows 2.ipynb}, we provide further examples and simulations of sliding window embeddings, allowing the reader to play around with the parameters and see how the change in parameters affects the change in geometry and in the resulting persistence diagrams in a more interactive fashion. For example, we can see how the embedding is progressively more chaotic the more stochastic noise we add into the original signal and how noisy the persistence diagram becomes in \ref{fig:embedding_noise}.
+Using sliding windows and Taken's embedding gives us tools to help us classify or cluster time series based on the topology of their embeddings. The notebook for the examples above can be found in \textit{src/Sliding Windows 1.ipynb}. In the notebook \textit{src/Sliding Windows 2.ipynb}, we provide further examples and simulations of sliding window embeddings, allowing the reader to play around with the parameters and see how the change in parameters affects the change in geometry and in the resulting persistence diagrams in a more interactive fashion. For example, we can see how the embedding is progressively more chaotic the more stochastic noise we add into the original signal and how noisy the persistence diagram becomes in \ref{fig:embedding_noise}.
 
 \begin{figure}[h!]
   \centering

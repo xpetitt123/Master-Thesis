@@ -14,7 +14,7 @@ The problem now lies in finding this feature scale of the object, since this is 
 
 We can consider the point cloud $P$ in \ref{fig:filtration_01} sampled from a curve. Ideally, the goal would be to confirm the existence of one connected component, the two circles touching together, and the presence of two holes, i.e., two loops in total. Even better, we would like to see that one loop is larger and more prominent than the other. This is what the main tool of our work captures -- \textit{persistent homology}.
 
-If we consider the distance function $r: \mathbb{R}^{2} \to \mathbb{R}$, where $r(x) = d(x, P)$, the minimum distance of $x$ to the points in $P$. Taking a look at the sublevel sets of $r$, $r^{-1}[-\infty, a]$ for some $a \in \mathbb{R}^{+} \cup \{0\}$. In this instance, the sublevel sets are unions of closed balls of radius $a$ with the center being the points. By increasing the $a$ from $0$ to infinity, numerous holes will appear, but only the two large loops will live longer than the rest until the entirety of $P$ is covered.
+If we consider the distance function $r: \mathbb{R}^{2} \to \mathbb{R}$, where $r(x) = d(x, P)$, the minimum distance of $x$ to the points in $P$. Taking a look at the sublevel sets of $r$, $r^{-1}(-\infty, a]$ for some $a \in \mathbb{R}^{+} \cup \{0\}$. In this instance, the sublevel sets are unions of closed balls of radius $a$ with the center being the points. By increasing the $a$ from $0$ to infinity, numerous holes will appear, but only the two large loops will live longer than the rest until the entirety of $P$ is covered.
 
 The idea is to translate this rate of survival on the level of points to the survival of individual homology classes whenever we increase the sublevel sets. This is robust since topological ``noise'' dies out quickly in comparison to the interesting topological features. Persistent homology effectively takes a function defined on the topological space and observes the evolution of homology classes over increasing sublevel sets of the function.
 
@@ -88,7 +88,7 @@ Let $f: \mathbb{T} \to \mathbb{R}$ be a function defined on a topological space 
       A \textit{vertex function} $f:V(K) \to \mathbb{R}$ is defined on the vertex set $V(K)$ of the complex $K$. Once again, a filtration can be constructed from a function like this. Vertex functions are related to what we call piecewise linear functions, or PL-functions.
 
       \begin{definition}[PL-functions]
-        Given a simplicial complex $K$, a \textit{piecewise-linear} (PL) function $f: |K| \to \mathbb{R}$ is defined to be the linear extension of a vertex function $f_{V}: V(K) \to \mathbb{R}$ defined on vertices of $K$, so that for every point $x \in |K|, \bar{f}(x) = \sum_{i=1}^{k+1}\alpha_{i}f_{V}(v_{i})$, where $\sigma = \{v_{1}, \ldots, v_{k+1}\}$ is the unique lowest dimensional simplex of dimension $k\geq 0$ containing $x$ and $\alpha_{1}, \ldots, \alpha_{k+1}$ are the barycentric coordinates of $x$ in $\sigma$.
+        Given a simplicial complex $K$, a \textit{piecewise-linear} (PL) function $f: |K| \to \mathbb{R}$ is defined to be the linear extension of a vertex function $f_{V}: V(K) \to \mathbb{R}$ defined on vertices of $K$, so that for every point $x \in |K|, \bar{f}(x) = \sum_{i=1}^{k+1}\alpha_{i}f_{V}(v_{i})$, where $\sigma = (v_{1}, \ldots, v_{k+1})$ is the unique lowest dimensional simplex of dimension $k\geq 0$ containing $x$ and $\alpha_{1}, \ldots, \alpha_{k+1}$ are the barycentric coordinates of $x$ in $\sigma$.
       \end{definition}
 
       PL-functions are closely related to vertex functions since a vertex functions defined a PL function on the underlying space $|K|$ of $K$ by interpolating $f$ over the simplices, while the restriction of a PL function to vertices gives us the corresponding vertex function. Finally, any simplicial filtration $\mathcal{F}$ can be induced by a function as follows:
@@ -112,7 +112,7 @@ As already mentioned, we are interested in observing when and where homology cla
   The \textit{p-th persistent homology groups} are the images of the homomorphisms, that is, $H^{i,j}_{p} = \text{Im}\:h^{i,j}_{p}$ for $0 \leq i \leq j \leq n$. The \textit{p-th persistent Betti numbers} are the dimensions $\beta^{i,j}_{p} = \text{dim}\:H^{i,j}_{p}$.
 \end{definition}
 
-Catching when a class is born or dies requires precision since when one class is born, others that are the sum of this class are also born, and we want to avoid counting duplicates. A similar case holds also for the case when a class dies. One can conclude the following directly from the definitions:
+Catching when a class is born or dies requires precision since when a new class is born, many other classes that are sum of this new class are also born, and we want to avoid counting duplicates. A similar case holds also for the case when a class dies. One can conclude the following directly from the definitions:
 
 \begin{lemma}
   $H^{i,j}_{p} = Z_{p}(X_{i}) / (B_{p}(X_{j}) \cap Z_{p}(X_{i}))$ and $\beta^{i,j}_{p} = \text{dim}\:H^{i,j}_{p}$.
@@ -184,7 +184,7 @@ In the noisy version there appear multiple smaller orange dots near the diagonal
 
 The diagonal is purely a technical addition although it highlights the fact that a class cannot die before it is even born. Some packages prefer to plot in the upper triangle, some choose the lower one, so be cautious and look at the axes.
 
-One of the many alternative representations of persistence that we will look at and work with are \textit{persistence barcodes}. Each birth-death pair $(a_{i}, a_{j})$ is represented as a line segment $[a_{i}, a_{j})$ called a bar. One such example can be seen on \ref{fig:barcodes}.
+One of the many alternative representations of persistence that we will look at and work with are \textit{persistence barcodes}. Each birth-death pair $(a_{i}, a_{j})$ is represented as a line segment of length $a_{j} - a_{i}$, plotted against its length, called a bar. One such example can be seen on \ref{fig:barcodes}.
 
 \begin{figure}[h!]
   \centering
@@ -193,7 +193,7 @@ One of the many alternative representations of persistence that we will look at 
   \label{fig:barcodes}
 \end{figure}
 
-Keep in mind that the barcodes do not contain more information than their diagram -- they are equivalent representations of the same fact. They \textit{can} be used in further analysis in different manners, but they do not fundamentally reveal anything new that wasn't already obtained. We don't care about any particular ordering of the barcodes, but the convention is to sort the bars in order of their birth time.
+Keep in mind that the barcodes do not contain more information than their diagram -- they are equivalent representations of the same fact. They \textit{can} be used in further analysis in different manners, but they do not fundamentally reveal anything new that wasn't already obtained. We don't care about any particular ordering of the barcodes, but the convention is to sort the bars by their length, in either ascending or descending direction.
 
 If we take a step back and look at the construction of the persistence module in the case of $p = 0$, what we are doing, after some thought, corresponds precisely to single-linkage hierarchical clustering that we know from regular statistical and data mining methods. Indeed, we start with our set of points as the individual cluster centers and gradually increase the ball radius, checking for links between the points, which creates the corresponding clusters. Persistence barcodes encode this information in a 1 to 1 correspondence to a dendrogram, as can be seen in \ref{fig:clustering}.
 
@@ -219,7 +219,7 @@ Let $\text{Dgm}_{p}(\mathcal{F}_{f})$ and $\text{Dgm}_{p}(\mathcal{F}_{g})$ be t
 \begin{definition}[Bottleneck distance]
   Let $\Pi = \{\pi: \text{Dgm}_{p}(\mathcal{F}_{f}) \to \text{Dgm}_{p}(\mathcal{F}_{g})\}$ be the set of all bijections between the persistence diagrams. The bottleneck distance between two diagrams is defined as
   \begin{equation*}
-    d_{b}(\text{Dgm}_{p}(\mathcal{F}_{f}), \text{Dgm}_{p}(\mathcal{F}_{g})) = \text{inf}_{x \in \Pi} \: \text{sup}_{x \in \text{Dgm}_{p}(\mathcal{F}_{f})} || x - \pi(x)||_{\infty}.
+    d_{b}(\text{Dgm}_{p}(\mathcal{F}_{f}), \text{Dgm}_{p}(\mathcal{F}_{g})) = \text{inf}_{x \in \pi} \: \text{sup}_{x \in \text{Dgm}_{p}(\mathcal{F}_{f})} || x - \pi(x)||_{\infty}.
   \end{equation*}
 The norm considered here is the usual $L^{\infty}$ norm. We additionally define $\infty - \infty = 0$ for computational reasons.
 \end{definition}
@@ -233,7 +233,7 @@ It should be noted that $d_{b}$ is only a metric on the space of diagrams, not n
   \end{equation*}
 \end{theorem}
 
-In the case of space filtrations, since we are dealing with a continuous version of the above, we need to impose another condition on the function $f$. We call a function $f:X \to \mathbb{R}$ \textit{tame}, if the homology groups of the sublevel sets are of finite rank and they change only at finitely many values. We call those values \textit{critical}.
+In the case of filtrations of general topological spaces (and hence singular homology), since we are dealing with a continuous version of the above, we need to impose another condition on the function $f$. We call a function $f:X \to \mathbb{R}$ \textit{tame}, if the homology groups of the sublevel sets are of finite rank and they change only at finitely many values. We call those values \textit{critical}.
 
 \begin{theorem}
   Let $X$ be a triangulable space. Let $f,g: X \to \mathbb{R}$ be two tame functions inducing space filtrations $\mathcal{F}_{f}$ and $\mathcal{F}_{g}$, where the values for sublevel sets include critical values. Then, for every $p \geq 0$,
@@ -247,7 +247,7 @@ Another distance that is worth mentioning is the so called $q$-Wasserstein dista
 \begin{definition}[Wasserstein distance]
   Let $\Pi$ be the set of bijections described in the definition of the Bottleneck metric. For any $p \geq 0, q \geq 1$, the $q$-Wasserstein distance is defined as
   \begin{equation*}
-    d_{W,q}(\text{Dgm}_{p}(\mathcal{F}_{f}), \text{Dgm}_{p}(\mathcal{F}_{g})) = \text{inf}_{\pi \in \Pi} \left[\sum_{x \in \text{Dmg}_{{p}(\mathcal{F}_{f})}} (||x - \pi(x)||_{q})^{q} \right]^{1/q}.
+    d_{W,q}(\text{Dgm}_{p}(\mathcal{F}_{f}), \text{Dgm}_{p}(\mathcal{F}_{g})) = \text{inf}_{\pi \in \pi} \left[\sum_{x \in \text{Dmg}_{{p}(\mathcal{F}_{f})}} (||x - \pi(x)||_{q})^{q} \right]^{1/q}.
   \end{equation*}
 \end{definition}
 
@@ -322,8 +322,8 @@ A simple example of what this means geometrically can be found in \ref{fig:hausd
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=5cm, height=5cm]{Hausdorff.pdf}
-  \caption{The Hausdorff metric is given by the point in $A$ with the largest distance to the closest point in $B$.}
+  \includegraphics[width=7cm, height=7cm]{Hausdorff.pdf}
+  \caption{The Hausdorff distance is determined by the point in $A$ with the largest distance to the closest point in $B$ (and vice versa).}
   \label{fig:hausdorff}
 \end{figure}
 
@@ -342,7 +342,7 @@ The usefulness of this comes from the following fact.
   The Gromov-Hausdorff distance is a metric on the set of isometry classes of compact metric spaces.
 \end{theorem}
 
-The definition above doesn't lend itself to computation in a straightforward fashion. For that reason, there exists an alternative formulation: let $\mathcal{R}$ be a mapping between $P$ and $Q$ such that there exists a tuple with the first coordinate in $P$ and second in $Q$. Then, the Gromov-Hausdorff distance can be formulated as
+The definition above doesn't lend itself to computation in a straightforward fashion. For that reason, there exists an alternative formulation: let $\mathcal{R}$ be a mapping between $P$ and $Q$ such that there exists a tuple with the first component in $P$ and second in $Q$. Then, the Gromov-Hausdorff distance can be formulated as
 
 \begin{equation*}
   d_{GH}((P, d_{P}), (Q, d_{Q})) = \inf_{\mathcal{R} \in P \times Q}\frac{1}{2}\left(\sup_{(x, x') \in \mathcal{R}, (y, y') \in \mathcal{R}} |d_{P}(x,y) - d_{Q}(x', y')| \right).

@@ -11,7 +11,9 @@
     "fig:CechVR"
     "fig:sizeofVR"
     "fig:Delaunay"
-    "fig:Voronoi")
+    "fig:Voronoi"
+    "fig:cohomology"
+    "fig:chain_complex")
    (LaTeX-add-environments
     "definition"
     "theorem"
